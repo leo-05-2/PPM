@@ -10,7 +10,7 @@ class CartItemInline(admin.TabularInline):
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     inlines = [CartItemInline]
-    list_display = ['user', 'quantity', 'cart']
+    list_display = ['user', 'address']
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -21,7 +21,7 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     list_display = ['id', 'user', 'created_at', 'address', 'city', 'delivery_date', 'delivered', 'shipped']
     list_filter = ['created_at', 'delivered', 'shipped']
-    search_fields = ['id', 'user__username']
+    search_fields = ['id', 'user_username']
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
