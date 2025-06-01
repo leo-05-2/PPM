@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',  # Custom user app
-    'products.apps.ProductsConfig',  # Products app
+    'users',  # Custom user app
+    'products',  # Products app
+    'cart',  # Cart app
     'crispy_forms',
     'crispy_bootstrap5',
 ]

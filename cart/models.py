@@ -10,7 +10,8 @@ CustomUser = get_user_model()
 
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='cart')
-    address = models.foreignKey(AddressList, on_delete=models.SET_NULL, null=True, blank=True, related_name='carts')
+    address = models.ForeignKey(AddressList, on_delete=models.SET_NULL, null=True, blank=True, related_name='carts')
+
 
 
     def __str__(self):
