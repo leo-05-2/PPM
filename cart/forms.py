@@ -1,6 +1,6 @@
 from crispy_forms.helper import FormHelper
 from django import forms
-from .models import Cart, AddressList
+from .models import Cart, Address
 
 class CartForm(forms.ModelForm):
 
@@ -11,11 +11,11 @@ class CartForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user',None)
         super().__init__(*args, **kwargs)
-        if user: self.fields['address'].queryset = AddressList.objects.filter(user=user)
+        if user: self.fields['address'].queryset = Address.objects.filter(user=user)
         elif self.instance and self.instance.pk and self.instance.user:
-            self.fields['address'].queryset = AddressList.objects.filter(user=self.instance.user)
+            self.fields['address'].queryset = Address.objects.filter(user=self.instance.user)
         else:
-            self.fields['address'].queryset = AddressList.objects.none()
+            self.fields['address'].queryset = Address.objects.none()
 
 
         self.helper = FormHelper()
