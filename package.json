@@ -1,0 +1,26 @@
+
+[
+  {
+    "model": "products.Category",
+    "pk": 1,
+    "fields": {
+      "name": "Alimenti"
+    }
+  },
+  {
+    "model": "products.Product",
+    "pk": 1,
+    "fields": {
+      "name": "proteine",
+      "description": "Pasta di semola di grano duro",
+      "price": "2.50",
+      "stock": 100,
+      "available": true,
+      "created": "2024-06-01T10:00:00Z",
+      "updated": "2024-06-01T10:00:00Z",
+      "category": [
+        1
+      ]
+    }
+  }
+]
