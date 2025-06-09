@@ -28,14 +28,17 @@ class CustomUser(AbstractUser):
    payment_method = models.CharField(max_length=50, blank=True, null=True)
    objects = CustomUserManager()
 
-    def __str__(self):
-        return self.username
+   def __str__(self):
+       return self.username
 
-class AddressList(models.Model):
+class Address(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='addresses')
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
-    country = models.CharField(max_length=100, blank=True, null=True)  # Optional field
+    street = models.CharField(max_length=100, blank=True, null=True)
+    province = models.CharField(max_length=100, blank=True, null=True)
+    postal_code = models.CharField(max_length=20, blank=True, null=True)
+    nickname = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return f"{self.address}, {self.city}, {self.country or 'N/A'}"

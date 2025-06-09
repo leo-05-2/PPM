@@ -5,10 +5,10 @@ from django.db import models
 
 class Category(models.Model):
     CATEGORY_CHOICES = (
-        ('prova1', 'prova1'),
-        ('prova2', 'prova2'),
-        ('prova3', 'prova3'),
-        ('prova4', 'prova4'),
+        ('alimenti', 'Alimenti'),
+        ('abbigliamento', 'Abbigliamento'),
+        ('accessori', 'Accessori'),
+        ('bevande', 'Bevande'),
     )
     name = models.CharField(max_length=200, choices=CATEGORY_CHOICES, unique=True)
 

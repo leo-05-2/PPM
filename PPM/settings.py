@@ -37,11 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',  # Custom user app
-    'products',  # Products app
-    'cart',  # Cart app
+    'users.apps.UsersConfig',  # Custom user app
+    'products.apps.ProductsConfig',  # Products app
+    'cart.apps.CartConfig',  # Cart app
     'crispy_forms',
     'crispy_bootstrap5',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -130,6 +131,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
-LOGIN_REDIRECT_URL = 'store:dashboard'
-LOGOUT_REDIRECT_URL = 'store:home'      
-LOGIN_URL = 'login'
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from products.models import Product
-from users.models import AddressList
+from users.models import Address
 
 # Create your models here.
 
@@ -10,7 +10,7 @@ CustomUser = get_user_model()
 
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='cart')
-    address = models.ForeignKey(AddressList, on_delete=models.SET_NULL, null=True, blank=True, related_name='carts')
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True, related_name='carts')
 
 
 
