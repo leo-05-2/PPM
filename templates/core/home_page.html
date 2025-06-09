@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header con bottone login -->
+    <div class="row mb-5">
+        <div class="col-md-8">
+            <h1 class="display-4">Benvenuto nel nostro Marketplace</h1>
+            <p class="lead">Trova prodotti di qualità a prezzi convenienti</p>
+        </div>
+        <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
+            <a href="{% url 'users:login' %}" class="btn btn-primary btn-lg">Accedi</a>
+            <a href="{% url 'users:sign_up' %}" class="btn btn-outline-secondary btn-lg ms-2">Registrati</a>
+        </div>
+    </div>
+
+    <!-- Ultimi oggetti pubblicati -->
+    <h2 class="mb-4">Ultimi oggetti pubblicati</h2>
+    <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+        {% for product in latest_products %}
+        <div class="col">
+            <a href="{% url 'products:product_info' product.id %}" class="card h-100">
+                <img src="{{ product.image.url|default:'https://via.placeholder.com/150' }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.price }} €</p>
+                    <span class="btn btn-sm btn-primary">Dettagli</span>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Nessun prodotto disponibile al momento</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Categorie di prodotti -->
+    <h2 class="mb-4">Esplora per categoria</h2>
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Alimenti</h3>
+                    <p class="card-text">Scopri prodotti freschi e biologici</p>
+                    <a href="#" class="btn btn-outline-primary">Esplora</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Attrezzature</h3>
+                    <p class="card-text">Strumenti e accessori di qualità</p>
+                    <a href="#" class="btn btn-outline-primary">Esplora</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Abbigliamento</h3>
+                    <p class="card-text">Capi di abbigliamento alla moda</p>
+                    <a href="#" class="btn btn-outline-primary">Esplora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
