@@ -1,11 +1,10 @@
 from django.contrib import admin
-from  users.models import CustomUser, AddressList
+from  users.models import CustomUser, Address
 from django.contrib.auth.admin import UserAdmin
+from users.forms import CustomUserCreationForm, CustomUserChangeForm
 
 # Register your models here.
 
-admin.site.register(CustomUser)
-admin.site.register(AddressList)
 
 class CustomUserAdmin(UserAdmin):
 
@@ -26,3 +25,5 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = UserAdmin.add_fieldsets + (
         (None, {'fields': ('phone_number', 'payment_method',)}),
     )
+admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Address)
