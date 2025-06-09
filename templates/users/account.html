@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Il tuo account - Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Intestazione pagina -->
+        <div class="col-12 mb-4">
+            <h1 class="display-5">Il tuo account</h1>
+            <p class="lead">Gestisci i tuoi dati personali e le preferenze</p>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Menu laterale -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <p class="card-text text-muted">{{ user.email }}</p>
+                    <hr>
+                    <div class="list-group list-group-flush">
+                        <a href="#profile" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                            <i class="bi bi-person me-2"></i>Profilo
+                        </a>
+                        <a href="#orders" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="bi bi-box me-2"></i>I tuoi ordini
+                        </a>
+                        <a href="#addresses" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="bi bi-geo-alt me-2"></i>Indirizzi
+                        </a>
+                        <a href="{% url 'users:logout' %}" class="list-group-item list-group-item-action text-danger">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenuto principale -->
+        <div class="col-md-9">
+            <div class="tab-content">
+                <!-- Sezione Profilo -->
+                <div class="tab-pane fade show active" id="profile">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">Dati personali</h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="{% url 'users:update_profile' %}">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="first_name" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="last_name" class="form-label">Cognome</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="phone_number" class="form-label">Phone</label>
+                                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="payment_method" class="form-label">Payment method</label>
+                                        <input type="text" class="form-control" id="payment_method" name="payment_method" value="{{ user.payment_method }}">
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="submit" class="btn btn-primary">Aggiorna profilo</button>
+                                </div>
+                            </form>
+
+                            <hr class="my-4">
+
+                            <h5>Modifica password</h5>
+                            <form method="post" action="{% url 'users:change_password' %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="current_password" class="form-label">Password attuale</label>
+                                    <input type="password" class="form-control" id="current_password" name="current_password">
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="new_password" class="form-label">Nuova password</label>
+                                        <input type="password" class="form-control" id="new_password" name="new_password">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="confirm_password" class="form-label">Conferma password</label>
+                                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="submit" class="btn btn-warning">Cambia password</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sezione Ordini -->
+                <div class="tab-pane fade" id="orders">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">I tuoi ordini</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ordine #</th>
+                                            <th>Data</th>
+                                            <th>Stato</th>
+                                            <th>Totale</th>
+                                            <th>Azioni</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in orders %}
+                                        <tr>
+                                            <td>{{ order.id }}</td>
+                                            <td>{{ order.created_at|date:"d/m/Y" }}</td>
+                                            <td>
+                                                <span class="badge {% if order.status == 'completed' %}bg-success{% elif order.status == 'processing' %}bg-warning{% else %}bg-info{% endif %}">
+                                                    {{ order.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>{{ order.total_price }} €</td>
+                                            <td>
+                                                <a href="{% url 'cart:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">Dettagli</a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">Non hai ancora effettuato ordini</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sezione Indirizzi -->
+                <div class="tab-pane fade" id="addresses">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">I tuoi indirizzi</h4>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                <i class="bi bi-plus"></i> Aggiungi indirizzo
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for address in addresses %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ address.nickname }}</h5>
+                                            <p class="card-text">
+                                                {{ address.street }}<br>
+                                                {{ address.city }}, {{ address.province }}<br>
+                                                {{ address.postal_code }}<br>
+                                                
+                                            </p>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                        data-bs-toggle="modal" data-bs-target="#editAddressModal"
+                                                        data-address-id="{{ address.id }}">
+                                                    Modifica
+                                                </button>
+                                                <form method="post" action="{% url 'users:delete_address' address.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Elimina</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        Non hai ancora salvato nessun indirizzo. Aggiungi il tuo primo indirizzo di consegna.
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale per aggiungere un indirizzo -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'users:add_address' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAddressModalLabel">Aggiungi indirizzo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nickname" class="form-label">Nome indirizzo</label>
+                        <input type="text" class="form-control" id="nickname" name="nickname" placeholder="Es. Casa, Ufficio">
+                    </div>
+                    <div class="mb-3">
+                        <label for="street" class="form-label">Via e numero civico</label>
+                        <input type="text" class="form-control" id="street" name="street">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="city" class="form-label">Città</label>
+                            <input type="text" class="form-control" id="city" name="city">
+                        </div>
+                        <div class="col">
+                            <label for="province" class="form-label">Provincia</label>
+                            <input type="text" class="form-control" id="province" name="province">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="postal_code" class="form-label">CAP</label>
+                            <input type="text" class="form-control" id="postal_code" name="postal_code">
+                        </div>
+                        <div class="col">
+                            <label for="country" class="form-label">Paese</label>
+                            <input type="text" class="form-control" id="country" name="country" value="Italia">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="submit" class="btn btn-primary">Salva indirizzo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
