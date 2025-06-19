@@ -1,0 +1,92 @@
+
+{% extends "base.html" %}
+
+{% block title %}Il tuo carrello - Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Il tuo carrello</h1>
+            <p class="lead">Rivedi gli articoli prima di procedere all'acquisto</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" width="100">Prodotto</th>
+                            <th scope="col">Descrizione</th>
+                            <th scope="col" class="text-center">Quantità</th>
+                            <th scope="col" class="text-end">Prezzo</th>
+                            <th scope="col" class="text-end">Totale</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>
+                                <img src="{{ item.product.image.url|default:'https://via.placeholder.com/80' }}"
+                                     alt="{{ item.product.name }}"
+                                     class="img-thumbnail"
+                                     width="80">
+                            </td>
+                            <td>
+                                <h5>{{ item.product.name }}</h5>
+                                <p class="text-muted small">{{ item.product.description|truncatechars:50 }}</p>
+                            </td>
+                            <td class="text-center">
+                                <form method="post" action="{% url 'cart:update_item' item.id %}" class="d-flex justify-content-center">
+                                    {% csrf_token %}
+                                    <div class="input-group input-group-sm" style="width: 120px;">
+                                        <button type="submit" name="decrease" value="1" class="btn btn-outline-secondary">-</button>
+                                        <input  name="quantity" class="form-control text-center" value="{{ item.quantity }}" min="1" max="99">
+                                        <button type="submit" name="increase" value="1" class="btn btn-outline-secondary">+</button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-end">{{ item.product.price }} €</td>
+                            <td class="text-end">{{ item.get_total_price }} €</td>
+                            <td class="text-end">
+                                <form method="post" action="{% url 'cart:remove_item' item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-end"><strong>Totale carrello:</strong></td>
+                            <td class="text-end"><strong>{{ cart.total_price }} €</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+   <!-- { if cart.items.exists %}
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <a href="{ url 'products:list' %}" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-arrow-left me-2"></i>Continua lo shopping
+            </a>
+        </div>
+        <div class="col-md-4 offset-md-4">
+            <a href="{ url 'cart:checkout' %}" class="btn btn-primary w-100">
+                Procedi al checkout<i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+    { endif %}
+</div>  -->
+{% endblock %}

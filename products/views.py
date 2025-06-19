@@ -21,6 +21,8 @@ def product_info(request, product_id):
 
     related_products = Product.objects.filter(category__in=categories).exclude(id=product_id)[:4]
 
+    source = request.GET.get('source')
+
     context = {
         'product': product,
         'categories': categories,
@@ -29,6 +31,9 @@ def product_info(request, product_id):
         'price': price,
         'stock': stock,
         'related_products': related_products,
+        'source': source,
     }
 
     return render(request, 'products/product_info.html', context)
+
+

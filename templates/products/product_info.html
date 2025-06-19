@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ name }} - Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+            {% if categories.first %}
+            <li class="breadcrumb-item"><a href="#">{{ categories.first.get_name_display }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Immagine del prodotto -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="bg-light d-flex justify-content-center align-items-center" style="height: 400px;">
+                    <i class="bi bi-image text-secondary" style="font-size: 5rem;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dettagli del prodotto -->
+        <div class="col-md-6 mb-4">
+            <h1 class="mb-3">{{ name }}</h1>
+
+            <!-- Categorie -->
+            <div class="mb-3">
+                {% for category in categories %}
+                <span class="badge bg-secondary me-1">{{ category.get_name_display }}</span>
+                {% endfor %}
+            </div>
+
+            <!-- Prezzo -->
+            <h2 class="text-primary mb-3">{{ price }} €</h2>
+
+            <!-- Disponibilità -->
+            {% if stock > 0 %}
+            <p class="text-success mb-3">
+                <i class="bi bi-check-circle"></i> Disponibile ({{ stock }} in magazzino)
+            </p>
+            {% else %}
+            <p class="text-danger mb-3">
+                <i class="bi bi-x-circle"></i> Non disponibile
+            </p>
+            {% endif %}
+
+            <!-- Descrizione -->
+            <div class="mb-4">
+                <h5>Descrizione</h5>
+                <p>{{ description|linebreaks }}</p>
+            </div>
+
+            <iframe name="hidden_frame" id="hidden_frame" style="display:none;"></iframe>
+
+
+            <!-- Pulsanti di azione -->
+            <div class="d-grid gap-2 d-md-flex">
+                {% if stock > 0 and product.available and source == 'user_home_page'%}
+                   <form method="POST" action="{% url 'cart:add_cart_item' %}" target="hidden_frame">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <input type="hidden" name="redirect" value="false">
+                        <button type="submit" class="btn btn-primary" onclick="showToast()">
+                            <i class="bi bi-cart-plus"></i> Aggiungi al carrello
+                        </button>
+                   </form>
+
+                <button  class="btn btn-outline-primary" type="button">
+                    <i class="bi bi-heart"></i> Aggiungi ai preferiti
+                </button>
+                {% else %}
+                <a href="{% url 'users:login' %}" class="btn btn-secondary" type="button" disabled>
+                    <i class="bi bi-cart-plus"></i> Aggiungi al carrello
+                </a>
+
+                <a href="{% url 'users:login' %}" class="btn btn-outline-primary" type="button">
+                    <i class="bi bi-heart"></i> Aggiungi ai preferiti
+                </a>
+                {% endif %}
+
+
+            </div>
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                <div id="cartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header bg-success text-white">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <strong class="me-auto">Carrello</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        Prodotto aggiunto al carrello con successo!
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function showToast() {
+                    setTimeout(function() {
+                        var toast = new bootstrap.Toast(document.getElementById('cartToast'));
+                        toast.show();
+                    }, 500);
+                }
+            </script>
+
+
+            <!-- Dettagli aggiuntivi -->
+            <div class="mt-4">
+                <p class="text-muted small">Aggiornato il: {{ product.updated|date:"d/m/Y" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informazioni dettagliate -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">Dettagli</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false">Spedizione</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Recensioni</button>
+                </li>
+            </ul>
+            <div class="tab-content p-4 border border-top-0 rounded-bottom" id="productTabsContent">
+                <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+                    <h5>Specifiche prodotto</h5>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row" style="width: 30%;">Codice prodotto</th>
+                                <td>{{ product.id }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Categorie</th>
+                                <td>
+                                    {% for category in categories %}
+                                    {{ category.get_name_display }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Disponibilità</th>
+                                <td>{{ stock }} pezzi</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Data di inserimento</th>
+                                <td>{{ product.created|date:"d/m/Y" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
+                    <h5>Informazioni di spedizione</h5>
+                    <p>La spedizione standard viene effettuata entro 2-3 giorni lavorativi. La consegna avviene generalmente entro 1-5 giorni lavorativi, a seconda della località.</p>
+                    <h6>Opzioni di spedizione:</h6>
+                    <ul>
+                        <li>Standard (2-5 giorni): 4.99€</li>
+                        <li>Express (1-2 giorni): 9.99€</li>
+                        <li>Gratuita per ordini superiori a 50€</li>
+                    </ul>
+                </div>
+                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    <h5>Recensioni dei clienti</h5>
+                    <p>Non ci sono ancora recensioni per questo prodotto.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prodotti correlati - usando carousel di Bootstrap -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-4">Prodotti correlati</h3>
+
+            <div id="relatedProductsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- Primo gruppo di prodotti -->
+                    <div class="carousel-item active">
+                        <div class="row">
+                            {% for i in related_products %}
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
+                                        <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <div class="card-body">
+                                        {% with category=categories|first %}
+                                        <span class="badge bg-secondary mb-2">{{ category.get_name_display }}</span>
+                                        {% endwith %}
+                                        <h5 class="card-title">Prodotto correlato {{ i }}</h5>
+                                        <p class="card-text text-primary">{{ price }} €</p>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">Visualizza</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Secondo gruppo di prodotti -->
+
+                </div>
+
+                <!-- Controlli del carousel -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide="prev" style="width: 5%;">
+                    <span class="carousel-control-prev-icon bg-primary rounded-circle" aria-hidden="true"></span>
+                    <span class="visually-hidden">Precedente</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide="next" style="width: 5%;">
+                    <span class="carousel-control-next-icon bg-primary rounded-circle" aria-hidden="true"></span>
+                    <span class="visually-hidden">Successivo</span>
+                </button>
+
+                <!-- Indicatori (opzionali) -->
+                <div class="carousel-indicators" style="bottom: -40px;">
+                    <button type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide-to="0" class="active bg-primary" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide-to="1" class="bg-primary" aria-label="Slide 2"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
