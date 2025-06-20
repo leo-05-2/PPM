@@ -12,9 +12,6 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = CustomUser
 
-
-    model = CustomUser
-
     list_display = UserAdmin.list_display + ('phone_number', 'payment_method')
 
 
@@ -25,5 +22,10 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = UserAdmin.add_fieldsets + (
         (None, {'fields': ('phone_number', 'payment_method',)}),
     )
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ('nickname', 'street', 'city', 'postal_code', 'country')
+    search_fields = ('nickname', 'street', 'city')
+    list_filter = ('country',)
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Address)
