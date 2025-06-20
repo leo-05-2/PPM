@@ -20,14 +20,65 @@ def update_cart_address(request):
 
     return render(request, 'cart/update_cart_address.html', {'form': form, 'cart': cart})
 
+
+@login_required
 def view_cart(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
+    items = cart.items.all()
 
+    # Crea o recupera il form di spedizione
+    if request.method == 'POST':
+        shipping_form = ShippingForm(request.POST)
+        if shipping_form.is_valid():
+            request.session['shipping_method'] = shipping_form.cleaned_data['shipping_method']
+    else:
+        shipping_method = request.session.get('shipping_method', 'standard')
+        shipping_form = ShippingForm(initial={'shipping_method': shipping_method})
+
+
+    subtotal = cart.total_price()
+    shipping_method = request.session.get('shipping_method', 'standard')
+
+    if shipping_method == 'standard':
+        shipping_cost = Decimal('4.99')
+    elif shipping_method == 'express':
+        shipping_cost = Decimal('9.99')
+
+
+    if subtotal >= 50:
+        shipping_cost = Decimal('0.00')
+
+
+    total = subtotal + shipping_cost
+
+    # Calcola la data di consegna stimata
+    today = datetime.now().date()
+    if shipping_method == 'express':
+        delivery_date = today + timedelta(days=2)  # 1-2 giorni
+    else:
+        delivery_date = today + timedelta(days=5)  # 2-5 giorni
+
+    # Formatta la data in formato italiano
+    formatted_delivery_date = delivery_date.strftime('%d/%m/%Y')
 
     context = {
         'cart': cart,
-        'items': cart.items.all(),
+        'items': items,
+        'shipping_form': shipping_form,
+        'subtotal': subtotal,
+        'shipping_cost': shipping_cost,
+        'total': total,
+        'delivery_date': formatted_delivery_date
     }
+    request.session['checkout_data'] = {
+        'subtotal': str(subtotal),
+        'shipping_cost': str(shipping_cost),
+        'total': str(total),
+        'delivery_date': formatted_delivery_date,
+        'shipping_method': shipping_method,
+    }
+
+
     return render(request, 'cart/view_cart.html', context)
 
 @login_required
