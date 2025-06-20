@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}Checkout - Marketplace{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Checkout</h1>
+            <p class="lead">Completa il tuo ordine</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Riepilogo ordine -->
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Riepilogo ordine</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Prodotto</th>
+                                    <th>Quantità</th>
+                                    <th class="text-end">Prezzo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart.items.all %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td class="text-end">{{ item.get_total_price }} €</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2" class="text-end">Totale:</th>
+                                    <th class="text-end">{{ cart.total_price }} €</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form checkout -->
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Dati di spedizione e pagamento</h5>
+                </div>
+                <div class="card-body">
+                        <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Sezione per indirizzo esistente o nuovo -->
+                        <div class="form-group mb-4">
+                            {{ form.use_existing_address|as_crispy_field }}
+                        </div>
+                        
+                        <div id="existing-address" class="mb-4">
+                            {{ form.address|as_crispy_field }}
+                        </div>
+                        
+                        <div id="new-address" class="mb-4" style="display: none;">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    {{ form.nickname|as_crispy_field }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form.street|as_crispy_field }}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ form.city|as_crispy_field }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.postal_code|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sezione per i dati della carta -->
+                        <div class="row">
+                            <div class="col-12">
+                                {{ form.card_number|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.card_expiry|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.card_cvv|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary mt-3">Completa ordine</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const useExistingCheckbox = document.getElementById('id_use_existing_address');
+    const existingAddressDiv = document.getElementById('existing-address');
+    const newAddressDiv = document.getElementById('new-address');
+
+    function toggleAddressFields() {
+        if (useExistingCheckbox.checked) {
+            existingAddressDiv.style.display = 'block';
+            newAddressDiv.style.display = 'none';
+        } else {
+            existingAddressDiv.style.display = 'none';
+            newAddressDiv.style.display = 'block';
+        }
+    }
+
+    useExistingCheckbox.addEventListener('change', toggleAddressFields);
+    toggleAddressFields(); // Inizializza correttamente
+});
+</script>
+{% endblock %}
