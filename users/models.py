@@ -33,15 +33,15 @@ class CustomUser(AbstractUser):
 
 class Address(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='addresses')
-    address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
-    street = models.CharField(max_length=100, blank=True, null=True)
-    province = models.CharField(max_length=100, blank=True, null=True)
-    postal_code = models.CharField(max_length=20, blank=True, null=True)
-    nickname = models.CharField(max_length=50, blank=True, null=True)
+    street = models.CharField(max_length=100, blank=False, null=False)
+    province = models.CharField(max_length=100, blank=False, null=False)
+    postal_code = models.CharField(max_length=20, blank=False, null=False)
+    nickname = models.CharField(max_length=50, default="Indirizzo principale")
+    country = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.address}, {self.city}, {self.country or 'N/A'}"
+        return f"{self.street}, {self.city}, {self.postal_code}, {self.country}, {self.nickname}"
+
     class Meta:
         verbose_name_plural = "Address Lists"
-        unique_together = ('user', 'address')
