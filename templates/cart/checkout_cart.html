@@ -41,8 +41,15 @@
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <th colspan="2" class="text-end">Subtotale:</th>
+                                    <th class="text-end">{{ subtotal }} €</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" class="text-end">Spedizione:</th>
+                                    <th class="text-end">{{ shipping_cost }} €</th>
+                                <tr>
                                     <th colspan="2" class="text-end">Totale:</th>
-                                    <th class="text-end">{{ cart.total_price }} €</th>
+                                    <th class="text-end">{{ total }} €</th>
                                 </tr>
                             </tfoot>
                         </table>

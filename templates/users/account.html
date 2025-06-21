@@ -12,6 +12,20 @@
             <hr>
         </div>
     </div>
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    {% for message in messages %}
+    <div class="toast align-items-center {% if message.tags == 'error' %}text-bg-danger{% elif message.tags == 'success' %}text-bg-success{% elif message.tags == 'warning' %}text-bg-warning{% else %}text-bg-info{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 
     <div class="row">
         <!-- Menu laterale -->
@@ -91,18 +105,24 @@
                             <h5>Modifica password</h5>
                             <form method="post" action="{% url 'users:change_password' %}">
                                 {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="current_password" class="form-label">Password attuale</label>
-                                    <input type="password" class="form-control" id="current_password" name="current_password">
-                                </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="new_password" class="form-label">Nuova password</label>
-                                        <input type="password" class="form-control" id="new_password" name="new_password">
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="new_password" name="new_password">
+                                            <button type="button" class="btn btn-outline-secondary toggle-password" data-target="new_password">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="confirm_password" class="form-label">Conferma password</label>
-                                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                                            <button type="button" class="btn btn-outline-secondary toggle-password" data-target="confirm_password">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -116,8 +136,11 @@
                 <!-- Sezione Ordini -->
                 <div class="tab-pane fade" id="orders">
                     <div class="card shadow-sm">
-                        <div class="card-header bg-light">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
                             <h4 class="mb-0">I tuoi ordini</h4>
+                            <a href="{% url 'cart:order_history' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-list-ul"></i> Visualizza tutti
+                            </a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -132,7 +155,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for order in orders %}
+                                        {% for order in orders|slice:":5" %}
                                         <tr>
                                             <td>{{ order.id }}</td>
                                             <td>{{ order.created_at|date:"d/m/Y" }}</td>
@@ -154,6 +177,14 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            {% if orders|length > 5 %}
+                            <div class="text-center mt-3">
+                                <a href="{% url 'cart:order_history' %}" class="btn btn-outline-primary">
+                                    Visualizza tutti gli ordini ({{ orders|length }})
+                                </a>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -258,4 +289,56 @@
         </div>
     </div>
 </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+
+
+
+        const activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            const tab = document.querySelector(`a[href="${activeTab}"]`);
+            if (tab) {
+                new bootstrap.Tab(tab).show();
+            }
+        }
+
+
+
+        document.querySelectorAll('a[data-bs-toggle="list"]').forEach(tabEl => {
+            tabEl.addEventListener('shown.bs.tab', function(e) {
+                const hash = e.target.getAttribute('href');
+                localStorage.setItem('activeTab', hash);
+
+            });
+        });
+        document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                this.innerHTML = '<i class="bi bi-eye"></i>';
+            }
+        });
+        const toastElList = document.querySelectorAll('.toast');
+        const toastList = [...toastElList].map(toastEl => {
+            const toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 5000 // Scompare dopo 5 secondi
+            });
+            toast.show();
+            return toast;
+    });
+        
+    });
+    });
+</script>
 {% endblock %}
+
