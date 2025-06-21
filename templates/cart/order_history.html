@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Cronologia Ordini{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">La tua cronologia ordini</h1>
+    
+    {% if orders %}
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Ordine #</th>
+                                <th>Data</th>
+                                <th>Indirizzo</th>
+                                <th>Stato</th>
+                                <th>Totale</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.created_at|date:"d/m/Y" }}</td>
+                                <td>{{ order.address.city }}</td>
+                                <td>
+                                    <span class="badge {% if order.status == 'completed' %}bg-success{% elif order.status == 'processing' %}bg-warning{% else %}bg-info{% endif %}">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ order.total_price }} €</td>
+                                <td>
+                                    <a href="{% url 'cart:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">Dettagli</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Paginazione -->
+        {% if is_paginated %}
+        <nav aria-label="Navigazione pagine" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo; Prima</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Precedente</a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item disabled">
+                    <span class="page-link">Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Successiva</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Ultima &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+    {% else %}
+        <div class="alert alert-info">
+            <p>Non hai ancora effettuato alcun ordine.</p>
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary mt-3">Inizia a fare acquisti</a>
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{% url 'users:user_home_page' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Torna alla Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

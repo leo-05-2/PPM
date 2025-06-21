@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ordine Confermato{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h2 class="mb-4">Grazie per il tuo ordine!</h2>
+                    <p class="lead mb-4">Il tuo ordine è stato completato con successo. Riceverai presto una email di conferma.</p>
+
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="{ url 'product:product_list' %}" class="btn btn-outline-primary">Continua lo shopping</a>
+                        <a href="{% url 'users:account' %}" class="btn btn-primary">Visualizza i tuoi ordini</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

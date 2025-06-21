@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dettaglio Ordine #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'users:account' %}">Il mio Account</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Ordine #{{ order.id }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5">Dettaglio Ordine #{{ order.id }}</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <p class="mb-0 text-muted">Data ordine: {{ order.created_at|date:"d/m/Y" }}</p>
+            <p class="mb-0">
+                <span class="badge {% if order.delivered %}bg-success{% elif order.shipped %}bg-primary{% else %}bg-warning{% endif %}">
+                    {% if order.delivered %}Consegnato{% elif order.shipped %}Spedito{% else %}In lavorazione{% endif %}
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Dettagli dell'ordine -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">Prodotti ordinati</h3>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-3">Prodotto</th>
+                                    <th>Prezzo</th>
+                                    <th>Quantità</th>
+                                    <th>Totale</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <td class="ps-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="max-width: 50px;">
+                                                {% else %}
+                                                <div class="bg-light rounded" style="width: 50px; height: 50px;"></div>
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <p class="mb-0 fw-medium">{{ item.product.name }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ item.price }} €</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.get_total }} €</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="table-group-divider">
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Subtotale:</td>
+                                    <td>{{ subtotal }} €</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Spedizione:</td>
+                                    <td>{{ shipping_cost|default:"0.00" }} €</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Totale:</td>
+                                    <td class="fw-bold">{{ total }} €</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Dati di spedizione -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">Indirizzo di spedizione</h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1">{{ order.address.street }}</p>
+                    <p class="mb-1">{{ order.city }}, {{ order.address.postal_code }}</p>
+                    <p class="mb-0">{{ order.address.country }}</p>
+                </div>
+            </div>
+
+            <!-- Dettagli di consegna -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">Dettagli di consegna</h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Data prevista:</strong> {{ delivery_date|date:"d/m/Y" }}</p>
+                    <p class="mb-1"><strong>Metodo di spedizione:</strong> 
+                        {% if shipping_method == 'express' %}
+                            Express
+                        {% else %}
+                            Standard
+                        {% endif %}
+                    </p>
+                    <p class="mb-0"><strong>Stato:</strong>
+                        {% if order.delivered %}
+                            Consegnato
+                        {% elif order.shipped %}
+                            Spedito il {{ order.shipped_date|date:"d/m/Y" }}
+                        {% else %}
+                            In preparazione
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <a href="{% url 'users:account' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Torna ai tuoi ordini
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
