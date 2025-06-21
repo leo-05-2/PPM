@@ -116,3 +116,31 @@ def delete_address(request, address_id):
         address.delete()
         messages.success(request, 'Indirizzo eliminato con successo!')
     return redirect(reverse('users:account'))
+
+@login_required
+def update_address(request, address_id):
+    address = get_object_or_404(Address, id=address_id, user=request.user)
+    if request.method == 'POST':
+        # Recupera i valori dei campi
+        street = request.POST.get('street', '').strip()
+        city = request.POST.get('city', '').strip()
+        province = request.POST.get('province', '').strip()
+        postal_code = request.POST.get('postal_code', '').strip()
+        country = request.POST.get('country', '').strip()
+        nickname = request.POST.get('nickname', '').strip()
+
+        # Verifica che tutti i campi siano compilati
+        if not (street and city and province and postal_code and country and nickname):
+            messages.error(request, 'Tutti i campi sono obbligatori per aggiornare l\'indirizzo.')
+        else:
+            # Aggiorna l'indirizzo
+            address.street = street
+            address.city = city
+            address.province = province
+            address.postal_code = postal_code
+            address.country = country
+            address.nickname = nickname
+            address.save()
+            messages.success(request, 'Indirizzo aggiornato con successo!')
+
+    return redirect(reverse('users:account'))

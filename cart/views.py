@@ -7,22 +7,10 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from django.views.generic import DetailView , ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 # Create your views here.
 
-@login_required
-def update_cart_address(request):
-    cart ,created = Cart.objects.get_or_create(user=request.user)
-
-    if request.method == 'POST':
-        form = CartForm(request.POST, instance=cart, user=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('cart:cart_detail')  #todo: implement
-    else:
-        form = CartForm(instance=cart, user=request.user)
-
-    return render(request, 'cart/update_cart_address.html', {'form': form, 'cart': cart})
 
 @login_required
 def view_cart(request):
@@ -126,22 +114,10 @@ def update_item(request, item_id):
             # Incrementa la quantità
             cart_item.quantity += 1
         elif 'decrease' in request.POST:
-            # Decrementa la quantità, assicurandosi che non sia inferiore a 1
             if cart_item.quantity > 1:
                 cart_item.quantity -= 1
             if cart_item.quantity == 1:
                 cart_item.delete()
-        elif 'quantity' in request.POST:
-
-            try:
-                quantity = int(request.POST.get('quantity'))
-                if quantity > 0:
-                    cart_item.quantity = quantity
-                    cart_item.save()
-                else:
-                    cart_item.delete()
-            except ValueError:
-                pass
 
         cart_item.save()
 
@@ -191,16 +167,27 @@ def checkout(request):
                 )
                 address.save()
 
+            delivery_address = DeliveryAddress(
+                street=address.street,
+                city=address.city,
+                postal_code=address.postal_code,
+                country=address.country,
+                nickname=address.nickname if address.nickname else 'Indirizzo di spedizione',
+                created_at= datetime.now()
+            )
+            delivery_address.save()
+
 
             order = Order.objects.create(
                 user=request.user,
-                address=address,
-                city = address.city,
+                address=delivery_address,
+
                 delivery_date = delivery_date,
                 delivered = False,
                 shipped = False,
                 shipping_cost = shipping_cost_view,
                 shipping_method = shipping_method
+
             )
 
 
@@ -275,12 +262,16 @@ def checkout(request):
 
 @login_required
 def update_shipping(request, method):
-    # Verifica che il metodo sia valido
+
+
     if method not in ['standard', 'express']:
         method = 'standard'
 
     # Salva il metodo nella sessione
     request.session['shipping_method'] = method
+
+    if 'delivery_date' in request.session:
+        del request.session['delivery_date']
 
     # Reindirizza alla pagina del carrello
     return redirect('cart:view_cart')
@@ -308,8 +299,9 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         context['subtotal'] = self.object.get_total_cost()
         context['delivery_date'] = self.object.delivery_date
         context['shipping_method'] = self.object.shipping_method
-        context['address'] = self.object.address  #todo: consider using a foreing key
+        context['address'] = self.object.address
         context['total'] = context['subtotal'] + context['shipping_cost']
+
 
 
 
