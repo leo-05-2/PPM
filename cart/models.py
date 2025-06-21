@@ -35,13 +35,24 @@ class CartItem(models.Model):
     def get_total_price(self):
         return self.quantity * self.product.price
 
+class DeliveryAddress(models.Model):
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    province = models.CharField(max_length=100, blank=True, null=True)
+    postal_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=100, default='Italia')
+    created_at = models.DateTimeField(auto_now_add=True)
+    nickname = models.CharField(max_length=50, default="Indirizzo principale")
+
+    def __str__(self):
+        return f"{self.street}, {self.city}, {self.province}"
+
 
 
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders')
     created_at = models.DateTimeField(auto_now_add=True)
-    address = models.CharField(max_length=250)
-    city = models.CharField(max_length=100)
+    address = models.ForeignKey(DeliveryAddress, on_delete=models.SET_NULL, null=True, blank=True, related_name='orders') # if an address is deleted, orders will still reference to a valid address
     delivery_date = models.DateField()
     delivered = models.BooleanField(default=False)
     shipped = models.BooleanField(default=False)
