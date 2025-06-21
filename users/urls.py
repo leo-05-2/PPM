@@ -1,20 +1,5 @@
 from django.urls import path
-from .views import (
-    user_home_page,
-    UserLoginView,
-    UserSignUpView,
-    UserLogoutView,
-    UserAccountView,
-    update_profile,
-    change_password,
-    add_address, delete_address,
-
-
-
-
-
-
-)
+from .views import *
 
 app_name = 'users'
 
@@ -28,6 +13,7 @@ urlpatterns = [
     path('change_password/', change_password, name='change_password'),
     path('add_address/', add_address, name='add_address'),
     path('delete_address/<int:address_id>/', delete_address, name='delete_address'),
+    path('update_address/<int:address_id>/', update_address, name='update_address'),
 
 
 ]
