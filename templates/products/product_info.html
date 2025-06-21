@@ -8,11 +8,32 @@
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
-            {% if categories.first %}
-            <li class="breadcrumb-item"><a href="#">{{ categories.first.get_name_display }}</a></li>
+            {% if request.GET.source == 'home' %}
+              <!-- Percorso per utenti non autenticati (dalla home) -->
+                  <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            {% elif request.GET.source == 'user_home_page' %}
+              <!-- Percorso per utenti autenticati (dalla dashboard) -->
+                  <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Dashboard</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            {% elif request.GET.source == 'category_user' %}
+              <!-- Percorso per navigazione da categoria -->
+                  <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Home</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'products:category' product.category.slug %}">{{ product.category.name }}</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                
+            {% elif request.GET.source == 'category_guest' %}
+              <!-- Percorso per navigazione da categoria -->
+                  <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'products:category' product.category.slug %}">{{ product.category.name }}</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>    
+            
+            {% else %}
+              <!-- Percorso generico predefinito -->
+                  <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
             {% endif %}
-            <li class="breadcrumb-item active" aria-current="page">{{ name }}</li>
+            
         </ol>
     </nav>
 
