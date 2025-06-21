@@ -16,7 +16,7 @@
                     <p class="lead mb-4">Il tuo ordine è stato completato con successo. Riceverai presto una email di conferma.</p>
 
                     <div class="d-flex justify-content-center gap-3 mt-4">
-                        <a href="{ url 'product:product_list' %}" class="btn btn-outline-primary">Continua lo shopping</a>
+                        <a href="{% url 'users:user_home_page' %}" class="btn btn-outline-primary">Continua lo shopping</a>
                         <a href="{% url 'users:account' %}" class="btn btn-primary">Visualizza i tuoi ordini</a>
                     </div>
                 </div>
