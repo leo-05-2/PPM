@@ -11,6 +11,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from .models import CustomUser, Address
 from products.models import Product
+from django.urls import reverse
 
 
 
@@ -75,12 +76,11 @@ def update_profile(request):
 def change_password(request):
     if request.method == 'POST':
         user = request.user
-        current_password = request.POST.get('current_password')
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
 
-        if not user.check_password(current_password):
-            messages.error(request, 'La password attuale non è corretta')
+        if  user.check_password(new_password):
+            messages.error(request, 'La nuova password non può essere uguale alla password attuale')
         elif new_password != confirm_password:
             messages.error(request, 'Le nuove password non coincidono')
         else:
@@ -100,6 +100,7 @@ def add_address(request):
             city=request.POST.get('city'),
             province=request.POST.get('province'),
             postal_code=request.POST.get('postal_code'),
+            country=request.POST.get('country'),
 
             nickname=request.POST.get('nickname'),
 
@@ -110,7 +111,8 @@ def add_address(request):
 
 @login_required
 def delete_address(request, address_id):
-    address = get_object_or_404(Address, id=address_id, user=request.user)
-    address.delete()
-    messages.success(request, 'Indirizzo eliminato con successo!')
-    return redirect('core:home')
+    if request.method == 'POST':
+        address = get_object_or_404(Address, id=address_id, user=request.user)
+        address.delete()
+        messages.success(request, 'Indirizzo eliminato con successo!')
+    return redirect(reverse('users:account'))
