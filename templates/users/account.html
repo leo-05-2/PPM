@@ -221,6 +221,55 @@
                                                     {% csrf_token %}
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">Elimina</button>
                                                 </form>
+                                                <!-- Modale per modificare un indirizzo -->
+                                                <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <form method="post" action="{% url 'users:update_address' 0 %}" id="editAddressForm">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="address_id" id="edit_address_id">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="editAddressModalLabel">Modifica indirizzo</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="mb-3">
+                                                                        <label for="edit_nickname" class="form-label">Nome indirizzo</label>
+                                                                        <input type="text" class="form-control" id="edit_nickname" name="nickname">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="edit_street" class="form-label">Via e numero civico</label>
+                                                                        <input type="text" class="form-control" id="edit_street" name="street">
+                                                                    </div>
+                                                                    <div class="row mb-3">
+                                                                        <div class="col">
+                                                                            <label for="edit_city" class="form-label">Città</label>
+                                                                            <input type="text" class="form-control" id="edit_city" name="city">
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <label for="edit_province" class="form-label">Provincia</label>
+                                                                            <input type="text" class="form-control" id="edit_province" name="province">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mb-3">
+                                                                        <div class="col">
+                                                                            <label for="edit_postal_code" class="form-label">CAP</label>
+                                                                            <input type="text" class="form-control" id="edit_postal_code" name="postal_code">
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <label for="edit_country" class="form-label">Paese</label>
+                                                                            <input type="text" class="form-control" id="edit_country" name="country">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                                                    <button type="submit" class="btn btn-primary">Aggiorna indirizzo</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -335,7 +384,33 @@
             });
             toast.show();
             return toast;
+            
+        });
+        document.querySelectorAll('[data-bs-target="#editAddressModal"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const addressId = this.getAttribute('data-address-id');
+            document.getElementById('edit_address_id').value = addressId;
+            
+            // Recupera i dati dell'indirizzo e compila i campi
+            const addressCard = this.closest('.card');
+            const addressText = addressCard.querySelector('.card-text').textContent.trim().split('\n');
+            const addressTitle = addressCard.querySelector('.card-title').textContent.trim();
+            
+            document.getElementById('edit_nickname').value = addressTitle;
+            document.getElementById('edit_street').value = addressText[0].trim();
+            
+            const cityProvince = addressText[1].split(',');
+            document.getElementById('edit_city').value = cityProvince[0].trim();
+            document.getElementById('edit_province').value = cityProvince[1].trim();
+            
+            document.getElementById('edit_postal_code').value = addressText[2].trim();
+            document.getElementById('edit_country').value = addressText[3] ? addressText[3].trim() : 'Italia';
+            
+            // Aggiorna l'URL del form
+            const form = document.getElementById('editAddressForm');
+            form.action = form.action.replace('/0', `/${addressId}`);
     });
+});
         
     });
     });
