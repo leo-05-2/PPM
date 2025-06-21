@@ -5,6 +5,8 @@ from .forms import CartForm , CheckoutForm , ShippingForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from decimal import Decimal
+from django.views.generic import DetailView , ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
@@ -22,46 +24,55 @@ def update_cart_address(request):
 
     return render(request, 'cart/update_cart_address.html', {'form': form, 'cart': cart})
 
-
 @login_required
 def view_cart(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     items = cart.items.all()
 
+    old_shipping_method = request.session.get('shipping_method', 'standard')
+
+    shipping_method_changed = False
+
     # Crea o recupera il form di spedizione
     if request.method == 'POST':
         shipping_form = ShippingForm(request.POST)
         if shipping_form.is_valid():
-            request.session['shipping_method'] = shipping_form.cleaned_data['shipping_method']
+            new_shipping_method = shipping_form.cleaned_data['shipping_method']
+            if old_shipping_method != new_shipping_method:
+                shipping_method_changed = True
+            request.session['shipping_method'] = new_shipping_method
     else:
-        shipping_method = request.session.get('shipping_method', 'standard')
-        shipping_form = ShippingForm(initial={'shipping_method': shipping_method})
+        shipping_form = ShippingForm(initial={'shipping_method': old_shipping_method})
 
-
-    subtotal = cart.total_price()
     shipping_method = request.session.get('shipping_method', 'standard')
+    subtotal = cart.total_price()
+    shipping_cost = Decimal('4.99')
+
 
     if shipping_method == 'standard':
         shipping_cost = Decimal('4.99')
     elif shipping_method == 'express':
         shipping_cost = Decimal('9.99')
 
-
     if subtotal >= 50:
         shipping_cost = Decimal('0.00')
 
-
     total = subtotal + shipping_cost
 
-    # Calcola la data di consegna stimata
-    today = datetime.now().date()
-    if shipping_method == 'express':
-        delivery_date = today + timedelta(days=2)  # 1-2 giorni
-    else:
-        delivery_date = today + timedelta(days=5)  # 2-5 giorni
 
-    # Formatta la data in formato italiano
-    formatted_delivery_date = delivery_date.strftime('%d/%m/%Y')
+    delivery_date_str = request.session.get('delivery_date')
+    if delivery_date_str is None or shipping_method_changed:
+        today = datetime.now().date()
+        if shipping_method == 'express':
+            delivery_date = today + timedelta(days=2)
+        else:
+            delivery_date = today + timedelta(days=5)
+
+
+        formatted_delivery_date = delivery_date.strftime('%d/%m/%Y')
+        request.session['delivery_date'] = formatted_delivery_date
+    else:
+        formatted_delivery_date = delivery_date_str
 
     context = {
         'cart': cart,
@@ -155,9 +166,9 @@ def checkout(request):
 
     checkout_data = request.session.get('checkout_data', {})
     subtotal = Decimal(checkout_data.get('subtotal', '0.00'))
-    shipping_cost = Decimal(checkout_data.get('shipping_cost', '0.00'))
-    total = Decimal(checkout_data.get('total', '0.00'))
-    delivery_date = datetime.strptime(checkout_data.get('delivery_date', datetime.now().strftime('%d/%m/%Y')), '%d/%m/%Y').date()
+    shipping_cost_view = Decimal(checkout_data.get('shipping_cost'))
+    total = Decimal(checkout_data.get('total'))
+    delivery_date = datetime.strptime(checkout_data.get('delivery_date'), '%d/%m/%Y').date()
     shipping_method = checkout_data.get('shipping_method', 'standard')
 
     user_addresses = request.user.addresses.all().order_by('nickname')
@@ -187,7 +198,9 @@ def checkout(request):
                 city = address.city,
                 delivery_date = delivery_date,
                 delivered = False,
-                shipped = False
+                shipped = False,
+                shipping_cost = shipping_cost_view,
+                shipping_method = shipping_method
             )
 
 
@@ -199,8 +212,35 @@ def checkout(request):
                     price=item.product.price
                 )
 
+            prodotti_insufficienti = []
+
+            for cart_item in cart.items.all():
+                product = cart_item.product
+                if product.stock < cart_item.quantity:
+                    prodotti_insufficienti.append({
+                        'nome': product.name,
+                        'disponibili': product.stock,
+                        'richiesti': cart_item.quantity
+                    })
+
+            # Se ci sono prodotti con stock insufficiente, mostra errori
+            if prodotti_insufficienti:
+                for prod in prodotti_insufficienti:
+                    messages.error(
+                        request,
+                        f"Quantità insufficiente per {prod['nome']}. Disponibili: {prod['disponibili']}, Richiesti: {prod['richiesti']}"
+                    )
+                return redirect('cart:view_cart')
+
+            # Altrimenti, procedi con l'aggiornamento dello stock
+            for cart_item in cart.items.all():
+                product = cart_item.product
+                product.stock -= cart_item.quantity
+                product.save()
+
 
             cart.items.all().delete()
+
             if 'shipping_method' in request.session:
                 del request.session['shipping_method']
 
@@ -224,7 +264,7 @@ def checkout(request):
         'form': form,
         'user_addresses': user_addresses,
         'subtotal': subtotal,
-        'shipping_cost': shipping_cost,
+        'shipping_cost': shipping_cost_view,
         'total': total,
         'shipping_method': shipping_method,
         'delivery_date': delivery_date.strftime('%d/%m/%Y')
@@ -245,3 +285,43 @@ def update_shipping(request, method):
     # Reindirizza alla pagina del carrello
     return redirect('cart:view_cart')
 
+def checkout_success(request):
+
+    return render(request, 'cart/checkout_success.html')
+
+
+class OrderDetailView(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = 'cart/order_detail.html'
+    context_object_name = 'order'
+    pk_url_kwarg = 'order_id'  # Parametro URL per l'ID dell'ordine
+
+    def get_queryset(self):
+
+        return Order.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['items'] = self.object.items.all()
+        context['shipping_cost'] = self.object.shipping_cost
+        context['subtotal'] = self.object.get_total_cost()
+        context['delivery_date'] = self.object.delivery_date
+        context['shipping_method'] = self.object.shipping_method
+        context['address'] = self.object.address  #todo: consider using a foreing key
+        context['total'] = context['subtotal'] + context['shipping_cost']
+
+
+
+        return context
+
+
+class OrderHistoryView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'cart/order_history.html'
+    context_object_name = 'orders'
+    paginate_by = 10  # 10 ordini per pagina
+
+    def get_queryset(self):
+
+        return Order.objects.filter(user=self.request.user).order_by('-created_at')
