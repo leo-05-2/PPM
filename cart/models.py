@@ -45,6 +45,9 @@ class Order(models.Model):
     delivery_date = models.DateField()
     delivered = models.BooleanField(default=False)
     shipped = models.BooleanField(default=False)
+    shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    shipping_method = models.CharField(max_length=50, default='standard')
+
 
     class Meta:
         ordering = ('-created_at',)

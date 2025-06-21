@@ -40,9 +40,9 @@ class CheckoutForm(forms.Form):
     )
 
 
-    street = forms.CharField(max_length=255, required=True, label="Via")
-    city = forms.CharField(max_length=100, required=True, label="Città")
-    postal_code = forms.CharField(max_length=20, required=True, label="CAP")
+    street = forms.CharField(max_length=255, required=False, label="Via")
+    city = forms.CharField(max_length=100, required=False, label="Città")
+    postal_code = forms.CharField(max_length=20, required=False, label="CAP")
 
 
     card_number = forms.CharField(max_length=16, required=True, label="Numero carta")
@@ -52,7 +52,7 @@ class CheckoutForm(forms.Form):
         label='Nome identificativo dell\'indirizzo',
         max_length=50,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        required=True
+        required=False
     )
 
     def __init__(self, *args, **kwargs):
