@@ -103,3 +103,24 @@ class ShippingForm(forms.Form):
         initial='standard',
         label='Metodo di spedizione'
     )
+
+
+class CartItemQuantityForm(forms.Form):
+    quantity = forms.IntegerField(
+        min_value=0,
+
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.max_quantity = kwargs.pop('max_quantity', 99)
+        super().__init__(*args, **kwargs)
+
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get('quantity')
+        if quantity > self.max_quantity:
+            raise forms.ValidationError(f"Quantità massima disponibile: {self.max_quantity}.")
+        if quantity < 0:
+            raise forms.ValidationError("La quantità non può essere negativa.")
+
+        return quantity
