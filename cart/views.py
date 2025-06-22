@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
-from .forms import CartForm , CheckoutForm , ShippingForm
+from .forms import CartForm , CheckoutForm , ShippingForm , CartItemQuantityForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -93,15 +93,21 @@ def add_cart_item(request):
         product = get_object_or_404( Product, id=product_id)
 
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product, defaults={'quantity': quantity})
+        source = request.POST.get('source', None)
 
         if not created:
             cart_item.quantity += quantity
-        cart_item.save()
+            cart_item.save()
+        messages.success(request, f"{product.name} è stato aggiunto al carrello.")
 
-        # Restituisci risposta in base al flag di redirect
-        return HttpResponse("prodotto aggiunto al carrello")
+        redirect_url = f'/products/product/{product_id}/'
+        if source:
+            redirect_url += f'?source={source}'
 
-        return redirect('cart:view_cart')
+        return redirect(redirect_url)
+
+
+
 
 
 @login_required
@@ -112,14 +118,44 @@ def update_item(request, item_id):
     if request.method == 'POST':
         if 'increase' in request.POST:
             # Incrementa la quantità
-            cart_item.quantity += 1
+            if cart_item.quantity < cart_item.product.stock:
+                cart_item.quantity += 1
+                cart_item.save()
+            else:
+                messages.error(request, f"Quantità massima disponibile per {cart_item.product.name}: {cart_item.product.stock}")
+
         elif 'decrease' in request.POST:
             if cart_item.quantity > 1:
                 cart_item.quantity -= 1
-            if cart_item.quantity == 1:
+                cart_item.save()
+            else:
                 cart_item.delete()
 
-        cart_item.save()
+
+        elif 'quantity' in request.POST:
+            # Utilizzo del form per validare il valore di quantità inserito direttamente
+            form = CartItemQuantityForm(
+                request.POST,
+                max_quantity=cart_item.product.stock
+            )
+
+            if form.is_valid():
+                new_quantity = form.cleaned_data['quantity']
+
+                if new_quantity == 0:
+                    cart_item.delete()
+                    messages.info(request, f"{cart_item.product.name} rimosso dal carrello.")
+                else:
+                    cart_item.quantity = new_quantity
+                    cart_item.save()
+                    messages.success(request, f"Quantità aggiornata a {new_quantity}.")
+            else:
+                # Gestione degli errori di validazione
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, error)
+
+
 
     return redirect('cart:view_cart')
 
