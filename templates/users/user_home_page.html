@@ -70,7 +70,7 @@
         {% for product in latest_products %}
         <div class="col">
             <a href="{% url 'products:product_info' product.id %}?source=user_home_page" class="card h-100">
-                <img src="{{ product.image.url|default:'https://via.placeholder.com/150' }}" class="card-img-top" alt="{{ product.name }}">
+                <img src="{{ product.image.url|default:'https:www.placehold.co/30x20' }}" class="card-img-top" alt="{{ product.name }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">{{ product.price }} €</p>
@@ -90,17 +90,17 @@
     <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
         {% for product in latest_products %}
         <div class="col">
-            <div class="card h-100">
-                <img src="{{ product.image.url|default:'https://via.placeholder.com/150' }}" class="card-img-top" alt="{{ product.name }}">
+            <a href="{% url 'products:product_info' product.id %}?source=user_home_page" class="card h-100">
+                <img src="{{ product.image.url|default:'https:www.placehold.co/30x20' }}" class="card-img-top" alt="{{ product.name }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">{{ product.price }} €</p>
-                    <a href="{% url 'products:product_info' product.id %}" class="btn btn-sm btn-primary">Dettagli</a>
+                    <span  class="btn btn-sm btn-primary">Dettagli</span>
                    <!--todo: <a href="{ url 'cart:add_to_cart' product.id %}" class="btn btn-sm btn-success">
                         <i class="bi bi-cart-plus"></i> Aggiungi
                     </a> -->
                 </div>
-            </div>
+            </a>
         </div>
         {% empty %}
         <div class="col-12">
