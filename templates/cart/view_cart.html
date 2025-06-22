@@ -11,6 +11,17 @@
             <p class="lead">Rivedi gli articoli prima di procedere all'acquisto</p>
         </div>
     </div>
+    <div class="container py-5">
+    {% if messages %}
+        <div class="messages mb-4">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -42,9 +53,10 @@
                             <td class="text-center">
                                 <form method="post" action="{% url 'cart:update_item' item.id %}" class="d-flex justify-content-center">
                                     {% csrf_token %}
+                                    <button type="submit" name="dummy" style="display:none;"></button>
                                     <div class="input-group input-group-sm" style="width: 120px;">
                                         <button type="submit" name="decrease" value="1" class="btn btn-outline-secondary">-</button>
-                                        <input  name="quantity" class="form-control text-center" value="{{ item.quantity }}" min="1" max="99">
+                                        <input  name="quantity" class="form-control text-center" value="{{ item.quantity }}" min="0" max="99">
                                         <button type="submit" name="increase" value="1" class="btn btn-outline-secondary">+</button>
                                     </div>
                                 </form>
@@ -156,5 +168,5 @@
         </div>
     </div>
     {% endif %}
-</div>  
+</div>
 {% endblock %}
