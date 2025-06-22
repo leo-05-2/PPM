@@ -78,18 +78,18 @@
                 <p>{{ description|linebreaks }}</p>
             </div>
 
-            <iframe name="hidden_frame" id="hidden_frame" style="display:none;"></iframe>
+            
 
 
             <!-- Pulsanti di azione -->
             <div class="d-grid gap-2 d-md-flex">
                 {% if stock > 0 and product.available and source == 'user_home_page'%}
-                   <form method="POST" action="{% url 'cart:add_cart_item' %}" target="hidden_frame">
+                   <form method="POST" action="{% url 'cart:add_cart_item' %}" >
                         {% csrf_token %}
                         <input type="hidden" name="product_id" value="{{ product.id }}">
                         <input type="hidden" name="quantity" value="1">
-                        <input type="hidden" name="redirect" value="false">
-                        <button type="submit" class="btn btn-primary" onclick="showToast()">
+                        <input type="hidden" name="source" value="{{ request.GET.source }}">
+                        <button type="submit" class="btn btn-primary" >
                             <i class="bi bi-cart-plus"></i> Aggiungi al carrello
                         </button>
                    </form>
@@ -109,7 +109,7 @@
 
 
             </div>
-            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 2000;  margin-right: 310px;">
                 <div id="cartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-success text-white">
                         <i class="bi bi-check-circle me-2"></i>
@@ -123,12 +123,23 @@
             </div>
 
             <script>
-                function showToast() {
-                    setTimeout(function() {
-                        var toast = new bootstrap.Toast(document.getElementById('cartToast'));
-                        toast.show();
-                    }, 500);
-                }
+              document.addEventListener('DOMContentLoaded', function() {
+                {% if messages %}
+                  {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                      // Inserisci il messaggio nel toast
+                      // document.getElementById('cartToastBody').textContent = "{{ message }}";
+                      
+                      // Mostra il toast
+                      var toastEl = document.getElementById('cartToast');
+                      var toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+                      toast.show();
+                                                                                              
+                     
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              });
             </script>
 
 
@@ -199,7 +210,7 @@
         </div>
     </div>
 
-    <!-- Prodotti correlati - usando carousel di Bootstrap -->
+    
     <div class="row mt-5">
         <div class="col-12">
             <h3 class="mb-4">Prodotti correlati</h3>
@@ -252,4 +263,57 @@
         </div>
     </div>
 </div>
+    <div class="position-fixed top-0 end-0 h-100 bg-light shadow" style="width: 300px; z-index: 1030; overflow-y: auto;" id="cartSidebar">
+  <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-primary text-white">
+    <h5 class="mb-0">Il tuo carrello</h5>
+  </div>
+
+  <div class="p-3">
+    {% if cart and cart.items.all %}
+      <div class="list-group list-group-flush">
+        {% for item in cart.items.all %}
+          <div class="list-group-item py-2">
+            <div class="d-flex">
+              <div class="flex-shrink-0">
+                {% if item.product.image %}
+                  <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="50" class="rounded">
+                {% else %}
+                  <div class="bg-secondary rounded" style="width: 50px; height: 50px;"></div>
+                {% endif %}
+              </div>
+              <div class="flex-grow-1 ms-2">
+                <h6 class="mb-0 fs-6">{{ item.product.name }}</h6>
+                <p class="text-muted small mb-0">{{ item.quantity }} × {{ item.product.price }} €</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-3 p-3 bg-light rounded">
+        <div class="d-flex justify-content-between">
+          <span>Totale:</span>
+          <strong>{{ cart.total_price }} €</strong>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <a href="{% url 'cart:view_cart' %}" class="btn btn-primary w-100">Vai al carrello</a>
+      </div>
+    {% else %}
+      <div class="text-center py-4">
+        <p>Il tuo carrello è vuoto</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Aggiungi un margine al contenuto principale per fare spazio alla sidebar -->
+<style>
+  .container {
+    margin-right: 300px;
+    max-width: calc(100% - 300px);
+  }
+</style>
+    
 {% endblock %}

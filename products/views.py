@@ -1,4 +1,6 @@
 from django.shortcuts import render
+
+from cart.models import Cart
 from products.models import Product, Category
 
 
@@ -23,6 +25,12 @@ def product_info(request, product_id):
 
     source = request.GET.get('source')
 
+    user = request.user if request.user.is_authenticated else None
+    if user:
+        cart, created = Cart.objects.get_or_create(user=user)
+    else:
+        cart = None
+
     context = {
         'product': product,
         'categories': categories,
@@ -32,6 +40,8 @@ def product_info(request, product_id):
         'stock': stock,
         'related_products': related_products,
         'source': source,
+        'cart': cart,
+
     }
 
     return render(request, 'products/product_info.html', context)
