@@ -8,6 +8,7 @@ from decimal import Decimal
 from django.views.generic import DetailView , ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from users.views import is_store_manager
 
 # Create your views here.
 
@@ -324,7 +325,8 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     pk_url_kwarg = 'order_id'  # Parametro URL per l'ID dell'ordine
 
     def get_queryset(self):
-
+        if self.request.user.has_perm('cart.change_order'):
+            return Order.objects.all()
         return Order.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
@@ -337,6 +339,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         context['shipping_method'] = self.object.shipping_method
         context['address'] = self.object.address
         context['total'] = context['subtotal'] + context['shipping_cost']
+        context['store_manager'] = is_store_manager(self.request.user)
 
 
 
@@ -351,5 +354,15 @@ class OrderHistoryView(LoginRequiredMixin, ListView):
     paginate_by = 10  # 10 ordini per pagina
 
     def get_queryset(self):
+        user = self.request.user
+
+        if user.has_perm('cart.change_order'):
+
+            return Order.objects.all().order_by('-created_at')
 
         return Order.objects.filter(user=self.request.user).order_by('-created_at')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['store_manager'] = is_store_manager(self.request.user)
+        return context
+def

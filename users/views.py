@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -7,16 +7,23 @@ from django.template.context_processors import request
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, authenticate, login , password_validation
 from django.contrib import messages
-from .models import CustomUser, Address
+from .models import *
 from products.models import Product, Category
 from django.urls import reverse
+from cart.models import Order
+from .forms import *
+from django.views.generic import TemplateView, View # Importa View
+from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import password_validators_help_texts
+
 
 
 
 from cart.models import Order
-from .forms import CustomUserCreationForm
+
 
 # Create your views here.
 
@@ -36,11 +43,52 @@ def user_home_page(request):
     }
     return render(request, 'users/user_home_page.html', context)
 
-class UserLoginView(LoginView):
-    template_name = 'users/login.html' # Specifica il template per il login
-    # redirect_authenticated_user = True # Opzionale: se un utente loggato visita la pagina di login, reindirizzalo
-    def get_success_url(self):
-        return reverse_lazy('users:user_home_page') # Reindirizza alla dashboard dopo il login
+class StoreManagerDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'users/store_manager_dashboard.html'
+
+    def test_func(self):
+        return is_store_manager(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_products'] = Product.objects.count()
+        context['total_orders'] = Order.objects.count()
+        context['pending_orders'] = Order.objects.filter(shipped=False).count()
+        context['latest_products'] = Product.objects.order_by('-created')[:5]
+        context['all_orders'] = Order.objects.all().order_by('-created_at')[:5]
+        context['shipped_not_delivered'] = Order.objects.filter(shipped=True, delivered=False)
+        context['pending_orders_list'] = Order.objects.filter(shipped=False).order_by('-created_at')[:5]
+        context['shipped'] = Order.objects.filter(shipped=True, delivered=True)
+        context['all_products'] = Product.objects.all().order_by('-created')
+        # Dovrai implementare un modello per le recensioni per popolare 'latest_reviews'
+        # context['latest_reviews'] = Review.objects.order_by('-created_at')[:5]
+        return context
+
+
+def is_store_manager(user):
+    return user.groups.filter(name='Store Managers').exists()
+
+
+class CustomLoginView(LoginView):
+    template_name = 'users/login.html'
+    authentication_form = LoginForm  # Usa il tuo form di autenticazione
+
+    def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(self.request, username=username, password=password)
+        if user is not None:
+            login(self.request, user)
+            if is_store_manager(user):
+                messages.success(self.request, f"Benvenuto Store Manager, {user.username}!")
+                return redirect('users:store_manager_dashboard')
+            else:
+                messages.success(self.request, f"Benvenuto, {user.username}!")
+                return redirect('users:user_home_page')  # Reindirizza l'utente normale alla sua dashboard
+        else:
+            messages.error(self.request, "Credenziali non valide. Riprova.")
+            return self.form_invalid(form)
+
 
 class UserSignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -58,6 +106,8 @@ class UserAccountView(LoginRequiredMixin, TemplateView):
         context['user'] = self.request.user
         context['orders'] = Order.objects.filter(user=self.request.user).order_by('-created_at')
         context['addresses'] = Address.objects.filter(user=self.request.user)
+        context['help_texts'] = password_validators_help_texts()
+
         return context
 
 
@@ -87,10 +137,18 @@ def change_password(request):
         elif new_password != confirm_password:
             messages.error(request, 'Le nuove password non coincidono')
         else:
+            try:
+                password_validation.validate_password(new_password, user)
+            except ValidationError as e:
+                for error in e.messages:
+                    messages.error(request, error)
+                return redirect('users:account')
+
             user.set_password(new_password)
             user.save()
             messages.success(request, 'Password aggiornata con successo!')
             update_session_auth_hash(request, user)  # Mantiene la sessione attiva
+
     return redirect('users:account')
 
 

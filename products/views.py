@@ -3,6 +3,9 @@ from django.shortcuts import render, get_object_or_404
 from cart.models import Cart
 from products.models import Product, Category
 from .forms import *
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView
+from django.urls import reverse_lazy
 
 
 # Create your views here.
@@ -107,4 +110,89 @@ def product_list_category(request, category_id = None):
 
     return render(request, 'products/product_list_category.html', context)
 
+def is_store_manager(user):
+    return user.groups.filter(name='store_manager').exists()
 
+
+class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'products/product_form.html'  # Useremo un form generico per create/update
+    success_url = reverse_lazy('users:store_manager_dashboard')  # Reindirizza alla dashboard del manager
+
+    def test_func(self):
+        return is_store_manager(self.request.user)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Prodotto aggiunto con successo!")
+        return super().form_valid(form)
+
+
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'products/product_form.html'
+    pk_url_kwarg = 'product_id'  # Assumi che l'URL usi product_id
+    success_url = reverse_lazy('users:store_manager_dashboard')
+
+    def test_func(self):
+        return is_store_manager(self.request.user)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Prodotto aggiornato con successo!")
+        return super().form_valid(form)
+
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Product
+    template_name = 'products/product_confirm_delete.html'  # Crea un template per la conferma eliminazione
+    pk_url_kwarg = 'product_id'
+    success_url = reverse_lazy('users:store_manager_dashboard')
+
+    def test_func(self):
+        return is_store_manager(self.request.user)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Prodotto eliminato con successo!")
+        return super().form_valid(form)
+
+
+# View per la lista completa dei prodotti gestibili dallo Store Manager
+class ProductManageListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Product
+    template_name = 'products/product_manage_list.html'  # Nuovo template per la lista di gestione
+    context_object_name = 'products'
+    paginate_by = 10  # Paginazione per grandi quantità di prodotti
+
+    def test_func(self):
+        return is_store_manager(self.request.user)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(name__icontains=query) |
+                Q(description__icontains=query)
+            )
+        return queryset.order_by('name')  # Ordina i prodotti per nome
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')
+        return context
+
+def product_list(request):
+    products = Product.objects.all()
+    categories = Category.objects.all()
+
+    # Gestione del filtro per prezzo
+
+
+    context = {
+        'products': products,
+        'categories': categories,
+
+    }
+
+    return render(request, 'products/product_list.html', context)
