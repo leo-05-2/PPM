@@ -68,6 +68,13 @@ class Order(models.Model):
 
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
+    def get_status(self):
+        if self.delivered:
+            return "Delivered"
+        elif self.shipped:
+            return "Shipped"
+        else:
+            return "Pending"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

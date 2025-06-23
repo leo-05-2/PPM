@@ -81,9 +81,16 @@
     {% endif %}
     
     <div class="mt-4">
-        <a href="{% url 'users:user_home_page' %}" class="btn btn-outline-secondary">
+        {% if store_manager %}
+            <a href="{% url 'users:store_manager_dashboard' %}" class="btn btn-primary">
+                <i class="bi bi-clipboard-data"></i> Dashboard Store Manager
+            </a>
+        {% else %}
+            <a href="{% url 'users:user_home_page' %}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Torna alla Dashboard
         </a>
+        {% endif %}
+        
     </div>
 </div>
 {% endblock %}

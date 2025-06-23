@@ -9,7 +9,11 @@
         <div class="col-12">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'users:account' %}">Il mio Account</a></li>
+                    {% if store_manager %}
+                        <li class="breadcrumb-item"><a href="{% url 'users:store_manager_dashboard' %}">Torna alla dashboard</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a href="{% url 'users:account' %}">Il mio Account</a></li>
+                    {% endif %}
                     <li class="breadcrumb-item active" aria-current="page">Ordine #{{ order.id }}</li>
                 </ol>
             </nav>
@@ -134,9 +138,15 @@
 
     <div class="row mt-4">
         <div class="col-12">
-            <a href="{% url 'users:account' %}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Torna ai tuoi ordini
-            </a>
+            {% if store_manager %}
+                <a href="{% url 'users:store_manager_dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Torna alla dashboard
+                </a>
+            {% else %}
+                <a href="{% url 'users:account' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Torna ai tuoi ordini
+                </a>
+            {% endif %}
         </div>
     </div>
 </div>
