@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard Store Manager{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-4 mb-4">Dashboard Store Manager</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-box-seam me-2"></i>Totale Prodotti</h5>
+                    <p class="card-text fs-2">{{ total_products }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-receipt me-2"></i>Ordini Totali</h5>
+                    <p class="card-text fs-2">{{ total_orders }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-hourglass-split me-2"></i>Ordini in Sospeso</h5>
+                    <p class="card-text fs-2">{{ pending_orders }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-4" id="managerTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab" aria-controls="products" aria-selected="true">Prodotti</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false">Spedizioni</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Recensioni</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="latest-products-tab" data-bs-toggle="tab" data-bs-target="#latest-products" type="button" role="tab" aria-controls="latest-products" aria-selected="false">Ultimi Prodotti</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="managerTabsContent">
+        <div class="tab-pane fade show active" id="products" role="tabpanel" aria-labelledby="products-tab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Gestione Prodotti</h5>
+                    <a href="{% url 'products:product_create' %}" class="btn btn-success btn-sm"><i class="bi bi-plus-circle me-1"></i>Aggiungi Nuovo Prodotto</a>
+                </div>
+                <div class="card-body">
+                    <p>Qui puoi gestire i tuoi prodotti. Modifica, aggiungi o elimina prodotti esistenti.</p>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Prezzo</th>
+                                    <th>Stock</th>
+                                    <th>Disponibile</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                    {% for product in all_products %}
+                                    <tr>
+                                        <td>{{ product.id }}</td>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.price }} €</td>
+                                        <td>{{ product.stock }}</td>
+                                        <td>{% if product.available %}<span class="badge bg-success">Sì</span>{% else %}<span class="badge bg-danger">No</span>{% endif %}</td>
+                                        <td>
+                                            <a href="{% url 'products:product_edit' product.id %}" class="btn btn-sm btn-info me-1">Modifica</a>
+                                            <a href="{% url 'products:product_delete' product.id %}" class="btn btn-sm btn-danger">Elimina</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+
+                                <tr>
+                                    <td>1</td>
+                                    <td>Esempio Prodotto 1</td>
+                                    <td>29.99 €</td>
+                                    <td>150</td>
+                                    <td><span class="badge bg-success">Sì</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-info me-1">Modifica</a>
+                                        <a href="#" class="btn btn-sm btn-danger">Elimina</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Esempio Prodotto 2</td>
+                                    <td>49.99 €</td>
+                                    <td>0</td>
+                                    <td><span class="badge bg-danger">No</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-info me-1">Modifica</a>
+                                        <a href="#" class="btn btn-sm btn-danger">Elimina</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-outline-primary mt-3">Vedi tutti i prodotti</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Gestione Spedizioni</h5>
+                </div>
+                <div class="card-body">
+                    <p>Qui puoi visualizzare e aggiornare lo stato degli ordini per la spedizione.</p>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Ordine #</th>
+                                    <th>Cliente</th>
+                                    <th>Stato Spedizione</th>
+                                    <th>Data Ordine</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                    {% for order in all_orders %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.user.username }}</td>
+                                        <td>
+                                            {% if order.status == 'processing' %}
+                                                <span class="badge bg-processing">In Elaborazione</span>
+                                            {% elif order.status == 'shipped' %}
+                                                <span class="badge bg-success">Spedito</span>
+                                            {% elif order.status == 'delivered' %}
+                                                <span class="badge bg-info">Consegnato</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Annullato</span>
+                                            {% endif %} <!-- todo: senza modifiche non comparirà mai annullato -->
+
+                                        <td>{{ order.created_at|date:"d/m/Y" }}</td>
+                                        <td>
+                                            <a href="{% url 'cart:order_detail' order.id %}" class="btn btn-sm btn-outline-primary me-1">Dettagli</a>
+                                            <a href="{ url 'cart:update_order_status' order.id %}" class="btn btn-sm btn-warning">Aggiorna Stato</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+
+                                <tr>
+                                    <td>1001</td>
+                                    <td>Mario Rossi</td>
+                                    <td><span class="badge bg-processing">In Elaborazione</span></td>
+                                    <td>15/06/2025</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary me-1">Dettagli</a>
+                                        <a href="#" class="btn btn-sm btn-warning">Aggiorna Stato</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>1002</td>
+                                    <td>Luisa Bianchi</td>
+                                    <td><span class="badge bg-success">Completato</span></td>
+                                    <td>14/06/2025</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary me-1">Dettagli</a>
+                                        <a href="#" class="btn btn-sm btn-warning">Aggiorna Stato</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="{% url 'cart:order_history' %}" class="btn btn-outline-primary mt-3">Vedi tutti gli ordini</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Gestione Recensioni</h5>
+                </div>
+                <div class="card-body">
+                    <p>Qui puoi moderare le recensioni dei prodotti.</p>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID Recensione</th>
+                                    <th>Prodotto</th>
+                                    <th>Utente</th>
+                                    <th>Valutazione</th>
+                                    <th>Commento</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% comment %}
+
+                                    {% for review in all_reviews %}
+                                    <tr>
+                                        <td>{{ review.id }}</td>
+                                        <td>{{ review.product.name }}</td>
+                                        <td>{{ review.user.username }}</td>
+                                        <td>{{ review.rating }} stelle</td>
+                                        <td>{{ review.comment|truncatechars:70 }}</td>
+                                        <td>
+                                            <a href="{% url 'products:review_detail' review.id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
+                                            <a href="{% url 'products:review_delete' review.id %}" class="btn btn-sm btn-danger">Elimina</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endcomment %}
+                                <tr>
+                                    <td>201</td>
+                                    <td>Esempio Prodotto 1</td>
+                                    <td>Utente A</td>
+                                    <td>5 stelle</td>
+                                    <td>Prodotto ottimo, spedizione veloce!</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
+                                        <a href="#" class="btn btn-sm btn-danger">Elimina</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>202</td>
+                                    <td>Esempio Prodotto 2</td>
+                                    <td>Utente B</td>
+                                    <td>2 stelle</td>
+                                    <td>Non sono molto soddisfatto della qualità.</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
+                                        <a href="#" class="btn btn-sm btn-danger">Elimina</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="#" class="btn btn-outline-primary mt-3">Vedi tutte le recensioni</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="latest-products" role="tabpanel" aria-labelledby="latest-products-tab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Ultimi 5 Prodotti Pubblicati</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        {% for product in latest_products %}
+                        <div class="col">
+                            <a href="{% url 'products:product_info' product.id %}?source=store_manager_dashboard" class="card h-100 text-decoration-none text-dark">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 180px; object-fit: contain;">
+                                {% else %}
+                                    <div class="bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
+                                        <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ product.name }}</h5>
+                                    <p class="card-text">{{ product.price }} €</p>
+                                    <span class="btn btn-sm btn-outline-primary">Dettagli</span>
+                                </div>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-info">Nessun prodotto recente da mostrare.</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
