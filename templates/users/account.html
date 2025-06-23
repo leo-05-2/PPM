@@ -109,13 +109,13 @@
                                     <div class="col-md-6">
                                         <label for="new_password" class="form-label">Nuova password</label>
                                         <div class="input-group">
-                                            <input type="password" class="form-control" id="new_password" name="new_password">
+                                            <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="new-password">
                                             <button type="button" class="btn btn-outline-secondary toggle-password" data-target="new_password">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="confirm_password" class="form-label">Conferma password</label>
                                         <div class="input-group">
                                             <input type="password" class="form-control" id="confirm_password" name="confirm_password">
@@ -124,6 +124,11 @@
                                             </button>
                                         </div>
                                     </div>
+                                    <ul class="col" style="list-style-position: outside">
+                                      {% for help in help_texts %}
+                                        <li style="margin-left: 20px">{{ help }}</li>
+                                      {% endfor %}
+                                    </ul>
                                 </div>
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <button type="submit" class="btn btn-warning">Cambia password</button>
