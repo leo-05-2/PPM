@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Conferma Eliminazione Prodotto{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Elimina Prodotto</h1>
+    <div class="alert alert-danger" role="alert">
+        Sei sicuro di voler eliminare il prodotto "<strong>{{ object.name }}</strong>"? Questa operazione non può essere annullata.
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Conferma Eliminazione</button>
+        <a href="{% url 'users:store_manager_dashboard' %}" class="btn btn-secondary ms-2">Annulla</a>
+    </form>
+</div>
+{% endblock %}

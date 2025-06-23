@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Modifica Prodotto{% else %}Aggiungi Prodotto{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">{% if form.instance.pk %}Modifica Prodotto: {{ form.instance.name }}{% else %}Aggiungi Nuovo Prodotto{% endif %}</h1>
+    <form method="post" enctype="multipart/form-data"> {# Aggiungi enctype per upload file (immagini) #}
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary mt-3">Salva Prodotto</button>
+        <a href="{% url 'users:store_manager_dashboard' %}" class="btn btn-secondary mt-3 ms-2">Annulla</a>
+    </form>
+</div>
+{% endblock %}
