@@ -1,0 +1,412 @@
+
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} - Prodotti{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Breadcrumb semplificato con controllo del parametro source -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+
+
+            {% if source == 'search' %}
+                <li class="breadcrumb-item"><a href="javascript:history.back()">Risultati ricerca</a></li>
+            {% elif source == 'user_home' %}
+                <li class="breadcrumb-item"><a href="{% url 'accounts:dashboard' %}">Il mio account</a></li>
+            {% elif category != None %}
+                <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+
+            {% endif %}
+
+            
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Filtri laterali -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Filtri</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="">
+                        <!-- Mantieni il parametro source nei filtri -->
+                        {% if source %}
+                        <input type="hidden" name="source" value="{{ source }}">
+                        {% endif %}
+
+                        <!-- Filtro prezzo -->
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Prezzo</label>
+                                <div id="price-slider"></div>
+                                <div class="d-flex justify-content-center mt-2">
+                                    <div style="position: relative; width: 90px;">
+                                        <span style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: #6c757d; pointer-events: none; font-size: 1rem;">€</span>
+                                        <input type="number" name="min_price" id="min-price-input"
+                                             class="form-control"
+                                             style="padding-left: 22px; width: 100%;"
+                                             value="{{ min_price|default:'0' }}">
+                                    </div>
+                                    <div style="position: relative; width: 90px;">
+                                        <span style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: #6c757d; pointer-events: none; font-size: 1rem;">€</span>
+                                        <input  id="max-price-input" name="max_price" class="form-control" value="{{ max_price|default:'1000' }}" style="appearance: textfield;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" for="category-select">Categoria</label>
+                        <select class="form-select" id="category-select" name="category">
+                            <option value="" {% if not selected_category %}selected{% endif %}>Tutte le categorie</option>
+                            {% for categ in category %}
+                                <option value="{{ categ.id }}"
+                                    {% if selected_category and selected_category.id == categ.id %}
+                                        selected
+                                    {% endif %}
+                                >{{ categ.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                        <!-- Disponibilità -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Disponibilità</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="in_stock" value="1" id="in_stock"
+                                    {% if request.GET.in_stock == '1' %}checked{% endif %}>
+                                <label class="form-check-label" for="in_stock">
+                                    Disponibile
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Applica filtri</button>
+                        <a href="?" class="btn btn-outline-secondary w-100 mt-2">Reimposta</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prodotti -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>{{ category.name }}</h2>
+                <div class="d-flex align-items-center">
+                    <!-- Visualizzazione -->
+                    <div class="btn-group me-3" role="group">
+                        <button type="button" class="btn btn-outline-secondary active" id="grid-view">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="list-view">
+                            <i class="bi bi-list-ul"></i>
+                        </button>
+                    </div>
+
+                    <!-- Ordinamento -->
+                    <select class="form-select" id="sort-select">
+                        <option value="default" {% if request.GET.sort == 'default' or not request.GET.sort %}selected{% endif %}>Ordinamento predefinito</option>
+                        <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Prezzo: dal più basso</option>
+                        <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Prezzo: dal più alto</option>
+                        <option value="name_asc" {% if request.GET.sort == 'name_asc' %}selected{% endif %}>Nome: A-Z</option>
+                        <option value="name_desc" {% if request.GET.sort == 'name_desc' %}selected{% endif %}>Nome: Z-A</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Vista a griglia/lista dei prodotti -->
+            <div id="products-container">
+                <!-- Vista a griglia (default) -->
+                <div id="grid-view-container" class="row row-cols-1 row-cols-md-3 g-4">
+                    {% for product in products %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm product-card">
+                            <!-- Immagine -->
+                            {% if product.image %}
+                            <a href="{% url 'products:product_info' product.id %}{% if source %}?source={{ source }}{% endif %}">
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: contain;">
+                            </a>
+                            {% else %}
+                            <div class="bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
+                                <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                            </div>
+                            {% endif %}
+
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">
+                                    <a href="{% url 'products:product_info' product.id %}{% if source %}?source={{ source }}{% endif %}" class="text-decoration-none text-dark">{{ product.name }}</a>
+                                </h5>
+                                <p class="card-text flex-grow-1">{{ product.description|truncatechars:80 }}</p>
+
+                                <!-- Prezzo -->
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="fw-bold text-primary fs-5">€{{ product.price }}</span>
+                                </div>
+
+                                <!-- Disponibilità -->
+                                {% if product.stock > 0 %}
+                                <p class="text-success mb-3"><i class="bi bi-check-circle-fill"></i> Disponibile</p>
+                                {% else %}
+                                <p class="text-danger mb-3"><i class="bi bi-x-circle-fill"></i> Non disponibile</p>
+                                {% endif %}
+
+                                <!-- Azioni -->
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'products:product_info' product.id %}{% if source %}?source={{ source }}{% endif %}" class="btn btn-outline-primary w-100">Dettagli</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2"></i> Nessun prodotto disponibile in questa categoria.
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Vista a lista (inizialmente nascosta) -->
+                <div id="list-view-container" class="d-none">
+                    {% for product in products %}
+                    <div class="card mb-3 shadow-sm product-card">
+                        <div class="row g-0">
+                            <div class="col-md-3">
+                                {% if product.image %}
+                                <a href="{% url 'products:product_info' product.id %}{% if source %}?source={{ source }}{% endif %}">
+                                    <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="{{ product.name }}" style="height: 200px; width: 100%; object-fit: contain;">
+                                </a>
+                                {% else %}
+                                <div class="bg-light d-flex justify-content-center align-items-center h-100">
+                                    <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{% url 'products:product_info' product.id %}{% if source %}?source={{ source }}{% endif %}" class="text-decoration-none text-dark">{{ product.name }}</a>
+                                    </h5>
+                                    <p class="card-text">{{ product.description|truncatechars:150 }}</p>
+
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <!-- Prezzo -->
+                                            <div class="d-flex align-items-center">
+                                                <span class="fw-bold text-primary fs-5">€{{ product.price }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <!-- Disponibilità -->
+                                            {% if product.stock > 0 %}
+                                            <p class="text-success mb-0"><i class="bi bi-check-circle-fill"></i> Disponibile</p>
+                                            {% else %}
+                                            <p class="text-danger mb-0"><i class="bi bi-x-circle-fill"></i> Non disponibile</p>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-5">
+                                            <!-- Azioni -->
+                                            <div class="d-flex justify-content-end">
+                                                <a href="{% url 'products:product_info' product.id %}{% if source %}?source={{ source }}{% endif %}" class="btn btn-outline-primary w-100">Dettagli</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle me-2"></i> Nessun prodotto disponibile in questa categoria.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Paginazione -->
+            {% if products.has_other_pages %}
+            <nav aria-label="Navigazione pagine" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if products.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Precedente">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Precedente">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for i in products.paginator.page_range %}
+                        {% if products.number == i %}
+                        <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                        {% elif i > products.number|add:'-3' and i < products.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if products.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Successivo">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Successivo">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Script per cambiare la visualizzazione tra griglia e lista
+    document.addEventListener('DOMContentLoaded', function() {
+        const gridView = document.getElementById('grid-view');
+        const listView = document.getElementById('list-view');
+        const gridContainer = document.getElementById('grid-view-container');
+        const listContainer = document.getElementById('list-view-container');
+
+        gridView.addEventListener('click', function () {
+            gridView.classList.add('active');
+            listView.classList.remove('active');
+            gridContainer.classList.remove('d-none');
+            listContainer.classList.add('d-none');
+        });
+
+        listView.addEventListener('click', function () {
+            listView.classList.add('active');
+            gridView.classList.remove('active');
+            listContainer.classList.remove('d-none');
+            gridContainer.classList.add('d-none');
+        });
+
+        // Script per il form di ordinamento
+        document.getElementById('sort-select').addEventListener('change', function () {
+            const currentUrl = new URL(window.location.href);
+            const sortValue = this.value;
+
+            if (sortValue === 'default') {
+                currentUrl.searchParams.delete('sort');
+            } else {
+                currentUrl.searchParams.set('sort', sortValue);
+            }
+
+            window.location.href = currentUrl.toString();
+        });
+
+
+        var slider = document.getElementById('price-slider');
+    var minInput = document.getElementById('min-price-input');
+    var maxInput = document.getElementById('max-price-input');
+    if (slider && minInput && maxInput && window.noUiSlider) {
+        noUiSlider.create(slider, {
+            start: [parseInt(minInput.value) || 0, parseInt(maxInput.value) || 1000],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 1000
+            },
+            step: 1,
+            tooltips: [true, true],
+            format: {
+                to: v => Math.round(v),
+                from: v => Number(v)
+            }
+        });
+        slider.noUiSlider.on('update', function(values, handle) {
+            minInput.value = values[0];
+            maxInput.value = values[1];
+        });
+        minInput.addEventListener('change', function() {
+            slider.noUiSlider.set([this.value, null]);
+        });
+        maxInput.addEventListener('change', function() {
+            slider.noUiSlider.set([null, this.value]);
+        });
+    } else {
+        console.error('noUiSlider non caricato o elementi non trovati');
+    }
+    });
+</script>
+{% endblock %}
+{% block extra_css %}
+<style>
+#price-slider .noUi-connect {
+    background: #0d6efd; /* Colore primario Bootstrap */
+}
+#price-slider .noUi-base {
+    background: #e9ecef; /* Grigio chiaro Bootstrap */
+    border-radius: 0.5rem;
+    
+}
+
+/* Personalizza le maniglie */
+#price-slider .noUi-handle {
+    background: #fff;
+    border: 2px solid #0d6efd;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    top: -3px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    
+}
+#price-slider .noUi-handle:focus,
+#price-slider .noUi-handle:hover {
+    border-color: #0a58ca;
+}
+
+/* Tooltip */
+#price-slider .noUi-tooltip {
+    background: #0d6efd;
+    color: #fff;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    border: none;
+    box-shadow: none;
+}
+#min-price-input, #max-price-input {
+    margin: 0 4px;
+    text-align: center;
+}
+#price-slider .noUi-handle::before,
+#price-slider .noUi-handle::after {
+    display: none ;
+    background: none ;
+    box-shadow: none ;
+    border: none ;
+    content: none ;
+}
+#price-slider .noUi-tooltip {
+    display: none ;
+}
+#price-slider {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 90%; /* Puoi regolare la larghezza secondo necessità */
+}
+
+
+</style>
+{% endblock %}

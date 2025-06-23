@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from cart.models import Cart
 from products.models import Product, Category
+from .forms import *
 
 
 # Create your views here.
@@ -45,5 +46,65 @@ def product_info(request, product_id):
     }
 
     return render(request, 'products/product_info.html', context)
+
+def product_list_category(request, category_id = None):
+    # Recupera la categoria in base all'ID
+
+
+
+
+    # Recupera i prodotti associati alla categoria
+    if category_id:
+        products = Product.objects.filter(category=category_id)
+    else:
+        products = Product.objects.all()
+
+    category = Category.objects.all()
+
+    source = request.GET.get('source')
+
+    min_price = None
+    max_price = None
+
+
+
+    selected_category = None
+
+    category_param = request.GET.get('category')
+    if category_param:
+        try:
+            selected_category = Category.objects.get(id=category_param)
+            products = products.filter(category=selected_category)
+        except Category.DoesNotExist:
+            selected_category = None
+    elif category_id:
+        selected_category = get_object_or_404(Category, id=category_id)
+        products = products.filter(category=selected_category)
+
+
+
+
+    form = PriceFilterForm(request.GET or None)
+    if form.is_valid():
+        min_price = form.cleaned_data.get('min_price')
+        max_price = form.cleaned_data.get('max_price')
+
+        if min_price is not None:
+            products = products.filter(price__gte=min_price)
+        if max_price is not None:
+            products = products.filter(price__lte=max_price)
+
+    context = {
+        'category': category,
+        'products': products,
+        'source': source,
+        'min_price': min_price,
+        'max_price': max_price,
+        'category_id': category_id,
+        'selected_category': selected_category,
+
+    }
+
+    return render(request, 'products/product_list_category.html', context)
 
 

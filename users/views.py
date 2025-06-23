@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from .models import CustomUser, Address
-from products.models import Product
+from products.models import Product, Category
 from django.urls import reverse
 
 
@@ -24,12 +24,15 @@ from .forms import CustomUserCreationForm
 def user_home_page(request):
     user = request.user
     recent_orders = Order.objects.filter(user=user).order_by('-created_at')[:5]
+    categories = Category.objects.all()
 
     latest_products = Product.objects.all().order_by('-created')[:8]  # Recupera gli ultimi prodotti pubblicati
     context = {
         'user': user,
         'recent_orders': recent_orders,
         'latest_products': latest_products,  # Aggiungi i prodotti recenti al contesto
+        'categories': categories,  # Aggiungi le categorie al contesto
+
     }
     return render(request, 'users/user_home_page.html', context)
 

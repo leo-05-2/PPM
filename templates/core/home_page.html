@@ -40,33 +40,18 @@
     <!-- Categorie di prodotti -->
     <h2 class="mb-4">Esplora per categoria</h2>
     <div class="row mb-5">
+    
+    {% for category in categories %}
         <div class="col-md-4 mb-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <h3 class="card-title">Alimenti</h3>
-                    <p class="card-text">Scopri prodotti freschi e biologici</p>
-                    <a href="#" class="btn btn-outline-primary">Esplora</a>
+                    <h3 class="card-title">{{ category.name }}</h3>
+                    <p class="card-text">{{ category.description }}</p>
+                    <a href="{% url 'products:product_list_category' category.id %}" class="btn btn-outline-primary">Esplora</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="card-title">Attrezzature</h3>
-                    <p class="card-text">Strumenti e accessori di qualità</p>
-                    <a href="#" class="btn btn-outline-primary">Esplora</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="card-title">Abbigliamento</h3>
-                    <p class="card-text">Capi di abbigliamento alla moda</p>
-                    <a href="#" class="btn btn-outline-primary">Esplora</a>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
