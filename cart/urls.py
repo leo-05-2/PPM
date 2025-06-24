@@ -15,4 +15,6 @@ urlpatterns = [
     path ('checkout_success/', checkout_success, name='checkout_success'),
     path ('order_detail/<int:order_id>/', OrderDetailView.as_view(), name='order_detail'),
     path('order_history/', OrderHistoryView.as_view(), name='order_history'),
+    path (' update_order_status/<int:order_id>/', update_order_status, name='update_order_status'),
+
 ]

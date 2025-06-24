@@ -29,8 +29,8 @@ class DeliveryAddressAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
-    list_display = ['id', 'user', 'created_at', 'address', 'delivery_date', 'delivered', 'shipped']
-    list_filter = ['created_at', 'delivered', 'shipped']
+    list_display = ['id', 'user', 'created_at', 'address', 'delivery_date', 'status']
+    list_filter = ['created_at', 'status']
     search_fields = ['id', 'user__username']
 
     def get_queryset(self, request):
