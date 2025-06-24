@@ -19,7 +19,7 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
-    category = models.ManyToManyField(Category)
+    category = models.ManyToManyField(Category)  #todo: decide if meny-to-many or foreign key
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
