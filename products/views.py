@@ -1,11 +1,14 @@
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 
 from cart.models import Cart
 from products.models import Product, Category
 from .forms import *
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.db.models import Q
 
 
 # Create your views here.
@@ -45,6 +48,7 @@ def product_info(request, product_id):
         'related_products': related_products,
         'source': source,
         'cart': cart,
+        'store_manager': is_store_manager(user) if user else False,
 
     }
 
@@ -111,10 +115,11 @@ def product_list_category(request, category_id = None):
     return render(request, 'products/product_list_category.html', context)
 
 def is_store_manager(user):
-    return user.groups.filter(name='store_manager').exists()
+    return user.groups.filter(name='Store Managers').exists()
 
 
-class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView, PermissionRequiredMixin):
+    permission_required = 'products.add_product'
     model = Product
     form_class = ProductForm
     template_name = 'products/product_form.html'  # Useremo un form generico per create/update
@@ -128,7 +133,8 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView, PermissionRequiredMixin):
+    permission_required = 'products.change_product'
     model = Product
     form_class = ProductForm
     template_name = 'products/product_form.html'
@@ -143,7 +149,8 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView, PermissionRequiredMixin):
+    permission_required = 'products.delete_product'
     model = Product
     template_name = 'products/product_confirm_delete.html'  # Crea un template per la conferma eliminazione
     pk_url_kwarg = 'product_id'
@@ -158,9 +165,10 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 # View per la lista completa dei prodotti gestibili dallo Store Manager
-class ProductManageListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+class ProductManageListView(LoginRequiredMixin, UserPassesTestMixin, ListView, PermissionRequiredMixin):
+    permission_required = 'products.view_product'
     model = Product
-    template_name = 'products/product_manage_list.html'  # Nuovo template per la lista di gestione
+    template_name = 'products/product_manage_list.html'
     context_object_name = 'products'
     paginate_by = 10  # Paginazione per grandi quantità di prodotti
 

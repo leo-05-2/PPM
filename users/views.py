@@ -53,14 +53,14 @@ class StoreManagerDashboardView(LoginRequiredMixin, UserPassesTestMixin, Templat
         context = super().get_context_data(**kwargs)
         context['total_products'] = Product.objects.count()
         context['total_orders'] = Order.objects.count()
-        context['pending_orders'] = Order.objects.filter(shipped=False).count()
+        context['pending_orders'] = Order.objects.filter(status = 'pending').count()
         context['latest_products'] = Product.objects.order_by('-created')[:5]
         context['all_orders'] = Order.objects.all().order_by('-created_at')[:5]
-        context['shipped_not_delivered'] = Order.objects.filter(shipped=True, delivered=False)
-        context['pending_orders_list'] = Order.objects.filter(shipped=False).order_by('-created_at')[:5]
-        context['shipped'] = Order.objects.filter(shipped=True, delivered=True)
+        context['shipped_not_delivered'] = Order.objects.filter(status = 'shipped')
+        context['pending_orders_list'] = Order.objects.filter(status = 'pending').order_by('-created_at')[:5]
+        context['shipped'] = Order.objects.filter(status='shipped').order_by('-created_at')[:5]
         context['all_products'] = Product.objects.all().order_by('-created')
-        # Dovrai implementare un modello per le recensioni per popolare 'latest_reviews'
+
         # context['latest_reviews'] = Review.objects.order_by('-created_at')[:5]
         return context
 

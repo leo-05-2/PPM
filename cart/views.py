@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from .models import *
 from .forms import CartForm , CheckoutForm , ShippingForm , CartItemQuantityForm
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,7 @@ from django.views.generic import DetailView , ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from users.views import is_store_manager
+from django.contrib.auth.decorators import permission_required
 
 # Create your views here.
 
@@ -357,12 +358,25 @@ class OrderHistoryView(LoginRequiredMixin, ListView):
         user = self.request.user
 
         if user.has_perm('cart.change_order'):
-
-            return Order.objects.all().order_by('-created_at')
+            return Order.objects.all().order_by('-created_at') #todo: add a perm to see all orders
 
         return Order.objects.filter(user=self.request.user).order_by('-created_at')
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['store_manager'] = is_store_manager(self.request.user)
         return context
-def
+
+
+@permission_required('cart.change_order', raise_exception=True)
+def update_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == "POST":
+        new_status = request.POST.get("status")
+        if new_status in ["pending", "shipped", "delivered", "cancelled"]:
+            order.status = new_status
+            order.save()
+            messages.success(request, "Stato ordine aggiornato con successo.")
+        else:
+            messages.error(request, "Stato non valido.")
+    redirect_url = reverse("users:store_manager_dashboard") + "?tab=shipping"
+    return redirect(redirect_url)
