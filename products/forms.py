@@ -18,11 +18,19 @@ class PriceFilterForm(forms.Form):
         return cleaned_data
 
 class ProductForm(forms.ModelForm):
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        required=False,  # opzionale se vuoi permettere nessuna categoria
+        label='Categoria'
+    )
+    price = forms.DecimalField(min_value=0, label='Prezzo')
+
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'stock', 'available', 'category'] # Aggiungi 'image' se hai un campo immagine
         widgets = {
-            'category': forms.CheckboxSelectMultiple, # Per selezionare più categorie
+            'category': forms.Select(attrs={'class': 'form-select'}),  # Selezione a tendina
         }
 
     def __init__(self, *args, **kwargs):
@@ -31,7 +39,7 @@ class ProductForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field('name', css_class='form-control'),
             Field('description', css_class='form-control', rows=5),
-            Field('price', css_class='form-control'),
+            Field('price', css_class='form-control',min = 0),
             Field('stock', css_class='form-control'),
             Field('available', css_class='form-check-input'), # Per checkbox
             Field('category', css_class='form-check-input'), # Per CheckboxSelectMultiple
@@ -43,3 +51,19 @@ class ProductForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             if field_name not in ['available', 'category']: # Crispy forms gestisce  le checkbox
                 field.widget.attrs['class'] = 'form-control'
+
+   # todo: in attesa di decidere più categorie possono appartenere ad un prodotto
+    def save(self, commit=True):
+        product = super().save(commit=False)
+        if commit:
+            product.save()
+
+            category = self.cleaned_data.get('category')
+            if category:
+                product.category.set([category])
+            else:
+                product.category.clear()
+        else:
+            self.save_m2m = lambda: product.category.set([self.cleaned_data['category']]) if self.cleaned_data.get(
+                'category') else product.category.clear()
+        return product
