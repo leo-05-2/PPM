@@ -141,12 +141,12 @@
                                         <td>{{ order.id }}</td>
                                         <td>{{ order.user.username }}</td>
                                         <td>
-                                            {% if order.status == 'processing' %}
-                                                <span class="badge bg-processing">In Elaborazione</span>
+                                            {% if order.status == 'pending' %}
+                                                <span class="badge bg-warning">In Elaborazione</span>
                                             {% elif order.status == 'shipped' %}
-                                                <span class="badge bg-success">Spedito</span>
+                                                <span class="badge bg-info">Spedito</span>
                                             {% elif order.status == 'delivered' %}
-                                                <span class="badge bg-info">Consegnato</span>
+                                                <span class="badge bg-success">Consegnato</span>
                                             {% else %}
                                                 <span class="badge bg-danger">Annullato</span>
                                             {% endif %} <!-- todo: senza modifiche non comparirà mai annullato -->
@@ -154,7 +154,37 @@
                                         <td>{{ order.created_at|date:"d/m/Y" }}</td>
                                         <td>
                                             <a href="{% url 'cart:order_detail' order.id %}" class="btn btn-sm btn-outline-primary me-1">Dettagli</a>
-                                            <a href="{ url 'cart:update_order_status' order.id %}" class="btn btn-sm btn-warning">Aggiorna Stato</a>
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#updateStatusModal-{{ order.id }}">Aggiorna Stato</button>
+
+                                            <!-- Modale per aggiornare lo stato -->
+                                            <div class="modal fade" id="updateStatusModal-{{ order.id }}" tabindex="-1" aria-labelledby="updateStatusModalLabel-{{ order.id }}" aria-hidden="true">
+                                              <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                  <form method="post" action="{% url 'cart:update_order_status' order.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="modal-header">
+                                                      <h5 class="modal-title" id="updateStatusModalLabel-{{ order.id }}">Aggiorna Stato Ordine</h5>
+                                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                      <div class="mb-3">
+                                                        <label for="orderStatus-{{ order.id }}" class="form-label">Nuovo Stato</label>
+                                                        <select class="form-select" id="orderStatus-{{ order.id }}" name="status" required>
+                                                          <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>In Elaborazione</option>
+                                                          <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Spedito</option>
+                                                          <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Consegnato</option>
+                                                          <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Annullato</option>
+                                                        </select>
+                                                      </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                                      <button type="submit" class="btn btn-primary">Salva</button>
+                                                    </div>
+                                                  </form>
+                                                </div>
+                                              </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -288,4 +318,28 @@
         </div>
     </div>
 </div>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    let tab = params.get("tab") || localStorage.getItem("activeTab") || "products";
+    const tabButton = document.getElementById(tab + "-tab");
+    if (tabButton) {
+        new bootstrap.Tab(tabButton).show();
+    }
+    // Pulisci l'URL se c'era il parametro
+    if (params.get("tab")) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    // Salva la tab attiva quando l'utente la cambia
+    document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(function(btn) {
+        btn.addEventListener("shown.bs.tab", function(e) {
+            localStorage.setItem("activeTab", e.target.id.replace("-tab", ""));
+        });
+    });
+    
+});
+</script>
+    
 {% endblock %}
+

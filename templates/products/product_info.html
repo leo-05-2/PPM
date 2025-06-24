@@ -22,11 +22,16 @@
                   <li class="breadcrumb-item"><a href="{% url 'products:category' product.category.slug %}">{{ product.category.name }}</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
                 
-            {% elif request.GET.source == 'category_guest' %}
+            {% elif request.GET.source == 'category_guest' %} <!--todo: decidere se lasciare e creare una source dedicata-->
               <!-- Percorso per navigazione da categoria -->
                   <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
                   <li class="breadcrumb-item"><a href="{% url 'products:category' product.category.slug %}">{{ product.category.name }}</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>    
+                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            {% elif request.GET.source == 'store_manager_dashboard' %}
+                
+                  <li class="breadcrumb-item"><a href="{% url 'users:store_manager_dashboard'  %}">dashboard</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                
             
             {% else %}
               <!-- Percorso generico predefinito -->
@@ -82,6 +87,7 @@
 
 
             <!-- Pulsanti di azione -->
+        
             <div class="d-grid gap-2 d-md-flex">
                 {% if stock > 0 and product.available and source == 'user_home_page'%}
                    <form method="POST" action="{% url 'cart:add_cart_item' %}" >
@@ -97,18 +103,18 @@
                 <button  class="btn btn-outline-primary" type="button">
                     <i class="bi bi-heart"></i> Aggiungi ai preferiti
                 </button>
-                {% else %}
-                <a href="{% url 'users:login' %}" class="btn btn-secondary" type="button" disabled>
-                    <i class="bi bi-cart-plus"></i> Aggiungi al carrello
-                </a>
-
-                <a href="{% url 'users:login' %}" class="btn btn-outline-primary" type="button">
-                    <i class="bi bi-heart"></i> Aggiungi ai preferiti
-                </a>
+                {% elif not store_manager %}
+                    <a href="{% url 'users:login' %}" class="btn btn-secondary" type="button" disabled>
+                        <i class="bi bi-cart-plus"></i> Aggiungi al carrello
+                    </a>
+    
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-primary" type="button">
+                        <i class="bi bi-heart"></i> Aggiungi ai preferiti
+                    </a>
                 {% endif %}
-
-
+            
             </div>
+        
             <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 2000;  margin-right: 310px;">
                 <div id="cartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-success text-white">
@@ -263,6 +269,7 @@
         </div>
     </div>
 </div>
+    {% if not store_manager %}
     <div class="position-fixed top-0 end-0 h-100 bg-light shadow" style="width: 300px; z-index: 1030; overflow-y: auto;" id="cartSidebar">
   <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-primary text-white">
     <h5 class="mb-0">Il tuo carrello</h5>
@@ -307,6 +314,7 @@
     {% endif %}
   </div>
 </div>
+    
 
 <!-- Aggiungi un margine al contenuto principale per fare spazio alla sidebar -->
 <style>
@@ -315,5 +323,6 @@
     max-width: calc(100% - 300px);
   }
 </style>
+    {% endif %}
     
 {% endblock %}
