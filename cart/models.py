@@ -50,14 +50,23 @@ class DeliveryAddress(models.Model):
 
 
 class Order(models.Model):
+
+    STATUS_CHOICES = [
+        ('pending', 'In attesa'),
+        ('shipped', 'Spedito'),
+        ('delivered', 'Consegnato'),
+        ('cancelled', 'Annullato'),
+    ]
+
+
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders')
     created_at = models.DateTimeField(auto_now_add=True)
     address = models.ForeignKey(DeliveryAddress, on_delete=models.SET_NULL, null=True, blank=True, related_name='orders') # if an address is deleted, orders will still reference to a valid address
     delivery_date = models.DateField()
-    delivered = models.BooleanField(default=False)
-    shipped = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     shipping_method = models.CharField(max_length=50, default='standard')
+
 
 
     class Meta:
@@ -68,13 +77,7 @@ class Order(models.Model):
 
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
-    def get_status(self):
-        if self.delivered:
-            return "Delivered"
-        elif self.shipped:
-            return "Shipped"
-        else:
-            return "Pending"
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
