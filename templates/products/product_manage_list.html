@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestione Prodotti{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-4 mb-4">Gestione Prodotti</h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Elenco Completo Prodotti</h5>
+            <a href="{% url 'products:product_create' %}" class="btn btn-success btn-sm">
+                <i class="bi bi-plus-circle me-1"></i>Aggiungi Nuovo Prodotto
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Immagine</th>
+                            <th scope="col">Nome Prodotto</th>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">Prezzo</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Disponibile</th>
+                            <th scope="col">Data Creazione</th>
+                            <th scope="col">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>
+                                {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'products:product_info' product.id %}?source=store_manager_dashboard" class="text-decoration-none fw-bold">
+                                    {{ product.name }}
+                                </a>
+                            </td>
+                            <td>{{ product.category.name }}</td>
+                            <td>{{ product.price }} €</td>
+                            <td>
+                                {% if product.stock > 10 %}
+                                    <span class="badge bg-success">{{ product.stock }}</span>
+                                {% elif product.stock > 0 %}
+                                    <span class="badge bg-warning text-dark">{{ product.stock }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Esaurito</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if product.available %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle-fill"></i> Sì</span>
+                                {% else %}
+                                <span class="badge bg-danger"><i class="bi bi-x-circle-fill"></i> No</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ product.created|date:"d/m/Y" }}</td>
+                            <td>
+                                <a href="{% url 'products:product_edit' product.id %}" class="btn btn-sm btn-info me-1" title="Modifica">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{% url 'products:product_delete' product.id %}" class="btn btn-sm btn-danger" title="Elimina">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center py-4">
+                                <div class="alert alert-info mb-0" role="alert">
+                                    <i class="bi bi-info-circle me-2"></i> Nessun prodotto trovato.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if is_paginated %}
+            <nav aria-label="Page navigation example" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for i in paginator.page_range %}
+                        {% if page_obj.number == i %}
+                        <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            <div class="text-center mt-3">
+                <a href="{% url 'users:store_manager_dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Torna alla Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
