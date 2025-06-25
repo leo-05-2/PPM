@@ -28,7 +28,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'stock', 'available', 'category'] # Aggiungi 'image' se hai un campo immagine
+        fields = ['name', 'description', 'price', 'stock', 'available', 'category','image']
         widgets = {
             'category': forms.Select(attrs={'class': 'form-select'}),  # Selezione a tendina
         }
@@ -41,15 +41,14 @@ class ProductForm(forms.ModelForm):
             Field('description', css_class='form-control', rows=5),
             Field('price', css_class='form-control',min = 0),
             Field('stock', css_class='form-control'),
-            Field('available', css_class='form-check-input'), # Per checkbox
-            Field('category', css_class='form-check-input'), # Per CheckboxSelectMultiple
-            #  campo immagine:
-            # Field('image', css_class='form-control'),
+            Field('available', css_class='form-check-input'),
+            Field('category', css_class='form-check-input'),
+            Field('image', css_class='form-control'),
             Submit('submit', 'Salva Prodotto', css_class='btn btn-primary mt-3')
         )
 
         for field_name, field in self.fields.items():
-            if field_name not in ['available', 'category']: # Crispy forms gestisce  le checkbox
+            if field_name not in ['available', 'category']:
                 field.widget.attrs['class'] = 'form-control'
 
    # todo: in attesa di decidere più categorie possono appartenere ad un prodotto

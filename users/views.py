@@ -96,7 +96,22 @@ class UserSignUpView(CreateView):
     success_url = reverse_lazy('users:login') # Reindirizza alla pagina di login dopo la registrazione
 
 class UserLogoutView(LogoutView):
-    next_page = reverse_lazy('users:login')
+    template_name = 'users/logout_custom.html'  # Specifica il tuo template personalizzato
+    next_page = reverse_lazy('core:home')  # Reindirizza alla homepage dopo il logout
+    http_method_names = ['get', 'post']
+
+    def get(self, request, *args, **kwargs):
+
+        # Esegue il logout effettivo dell'utente
+        response = super().get(request, *args, **kwargs)
+
+        # Puoi aggiungere qui messaggi flash se vuoi, ad esempio:
+        # from django.contrib import messages
+        messages.success(request, "Sei stato disconnesso con successo!")
+
+        # Restituisce la risposta (che reindirizza o renderizza il template)
+        return response
+
 
 class UserAccountView(LoginRequiredMixin, TemplateView):
     template_name = 'users/account.html'  # Specifica il template per la pagina dell'account
