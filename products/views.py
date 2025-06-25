@@ -87,6 +87,12 @@ def product_list_category(request, category_id = None):
     elif category_id:
         selected_category = get_object_or_404(Category, id=category_id)
         products = products.filter(category=selected_category)
+    query = request.GET.get('q', '')
+
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        )
 
 
 
@@ -109,6 +115,7 @@ def product_list_category(request, category_id = None):
         'max_price': max_price,
         'category_id': category_id,
         'selected_category': selected_category,
+        'query': query,
 
     }
 
@@ -166,7 +173,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView, Per
 
 # View per la lista completa dei prodotti gestibili dallo Store Manager
 class ProductManageListView(LoginRequiredMixin, UserPassesTestMixin, ListView, PermissionRequiredMixin):
-    permission_required = 'products.view_product'
+    permission_required = 'products.change_product'
     model = Product
     template_name = 'products/product_manage_list.html'
     context_object_name = 'products'

@@ -26,6 +26,19 @@
     </nav>
 
     <div class="row">
+        <form method="get" class="mb-4">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Cerca prodotti..." name="q" value="{{ query|default:'' }}">
+            {% for key, value in request.GET.items %}
+              {% if key != 'q' and key != 'page' %}
+                <input type="hidden" name="{{ key }}" value="{{ value }}">
+              {% endif %}
+            {% endfor %}
+            <button class="btn btn-primary" type="submit">
+              <i class="bi bi-search"></i> Cerca
+            </button>
+          </div>
+        </form>
         <!-- Filtri laterali -->
         <div class="col-lg-3 mb-4">
             <div class="card shadow-sm">
