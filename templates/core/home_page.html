@@ -11,6 +11,9 @@
             <p class="lead">Trova prodotti di qualità a prezzi convenienti</p>
         </div>
         <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
+            <a href="{% url 'products:product_list_category' %}" class="btn btn-outline-primary btn-lg me-2" title="Cerca prodotti">
+                <i class="bi bi-search"></i>
+            </a>
             <a href="{% url 'users:login' %}" class="btn btn-primary btn-lg">Accedi</a>
             <a href="{% url 'users:sign_up' %}" class="btn btn-outline-secondary btn-lg ms-2">Registrati</a>
         </div>
@@ -22,7 +25,13 @@
         {% for product in latest_products %}
         <div class="col">
             <a href="{% url 'products:product_info' product.id %}?source=home" class="card h-100">
-                <img src="{{ product.image.url|default:'https://via.placeholder.com/150' }}" class="card-img-top" alt="{{ product.name }}">
+                <!-- <img src="{ product.image.url|default:'https://via.placeholder.com/150' }}" class="card-img-top" alt="{ product.name }}">
+                -->
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="{{ product.name }}">
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">{{ product.price }} €</p>
