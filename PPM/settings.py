@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',  # Custom user app
     'products.apps.ProductsConfig',  # Products app
     'cart.apps.CartConfig',  # Cart app
+    'review.apps.ReviewConfig',  # Review app
     'crispy_forms',
     'crispy_bootstrap5',
     'core.apps.CoreConfig',

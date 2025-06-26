@@ -9,6 +9,8 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth import update_session_auth_hash, authenticate, login , password_validation
 from django.contrib import messages
+
+from review.models import Review
 from .models import *
 from products.models import Product, Category
 from django.urls import reverse
@@ -46,10 +48,14 @@ def user_home_page(request):
 class StoreManagerDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'users/store_manager_dashboard.html'
 
+
     def test_func(self):
         return is_store_manager(self.request.user)
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
+        your_products = Product.objects.filter(added_by=user)
+        your_products_reviews = Review.objects.filter(product__in=your_products)
         context = super().get_context_data(**kwargs)
         context['total_products'] = Product.objects.count()
         context['total_orders'] = Order.objects.count()
@@ -60,8 +66,9 @@ class StoreManagerDashboardView(LoginRequiredMixin, UserPassesTestMixin, Templat
         context['pending_orders_list'] = Order.objects.filter(status = 'pending').order_by('-created_at')[:5]
         context['shipped'] = Order.objects.filter(status='shipped').order_by('-created_at')[:5]
         context['all_products'] = Product.objects.all().order_by('-created')
-
-        # context['latest_reviews'] = Review.objects.order_by('-created_at')[:5]
+        context['all_reviews'] = Review.objects.order_by('-created_at')[:5]
+        context['your_products'] =  your_products
+        context['your_products_reviews'] = your_products_reviews
         return context
 
 

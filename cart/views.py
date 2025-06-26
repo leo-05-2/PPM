@@ -357,7 +357,7 @@ class OrderHistoryView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.has_perm('cart.change_order'):
+        if user.has_perm('cart.view_all_orders'):
             return Order.objects.all().order_by('-created_at') #todo: add a perm to see all orders
 
         return Order.objects.filter(user=self.request.user).order_by('-created_at')

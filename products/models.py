@@ -28,6 +28,8 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)  #todo: add the user who created the product
     image = models.ImageField(upload_to='product_images/', blank=True, null=True)
+    added_by = models.ForeignKey('users.CustomUser', on_delete=models.SET_NULL, related_name='products_added', null=True, blank=True)
+    modified_by = models.ForeignKey('users.CustomUser', on_delete=models.SET_NULL, related_name='products_modified', null=True, blank=True)
 
 
     class Meta:

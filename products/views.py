@@ -8,7 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, 
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Avg
+from review.models import Review
 
 
 # Create your views here.
@@ -32,6 +33,14 @@ def product_info(request, product_id):
 
     source = request.GET.get('source')
 
+    review = Review.objects.filter(product=product).order_by('-created_at')
+
+    if review.exists():
+        average_rating = review.aggregate(Avg('rating'))['rating__avg']
+    else:
+        average_rating = None
+
+
     user = request.user if request.user.is_authenticated else None
     if user:
         cart, created = Cart.objects.get_or_create(user=user)
@@ -49,6 +58,8 @@ def product_info(request, product_id):
         'source': source,
         'cart': cart,
         'store_manager': is_store_manager(user) if user else False,
+        'average_rating': average_rating,
+        'reviews': review,
 
     }
 
@@ -136,6 +147,7 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView, Per
         return is_store_manager(self.request.user)
 
     def form_valid(self, form):
+        form.instance.added_by = self.request.user  # Imposta l'utente che ha aggiunto il prodotto
         messages.success(self.request, "Prodotto aggiunto con successo!")
         return super().form_valid(form)
 
@@ -152,6 +164,8 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView, Per
         return is_store_manager(self.request.user)
 
     def form_valid(self, form):
+
+        form.instance.modified_by = self.request.user  # Imposta l'utente che ha modificato il prodotto
         messages.success(self.request, "Prodotto aggiornato con successo!")
         return super().form_valid(form)
 
@@ -196,7 +210,7 @@ class ProductManageListView(LoginRequiredMixin, UserPassesTestMixin, ListView, P
         context = super().get_context_data(**kwargs)
         context['search_query'] = self.request.GET.get('q', '')
         return context
-
+    #todo: add a template to use q
 def product_list(request):
     products = Product.objects.all()
     categories = Category.objects.all()
