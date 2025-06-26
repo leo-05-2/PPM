@@ -47,6 +47,12 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="latest-products-tab" data-bs-toggle="tab" data-bs-target="#latest-products" type="button" role="tab" aria-controls="latest-products" aria-selected="false">Ultimi Prodotti</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="your-products-tab" data-bs-toggle="tab" data-bs-target="#your-products" type="button" role="tab" aria-controls="your-products" aria-selected="false">I tuoi prodotti</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="your-products-reviews-tab" data-bs-toggle="tab" data-bs-target="#your-products-reviews" type="button" role="tab" aria-controls="your-products-reviews" aria-selected="false">Recensioni dei tuoi prodotti</button>
+        </li>
     </ul>
 
     <div class="tab-content" id="managerTabsContent">
@@ -237,22 +243,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% comment %}
 
-                                    {% for review in all_reviews %}
-                                    <tr>
-                                        <td>{{ review.id }}</td>
-                                        <td>{{ review.product.name }}</td>
-                                        <td>{{ review.user.username }}</td>
-                                        <td>{{ review.rating }} stelle</td>
-                                        <td>{{ review.comment|truncatechars:70 }}</td>
-                                        <td>
-                                            <a href="{% url 'products:review_detail' review.id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
-                                            <a href="{% url 'products:review_delete' review.id %}" class="btn btn-sm btn-danger">Elimina</a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% endcomment %}
+
+                                {% for review in all_reviews %}
+                                <tr>
+                                    <td>{{ review.id }}</td>
+                                    <td>{{ review.product.name }}</td>
+                                    <td>{{ review.user.username }}</td>
+                                    <td>{{ review.rating }} stelle</td>
+                                    <td>{{ review.comment|truncatechars:70 }}</td>
+                                    <td>
+                                        <a href="{% url 'products:review_detail' review.id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
+                                        <a href="{% url 'products:review_delete' review.id %}" class="btn btn-sm btn-danger">Elimina</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
                                 <tr>
                                     <td>201</td>
                                     <td>Esempio Prodotto 1</td>
@@ -316,7 +322,92 @@
                 </div>
             </div>
         </div>
+
+        <div class="tab-pane fade" id="your-products" role="tabpanel" aria-labelledby="your-products-tab">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">I tuoi prodotti</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Prezzo</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in your_products %}
+                            <tr>
+                                <td>{{ product.id }}</td>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.price }} €</td>
+                                <td>
+                                    <a href="{% url 'products:product_edit' product.id %}" class="btn btn-sm btn-info me-1">Modifica</a>
+                                    <a href="{% url 'products:product_delete' product.id %}" class="btn btn-sm btn-danger">Elimina</a>
+                                    <a href="{% url 'review:see_reviews' product.id %}" class="btn btn-sm btn-primary">Recensioni</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4">Nessun prodotto trovato.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Tab-pane: Recensioni dei tuoi prodotti -->
+        <div class="tab-pane fade" id="your-products-reviews" role="tabpanel" aria-labelledby="your-products-reviews-tab">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recensioni dei tuoi prodotti</h5>
+                <a href="{% url 'review:see_all_reviews' %}" class="btn btn-outline-primary btn-sm">Vedi tutte le recensioni dei tuoi prodotti</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Prodotto</th>
+                                <th>Utente</th>
+                                <th>Valutazione</th>
+                                <th>Commento</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for review in your_products_reviews %}
+                            <tr>
+                                <td>{{ review.product.name }}</td>
+                                <td>{{ review.user.username }}</td>
+                                <td>{{ review.rating }} stelle</td>
+                                <td>{{ review.comment|truncatechars:70 }}</td>
+                                <td>
+                                    <a href="{% url 'products:review_detail' review.id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">Nessuna recensione trovata.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
 </div>
     
     <script>
