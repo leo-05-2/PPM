@@ -8,14 +8,33 @@
 <div class="container py-5">
     <h1 class="mb-4">{% if form.instance.pk %}Modifica Prodotto: {{ form.instance.name }}{% else %}Aggiungi Nuovo Prodotto{% endif %}</h1>
     <form method="post" enctype="multipart/form-data">
-        {{ form|crispy }}
+        {% csrf_token %}
+        {{ form.name|as_crispy_field }}
+        {{ form.description|as_crispy_field }}
+        {{ form.price|as_crispy_field }}
+        {{ form.stock|as_crispy_field }}
+        {{ form.available|as_crispy_field }}
+        {{ form.category|as_crispy_field }}
+
+
+
+        <div class="mb-3">
+            {{ form.image_choice.label_tag }}<br>
+            {{ form.image_choice }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.image_upload.label_tag }}<br>
+            {{ form.image_upload }}
+        </div>
+
+
         {% if form.instance.image %}
             <div class="mb-3">
                 <img src="{{ form.instance.image.url }}" alt="Immagine prodotto" style="max-width: 200px;">
             </div>
         {% endif %}
-        {% csrf_token %}
-        {{ form|crispy }}
+
         <button type="submit" class="btn btn-primary mt-3">Salva Prodotto</button>
         <a href="{% url 'users:store_manager_dashboard' %}" class="btn btn-secondary mt-3 ms-2">Annulla</a>
     </form>

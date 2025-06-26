@@ -2,6 +2,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit
 from django import forms
 from .models import *
+import os
+from django.core.exceptions import ValidationError
+from django.conf import settings
 
 class PriceFilterForm(forms.Form):
     min_price = forms.IntegerField(label='Prezzo minimo', required=False)
@@ -17,20 +20,42 @@ class PriceFilterForm(forms.Form):
 
         return cleaned_data
 
+def get_product_images():
+    images_dir = os.path.join(settings.MEDIA_ROOT, 'product_images')
+    if not os.path.exists(images_dir):
+        return []
+    return [
+        (f'product_images/{f}', f)
+        for f in os.listdir(images_dir)
+        if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp'))
+    ]
+
 class ProductForm(forms.ModelForm):
-    category = forms.ModelChoiceField(
+    category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select'}),
-        required=False,  # opzionale se vuoi permettere nessuna categoria
+        widget=forms.SelectMultiple(attrs={'class': 'form-select select2', 'multiple': 'multiple'}),
+        required=True,
         label='Categoria'
     )
     price = forms.DecimalField(min_value=0, label='Prezzo')
+
+    image_upload = forms.ImageField(
+        required=False,
+        label='Oppure carica nuova immagine',
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control'})
+    )
+    image_choice = forms.ChoiceField(
+        choices=get_product_images,
+        required=False,
+        label='Scegli tra quelle esistenti',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
 
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'stock', 'available', 'category','image']
         widgets = {
-            'category': forms.Select(attrs={'class': 'form-select'}),  # Selezione a tendina
+            'categories': forms.SelectMultiple(attrs={'class': 'form-select select2', 'multiple': 'multiple'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -42,7 +67,7 @@ class ProductForm(forms.ModelForm):
             Field('price', css_class='form-control',min = 0),
             Field('stock', css_class='form-control'),
             Field('available', css_class='form-check-input'),
-            Field('category', css_class='form-check-input'),
+            Field('categories', css_class='form-check-input'),
             Field('image', css_class='form-control'),
             Submit('submit', 'Salva Prodotto', css_class='btn btn-primary mt-3')
         )
@@ -52,17 +77,31 @@ class ProductForm(forms.ModelForm):
                 field.widget.attrs['class'] = 'form-control'
 
    # todo: in attesa di decidere più categorie possono appartenere ad un prodotto
+
     def save(self, commit=True):
         product = super().save(commit=False)
+        image_file = self.cleaned_data.get('image_upload')
+        image_choice = self.cleaned_data.get('image_choice')
+
+        if image_file:
+
+            from django.core.files.storage import default_storage
+            path = default_storage.save(f'product_images/{image_file.name}', image_file)
+            product.image = path
+        elif image_choice:
+            product.image = image_choice
+        else:
+            product.image = None
+
+
+        category = self.cleaned_data.get('category')
+        if category:
+            product.category = category
+        else:
+            product.category = None
+
         if commit:
             product.save()
-
-            category = self.cleaned_data.get('category')
-            if category:
-                product.category.set([category])
-            else:
-                product.category.clear()
-        else:
-            self.save_m2m = lambda: product.category.set([self.cleaned_data['category']]) if self.cleaned_data.get(
-                'category') else product.category.clear()
+            self.save_m2m()
+            product.categories.set(self.cleaned_data['categories'])
         return product
