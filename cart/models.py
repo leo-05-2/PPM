@@ -71,6 +71,9 @@ class Order(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
+        permissions = [
+            ("view_all_orders", "Può vedere tutti gli ordini"),
+        ]
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
