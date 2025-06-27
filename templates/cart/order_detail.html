@@ -27,8 +27,8 @@
         <div class="col-md-4 text-end">
             <p class="mb-0 text-muted">Data ordine: {{ order.created_at|date:"d/m/Y" }}</p>
             <p class="mb-0">
-                <span class="badge {% if order.delivered %}bg-success{% elif order.shipped %}bg-primary{% else %}bg-warning{% endif %}">
-                    {% if order.delivered %}Consegnato{% elif order.shipped %}Spedito{% else %}In lavorazione{% endif %}
+                <span class="badge {% if order.status == 'delivered' %}bg-success{% elif order.status == 'shipped' %}bg-info{% elif order.status == 'pending' %}bg-warning {% else %} bg-danger{% endif %}">
+                    {%if order.status == 'delivered' %}Consegnato{% elif order.status == 'shipped' %}Spedito{% elif order.status == 'pending' %}In lavorazione {% else %} Annullato {% endif %}
                 </span>
             </p>
         </div>

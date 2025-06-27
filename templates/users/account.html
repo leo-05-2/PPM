@@ -45,9 +45,14 @@
                         <a href="#addresses" class="list-group-item list-group-item-action" data-bs-toggle="list">
                             <i class="bi bi-geo-alt me-2"></i>Indirizzi
                         </a>
+                        <a href="#user-reviews" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="bi bi-star me-2"></i>Le mie recensioni
+                        </a>
                         <a href="{% url 'users:logout' %}" class="list-group-item list-group-item-action text-danger">
                             <i class="bi bi-box-arrow-right me-2"></i>Logout
                         </a>
+
+
                     </div>
                 </div>
             </div>
@@ -287,6 +292,40 @@
                                 </div>
                                 {% endfor %}
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sezione Recensioni -->
+                <div class="tab-pane fade" id="user-reviews">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">Le mie recensioni</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if user_reviews %}
+                            <div class="list-group">
+                                {% for review in user_reviews %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Articolo:</strong>
+                                        <a href="{% url 'products:product_info' review.product.id %}">{{ review.product.name }}</a><br>
+                                        <strong>Valutazione:</strong> {{ review.rating }} / 5<br>
+                                        <strong>Commento:</strong> {{ review.comment }}<br>
+                                        <small class="text-muted">Data: {{ review.created_at|date:"d/m/Y" }}</small>
+                                    </div>
+                                    <form method="post" action="{% url 'review:delete_review' review.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            Elimina
+                                        </button>
+                                    </form>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info mt-3">Non hai ancora scritto nessuna recensione.</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

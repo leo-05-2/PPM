@@ -12,13 +12,13 @@
               <!-- Percorso per utenti non autenticati (dalla home) -->
                   <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-            {% elif request.GET.source == 'user_home_page' %}
+            {% elif request.GET.source == 'user_home_page' or user.is_authenticated %}
               <!-- Percorso per utenti autenticati (dalla dashboard) -->
                   <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Dashboard</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
             {% elif request.GET.source == 'category_user' %}
               <!-- Percorso per navigazione da categoria -->
-                  <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Home</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">categor</a></li>
                   <li class="breadcrumb-item"><a href="{% url 'products:category' product.category.slug %}">{{ product.category.name }}</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
                 
@@ -89,7 +89,7 @@
             <!-- Pulsanti di azione -->
         
             <div class="d-grid gap-2 d-md-flex">
-                {% if stock > 0 and product.available and source == 'user_home_page'%}
+                {% if stock > 0 and product.available and  user.is_authenticated %}
                    <form method="POST" action="{% url 'cart:add_cart_item' %}" >
                         {% csrf_token %}
                         <input type="hidden" name="product_id" value="{{ product.id }}">
@@ -115,38 +115,7 @@
             
             </div>
         
-            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 2000;  margin-right: 310px;">
-                <div id="cartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header bg-success text-white">
-                        <i class="bi bi-check-circle me-2"></i>
-                        <strong class="me-auto">Carrello</strong>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                    <div class="toast-body">
-                        Prodotto aggiunto al carrello con successo!
-                    </div>
-                </div>
-            </div>
 
-            <script>
-              document.addEventListener('DOMContentLoaded', function() {
-                {% if messages %}
-                  {% for message in messages %}
-                    {% if message.tags == 'success' %}
-                      // Inserisci il messaggio nel toast
-                      // document.getElementById('cartToastBody').textContent = "{{ message }}";
-                      
-                      // Mostra il toast
-                      var toastEl = document.getElementById('cartToast');
-                      var toast = new bootstrap.Toast(toastEl, { delay: 5000 });
-                      toast.show();
-                                                                                              
-                     
-                    {% endif %}
-                  {% endfor %}
-                {% endif %}
-              });
-            </script>
 
 
             <!-- Dettagli aggiuntivi -->
@@ -209,16 +178,31 @@
                     </ul>
                 </div>
                 <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                    <h5>Recensioni dei clienti</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                          <h5 class="mb-0">Recensioni dei clienti</h5>
+                          {% if user.is_authenticated %}
+                            <a href="{% url 'review:write_review' product.id %}" class="btn btn-primary">
+                              <i class="bi bi-pencil-square"></i> Scrivi una recensione
+                            </a>
+                          {% else %}
+                            <a href="{% url 'users:login' %}?next={% url 'products:write_review' product.id %}" class="btn btn-secondary">
+                              Accedi per scrivere una recensione
+                            </a>
+                          {% endif %}
+                        </div>
                     {% if reviews %}
                     <ul class="list-group mb-3">
                         {% for review in reviews %}
                             <li class="list-group-item">
                                 <strong>{{ review.user.username }}</strong>
                                 <span class="text-warning">
-                                    {% for i in "12345"|slice:":review.rating"|make_list %}
-                                        <i class="bi bi-star-fill"></i>
-                                    {% endfor %}
+                                  {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= review.rating %}
+                                      <i class="bi bi-star-fill"></i>
+                                    {% else %}
+                                      <i class="bi bi-star"></i>
+                                    {% endif %}
+                                  {% endfor %}
                                 </span>
                                 <br>
                                 <small class="text-muted">{{ review.created_at|date:"d/m/Y" }}</small>
@@ -278,7 +262,7 @@
                     <span class="visually-hidden">Successivo</span>
                 </button>
 
-                <!-- Indicatori (opzionali) -->
+
                 <div class="carousel-indicators" style="bottom: -40px;">
                     <button type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide-to="0" class="active bg-primary" aria-current="true" aria-label="Slide 1"></button>
                     <button type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide-to="1" class="bg-primary" aria-label="Slide 2"></button>

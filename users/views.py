@@ -39,8 +39,8 @@ def user_home_page(request):
     context = {
         'user': user,
         'recent_orders': recent_orders,
-        'latest_products': latest_products,  # Aggiungi i prodotti recenti al contesto
-        'categories': categories,  # Aggiungi le categorie al contesto
+        'latest_products': latest_products,
+        'categories': categories,
 
     }
     return render(request, 'users/user_home_page.html', context)
@@ -78,7 +78,7 @@ def is_store_manager(user):
 
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
-    authentication_form = LoginForm  # Usa il tuo form di autenticazione
+    authentication_form = LoginForm
 
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
@@ -91,7 +91,7 @@ class CustomLoginView(LoginView):
                 return redirect('users:store_manager_dashboard')
             else:
                 messages.success(self.request, f"Benvenuto, {user.username}!")
-                return redirect('users:user_home_page')  # Reindirizza l'utente normale alla sua dashboard
+                return redirect('users:user_home_page')
         else:
             messages.error(self.request, "Credenziali non valide. Riprova.")
             return self.form_invalid(form)
@@ -99,29 +99,28 @@ class CustomLoginView(LoginView):
 
 class UserSignUpView(CreateView):
     form_class = CustomUserCreationForm
-    template_name = 'users/sign_up.html' # Specifica il template per la registrazione
-    success_url = reverse_lazy('users:login') # Reindirizza alla pagina di login dopo la registrazione
+    template_name = 'users/sign_up.html'
+    success_url = reverse_lazy('users:login')
 
 class UserLogoutView(LogoutView):
-    template_name = 'users/logout_custom.html'  # Specifica il tuo template personalizzato
-    next_page = reverse_lazy('core:home')  # Reindirizza alla homepage dopo il logout
+    template_name = 'users/logout_custom.html'
+    next_page = reverse_lazy('core:home')
     http_method_names = ['get', 'post']
 
     def get(self, request, *args, **kwargs):
 
-        # Esegue il logout effettivo dell'utente
+
         response = super().get(request, *args, **kwargs)
 
-        # Puoi aggiungere qui messaggi flash se vuoi, ad esempio:
-        # from django.contrib import messages
+
         messages.success(request, "Sei stato disconnesso con successo!")
 
-        # Restituisce la risposta (che reindirizza o renderizza il template)
+        )
         return response
 
 
 class UserAccountView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/account.html'  # Specifica il template per la pagina dell'account
+    template_name = 'users/account.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -129,6 +128,7 @@ class UserAccountView(LoginRequiredMixin, TemplateView):
         context['orders'] = Order.objects.filter(user=self.request.user).order_by('-created_at')
         context['addresses'] = Address.objects.filter(user=self.request.user)
         context['help_texts'] = password_validators_help_texts()
+        context['user_reviews'] = Review.objects.filter(user=self.request.user).order_by('-created_at')
 
         return context
 

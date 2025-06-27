@@ -11,7 +11,7 @@ class Review(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('product', 'user')
+
         permissions = (
             ('view_all_review', 'Can view all reviews'),
         )

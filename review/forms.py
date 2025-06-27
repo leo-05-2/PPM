@@ -1,4 +1,5 @@
 from django import forms
+from .models import Review
 
 
 
@@ -12,8 +13,11 @@ class ReviewForm(forms.ModelForm):
     comment = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         label='Commento',
-        required=False
+        required=True
     )
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
 
     def clean_rating(self):
         rating = self.cleaned_data.get('rating')
