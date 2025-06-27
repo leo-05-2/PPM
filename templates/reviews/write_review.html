@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Scrivi una Recensione per {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mb-4">Scrivi una Recensione per "{{ product.name }}"</h1>
+
+            {% if messages %}
+            <div class="toast-container position-fixed top-0 end-0 p-3">
+                {% for message in messages %}
+                <div class="toast align-items-center {% if message.tags == 'error' %}text-bg-danger{% elif message.tags == 'success' %}text-bg-success{% elif message.tags == 'warning' %}text-bg-warning{% else %}text-bg-info{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% if purchease_verified %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary mt-3">Invia Recensione</button>
+                            <a href="{% url 'products:product_info' product.id %}" class="btn btn-outline-secondary mt-3 ms-2">Annulla</a>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            Per lasciare una recensione su questo prodotto, devi averlo acquistato e ricevuto.
+                        </div>
+                        <a href="{% url 'products:product_info' product.id %}" class="btn btn-outline-secondary mt-3">Torna al Prodotto</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

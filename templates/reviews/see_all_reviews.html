@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tutte le Recensioni - Gestione{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-4 mb-4">Gestione Recensioni</h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Elenco Completo Recensioni</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                {% if reviews %}
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th scope="col">ID Recensione</th>
+                            <th scope="col">Prodotto</th>
+                            <th scope="col">Utente</th>
+                            <th scope="col">Valutazione</th>
+                            <th scope="col">Commento</th>
+                            <th scope="col">Data Creazione</th>
+                            <th scope="col">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in reviews %}
+                        <tr>
+                            <td>{{ review.id }}</td>
+                            <td><a href="{% url 'products:product_info' review.product.id %}">{{ review.product.name }}</a></td>
+                            <td>{{ review.user.username }}</td>
+                            <td>{{ review.rating }} stelle</td>
+                            <td>{{ review.comment|truncatechars:50 }}</td>
+                            <td>{{ review.created_at|date:"d/m/Y" }}</td>
+                            <td>
+                                <a href="{% url 'reviews:delete_review' review.product.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa recensione?');">
+                                    <i class="bi bi-trash"></i> Elimina
+                                </a>
+                                </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="alert alert-info" role="alert">
+                    Nessuna recensione trovata nel sistema.
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="{% url 'users:store_manager_dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Torna alla Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

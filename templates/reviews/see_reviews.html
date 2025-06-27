@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Recensioni per {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'products:product_info' product.id %}">Dettaglio Prodotto</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Recensioni</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">Recensioni per "{{ product.name }}"</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ review.user.username }}</h5>
+                        <p class="card-subtitle mb-2 text-muted">Valutazione: {{ review.rating }} stelle</p>
+                        <p class="card-text">{{ review.comment }}</p>
+                        <p class="text-end text-muted small">Pubblicato il: {{ review.created_at|date:"d M Y" }}</p>
+                        {% if request.user == review.user %}
+                            <div class="mt-2 text-end">
+                                <a href="{% url 'reviews:delete_review' product.id %}" class="btn btn-sm btn-outline-danger">Elimina la tua recensione</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    Ancora nessuna recensione per questo prodotto. Sii il primo a scriverne una!
+                </div>
+            {% endif %}
+            <div class="mt-4">
+                <a href="{% url 'reviews:write_review' product.id %}" class="btn btn-primary">Scrivi una recensione</a>
+                <a href="{% url 'products:product_info' product.id %}" class="btn btn-outline-secondary ms-2">Torna al Prodotto</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Riepilogo Recensioni</h5>
+                </div>
+                <div class="card-body">
+                    <p>Valutazione media: **{{ product.average_rating|floatformat:1 }}** (su {{ product.reviews.count }} recensioni)</p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
