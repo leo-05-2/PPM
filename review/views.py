@@ -2,8 +2,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 from django.contrib import messages
+from .models import *
 
 from products.models import Product
+from cart.models import *
 
 
 # Create your views here.
@@ -11,6 +13,16 @@ from products.models import Product
 @login_required
 def write_review(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    purchease_verified = False
+    if request.user.is_authenticated:
+        #  if the user has purchased the product
+        purchases_list = Order.objects.filter(user=request.user)
+        purchases = OrderItem.objects.filter(product=product, order__in=purchases_list)
+        delivered_purchases = purchases.filter(order__status='delivered')
+        if purchases.exists() and delivered_purchases.exists():
+            purchease_verified = True
+
+
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -27,6 +39,7 @@ def write_review(request, product_id):
     context = {
         'form': form,
         'product': product,
+        'purchease_verified': purchease_verified,
     }
     return render(request, 'reviews/write_review.html', context)
 
