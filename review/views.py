@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 from django.contrib import messages
 from .models import *
+from django.db.models import Avg
 
 from products.models import Product
 from cart.models import *
@@ -44,9 +45,10 @@ def write_review(request, product_id):
     return render(request, 'reviews/write_review.html', context)
 
 @login_required
-def delete_review(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    review = get_object_or_404(Review, product=product, user=request.user)
+def delete_review(request, review_id):
+
+    review = get_object_or_404(Review, id = review_id, user=request.user)
+    product = review.product
 
     if request.method == 'POST':
         # Check if the user is the owner of the review
@@ -54,8 +56,8 @@ def delete_review(request, product_id):
             messages.error(request, 'You are not authorized to delete this review.')
             return redirect('products:product_info', product_id=product.id)
         review.delete()
-        messages.success(request, 'Your review has been deleted successfully.')
-        return redirect('products:product_info', product_id=product.id)
+        return redirect('users:account', product_id=product.id)
+
 
     context = {
         'product': product,
@@ -66,10 +68,12 @@ def delete_review(request, product_id):
 def see_reviews(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     reviews = product.reviews.all().order_by('-created_at')
+    avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] if reviews.exists() else None
 
     context = {
         'product': product,
         'reviews': reviews,
+        'avg_rating': avg_rating,
     }
     return render(request, 'reviews/see_reviews.html', context)
 
@@ -78,7 +82,7 @@ def see_all_reviews(request):
 
     reviews = Review.objects.all().order_by('-created_at')
     products = Product.objects.all().order_by('-created_at')
-    #todo: se raggruppare per prodotto e chi lo ha aggiunto al sito e un insieme generale
+    #todo: se raggruppare per prodotto e chi lo ha aggiunto al sito e un insieme generale, e aggiungere il permesso da assegnadolo da admin agli store manager
 
     context = {
         'reviews': reviews,

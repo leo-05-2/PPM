@@ -41,10 +41,11 @@
                         {% for item in items %}
                         <tr>
                             <td>
-                                <img src="{{ item.product.image.url|default:'https://via.placeholder.com/80' }}"
-                                     alt="{{ item.product.name }}"
-                                     class="img-thumbnail"
-                                     width="80">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                                {% else %}
+                                    <img src='https:www.placehold.co/30x20' class="card-img-top" alt="{{ product.name }}">
+                                {% endif %}
                             </td>
                             <td>
                                 <h5>{{ item.product.name }}</h5>
@@ -116,6 +117,10 @@
                             </div>
                             <small>Il tuo ordine supera i 50€ e ha diritto alla spedizione gratuita!</small>
                         </div>
+                        {% else %}
+                            <div class="alert alert-info mb-3">
+                                Spedizione gratuita per ordini superiori a 50€.
+                            </div>
                         {% endif %}
                         </div>
 

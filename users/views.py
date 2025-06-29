@@ -35,7 +35,7 @@ def user_home_page(request):
     recent_orders = Order.objects.filter(user=user).order_by('-created_at')[:5]
     categories = Category.objects.all()
 
-    latest_products = Product.objects.all().order_by('-created')[:8]  # Recupera gli ultimi prodotti pubblicati
+    latest_products = Product.objects.all().order_by('-created')[:8]
     context = {
         'user': user,
         'recent_orders': recent_orders,
@@ -115,12 +115,12 @@ class UserLogoutView(LogoutView):
 
         messages.success(request, "Sei stato disconnesso con successo!")
 
-        )
+
         return response
 
 
 class UserAccountView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/account.html'
+    template_name = 'users/account.html'  # Specifica il template per la pagina dell'account
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -207,7 +207,7 @@ def update_address(request, address_id):
         # Recupera i valori dei campi
         street = request.POST.get('street', '').strip()
         city = request.POST.get('city', '').strip()
-        province = request.POST.get('province', '').strip()
+
         postal_code = request.POST.get('postal_code', '').strip()
         country = request.POST.get('country', '').strip()
         nickname = request.POST.get('nickname', '').strip()
@@ -219,7 +219,7 @@ def update_address(request, address_id):
             # Aggiorna l'indirizzo
             address.street = street
             address.city = city
-            address.province = province
+
             address.postal_code = postal_code
             address.country = country
             address.nickname = nickname

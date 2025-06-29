@@ -4,6 +4,7 @@ from .models import Cart
 from users.models import Address  # Modifica qui: importa da users.models
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.layout import Submit
+from crispy_forms.layout import Layout, Field, ButtonHolder, Fieldset
 
 class CartForm(forms.ModelForm):
 
@@ -58,10 +59,17 @@ class CheckoutForm(forms.Form):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-
-
         self.helper = FormHelper()
-        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            'use_existing_address',
+            'address',  # campo address esistente
+            'nickname',
+            'street',
+            'city',
+            'postal_code',
+
+        )
+
 
 
         if user:

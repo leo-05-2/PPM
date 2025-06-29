@@ -38,7 +38,6 @@
                 </div>
             {% endif %}
             <div class="mt-4">
-                <a href="{% url 'reviews:write_review' product.id %}" class="btn btn-primary">Scrivi una recensione</a>
                 <a href="{% url 'products:product_info' product.id %}" class="btn btn-outline-secondary ms-2">Torna al Prodotto</a>
             </div>
         </div>
@@ -48,7 +47,7 @@
                     <h5 class="mb-0">Riepilogo Recensioni</h5>
                 </div>
                 <div class="card-body">
-                    <p>Valutazione media: **{{ product.average_rating|floatformat:1 }}** (su {{ product.reviews.count }} recensioni)</p>
+                    <p>Valutazione media: {{ avg_rating|floatformat:1 }}(su {{ product.reviews.count }} recensioni)</p>
                     </div>
             </div>
         </div>

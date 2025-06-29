@@ -60,6 +60,7 @@ def product_info(request, product_id):
         'store_manager': is_store_manager(user) if user else False,
         'average_rating': average_rating,
         'reviews': review,
+        'available': product.available,
 
     }
 

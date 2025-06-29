@@ -253,8 +253,8 @@
                                     <td>{{ review.rating }} stelle</td>
                                     <td>{{ review.comment|truncatechars:70 }}</td>
                                     <td>
-                                        <a href="{% url 'products:review_detail' review.id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
-                                        <a href="{% url 'products:review_delete' review.id %}" class="btn btn-sm btn-danger">Elimina</a>
+                                        <a href="{% url 'review:see_reviews' review.product_id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
+                                        <a href="{% url 'review:delete_review' review.id %}" class="btn btn-sm btn-danger">Elimina</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -390,7 +390,7 @@
                                 <td>{{ review.rating }} stelle</td>
                                 <td>{{ review.comment|truncatechars:70 }}</td>
                                 <td>
-                                    <a href="{% url 'products:review_detail' review.id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
+                                    <a href="{% url 'review:see_reviews' review.product_id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
                                 </td>
                             </tr>
                             {% empty %}

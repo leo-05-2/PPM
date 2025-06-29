@@ -35,7 +35,6 @@ class Address(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='addresses')
     city = models.CharField(max_length=100)
     street = models.CharField(max_length=100, blank=False, null=False)
-    province = models.CharField(max_length=100, blank=False, null=False)
     postal_code = models.CharField(max_length=20, blank=False, null=False)
     nickname = models.CharField(max_length=50, default="Indirizzo principale")
     country = models.CharField(max_length=100, blank=True, null=True)

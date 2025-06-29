@@ -52,7 +52,7 @@ class LoginForm(AuthenticationForm):
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
-        fields = ['nickname', 'street', 'city', 'province', 'postal_code', 'country']
+        fields = ['nickname', 'street', 'city', 'postal_code', 'country']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,7 +61,6 @@ class AddressForm(forms.ModelForm):
             Field('nickname', css_class='form-control', placeholder='Es. Casa, Ufficio'),
             Field('street', css_class='form-control', placeholder='Via Roma 123'),
             Field('city', css_class='form-control', placeholder='Milano'),
-            Field('province', css_class='form-control', placeholder='MI'),
             Field('postal_code', css_class='form-control', placeholder='20121'),
             Field('country', css_class='form-control', placeholder='Italia'),
             Submit('submit', 'Salva Indirizzo', css_class='btn btn-primary mt-3')

@@ -51,9 +51,9 @@ def view_cart(request):
 
 
     delivery_date_str = request.session.get('delivery_date')
-    if delivery_date_str is None or shipping_method_changed:
+    if (delivery_date_str is None or shipping_method_changed) or (subtotal >= 50):
         today = datetime.now().date()
-        if shipping_method == 'express':
+        if shipping_method == 'express' or subtotal >= 50:
             delivery_date = today + timedelta(days=2)
         else:
             delivery_date = today + timedelta(days=5)
@@ -202,6 +202,7 @@ def checkout(request):
                     postal_code=form.cleaned_data['postal_code'],
                     nickname=form.cleaned_data.get('nickname'),
                     country=form.cleaned_data.get('country', 'Italia')
+
                 )
                 address.save()
 
@@ -221,8 +222,7 @@ def checkout(request):
                 address=delivery_address,
 
                 delivery_date = delivery_date,
-                delivered = False,
-                shipped = False,
+                status = 'pending',
                 shipping_cost = shipping_cost_view,
                 shipping_method = shipping_method
 
@@ -261,6 +261,8 @@ def checkout(request):
             for cart_item in cart.items.all():
                 product = cart_item.product
                 product.stock -= cart_item.quantity
+                if product.stock == 0:
+                    product.available = False
                 product.save()
 
 
