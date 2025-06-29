@@ -39,11 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',  # Custom user app
     'products.apps.ProductsConfig',  # Products app
-    'cart.apps.CartConfig',  # Cart app
+    'core.apps.CoreConfig',  # Cart app
     'review.apps.ReviewConfig',  # Review app
     'crispy_forms',
     'crispy_bootstrap5',
-    'core.apps.CoreConfig',
+
 ]
 
 MIDDLEWARE = [

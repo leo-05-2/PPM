@@ -14,7 +14,7 @@
             <a href="{% url 'products:product_list_category' %}" class="btn btn-outline-primary btn-lg me-2" title="Cerca prodotti">
                 <i class="bi bi-search"></i>
             </a>
-            <a href="{% url 'cart:view_cart' %}" class="btn btn-primary btn-lg">
+            <a href="{% url 'core:view_cart' %}" class="btn btn-primary btn-lg">
                 <i class="bi bi-cart"></i> Carrello
             </a>
             <a href="{% url 'users:account' %}" class="btn btn-outline-secondary btn-lg ms-2">
@@ -53,14 +53,14 @@
                                 </td>
                                 <td>{{ order.total_price }} €</td>
                                 <td>
-                                    <a href="{% url 'cart:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">Dettagli</a>
+                                    <a href="{% url 'core:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">Dettagli</a>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <a href="{% url 'cart:order_history' %}" class="btn btn-outline-primary mt-3">Vedi tutti gli ordini</a>
+                <a href="{% url 'core:order_history' %}" class="btn btn-outline-primary mt-3">Vedi tutti gli ordini</a>
             {% else %}
                 <div class="alert alert-info">Non hai ancora effettuato alcun ordine.</div>
             {% endif %}

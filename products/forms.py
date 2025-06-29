@@ -31,6 +31,7 @@ def get_product_images():
     ]
 
 class ProductForm(forms.ModelForm):
+    queryset = Category.objects.all(),
     category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         widget=forms.SelectMultiple(attrs={'class': 'form-select select2', 'multiple': 'multiple'}),
@@ -47,7 +48,7 @@ class ProductForm(forms.ModelForm):
     image_choice = forms.ChoiceField(
         choices=get_product_images,
         required=False,
-        label='Scegli tra quelle esistenti',
+        label='Scegli un immagine tra quelle esistenti',
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
@@ -55,7 +56,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ['name', 'description', 'price', 'stock', 'available', 'category','image']
         widgets = {
-            'categories': forms.SelectMultiple(attrs={'class': 'form-select select2', 'multiple': 'multiple'}),
+            'category': forms.SelectMultiple(attrs={'class': 'form-select select2', 'multiple': 'multiple'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -67,7 +68,7 @@ class ProductForm(forms.ModelForm):
             Field('price', css_class='form-control',min = 0),
             Field('stock', css_class='form-control'),
             Field('available', css_class='form-check-input'),
-            Field('categories', css_class='form-check-input'),
+            Field('category', css_class='form-select select2', multiple='multiple'),
             Field('image', css_class='form-control'),
             Submit('submit', 'Salva Prodotto', css_class='btn btn-primary mt-3')
         )
@@ -94,14 +95,36 @@ class ProductForm(forms.ModelForm):
             product.image = None
 
 
-        category = self.cleaned_data.get('category')
-        if category:
-            product.category = category
-        else:
-            product.category = None
+
 
         if commit:
             product.save()
             self.save_m2m()
-            product.categories.set(self.cleaned_data['categories'])
+            product.category.set(self.cleaned_data['category'])
         return product
+
+class CategoryForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={
+            'list': 'category-suggestions',
+            'placeholder': 'Inserisci o scegli una categoria',
+            'class': 'form-control',
+            'autocomplete': 'off',
+            'required': True,
+        }),
+        label='Nome Categoria'
+    )
+
+    class Meta:
+        model = Category
+        fields = ['name']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('name', css_class='form-control mb-3'),
+            Submit('submit', 'Aggiungi Categoria', css_class='btn btn-primary')
+        )

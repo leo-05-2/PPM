@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cart', '0008_alter_order_status'),
+        ('core', '0008_alter_order_status'),
     ]
 
     operations = [

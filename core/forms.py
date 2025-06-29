@@ -10,7 +10,7 @@ class CartForm(forms.ModelForm):
 
     class Meta:
         model = Cart
-        fields = ['address']  # Assuming you want to allow users to select an address for their cart
+        fields = ['address']  # Assuming you want to allow users to select an address for their core
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user',None)

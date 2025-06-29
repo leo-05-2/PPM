@@ -4,19 +4,22 @@ from django.db import models
 
 
 class Category(models.Model):
-    CATEGORY_CHOICES = (
-        ('alimenti', 'Alimenti'),
-        ('abbigliamento', 'Abbigliamento'),
-        ('accessori', 'Accessori'),
-        ('bevande', 'Bevande'),
-    )
-    name = models.CharField(max_length=200, choices=CATEGORY_CHOICES, unique=True)
+
+
+    name = models.CharField(max_length=200, unique=True)
 
     class Meta:
         verbose_name_plural = "Categories"
 
     def __str__(self):
         return self.name
+
+CATEGORY_CHOICES = (
+        ('alimenti', 'Alimenti'),
+        ('abbigliamento', 'Abbigliamento'),
+        ('accessori', 'Accessori'),
+        ('bevande', 'Bevande'),
+    )
 
 class Product(models.Model):
     category = models.ManyToManyField(Category)  #todo: decide if meny-to-many or foreign key

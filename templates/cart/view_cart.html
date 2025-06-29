@@ -52,7 +52,7 @@
                                 <p class="text-muted small">{{ item.product.description|truncatechars:50 }}</p>
                             </td>
                             <td class="text-center">
-                                <form method="post" action="{% url 'cart:update_item' item.id %}" class="d-flex justify-content-center">
+                                <form method="post" action="{% url 'core:update_item' item.id %}" class="d-flex justify-content-center">
                                     {% csrf_token %}
                                     <button type="submit" name="dummy" style="display:none;"></button>
                                     <div class="input-group input-group-sm" style="width: 120px;">
@@ -65,7 +65,7 @@
                             <td class="text-end">{{ item.product.price }} €</td>
                             <td class="text-end">{{ item.get_total_price }} €</td>
                             <td class="text-end">
-                                <form method="post" action="{% url 'cart:remove_item' item.id %}" class="d-inline">
+                                <form method="post" action="{% url 'core:remove_item' item.id %}" class="d-inline">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         <i class="bi bi-trash"></i>
@@ -91,7 +91,7 @@
                     <h6 class="mb-3">Seleziona metodo di spedizione:</h6>
     
                     <div class="list-group mb-3">
-                        <a href="{% url 'cart:update_shipping' 'standard' %}" 
+                        <a href="{% url 'core:update_shipping' 'standard' %}"
                             class="list-group-item list-group-item-action {% if request.session.shipping_method == 'standard' %}active{% endif %}">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1">Standard (2-5 giorni)</h6>
@@ -100,7 +100,7 @@
                         <small>Consegna in 2-5 giorni lavorativi</small>
                         </a>
             
-                        <a href="{% url 'cart:update_shipping' 'express' %}" 
+                        <a href="{% url 'core:update_shipping' 'express' %}"
                            class="list-group-item list-group-item-action {% if request.session.shipping_method == 'express' %}active{% endif %}">
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">Express (1-2 giorni)</h6>
@@ -158,7 +158,7 @@
             </div>
             
             <div class="d-grid gap-2 mt-3">
-                <a href="{% url 'cart:checkout' %}" class="btn btn-primary">
+                <a href="{% url 'core:checkout' %}" class="btn btn-primary">
                     Procedi al checkout<i class="bi bi-arrow-right ms-2"></i>
                 </a>
             </div>

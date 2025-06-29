@@ -14,7 +14,7 @@ from review.models import Review
 from .models import *
 from products.models import Product, Category
 from django.urls import reverse
-from cart.models import Order
+from core.models import Order
 from .forms import *
 from django.views.generic import TemplateView, View # Importa View
 from django.db.models import Q
@@ -24,7 +24,7 @@ from django.contrib.auth.password_validation import password_validators_help_tex
 
 
 
-from cart.models import Order
+from core.models import Order
 
 
 # Create your views here.
@@ -213,7 +213,7 @@ def update_address(request, address_id):
         nickname = request.POST.get('nickname', '').strip()
 
         # Verifica che tutti i campi siano compilati
-        if not (street and city and province and postal_code and country and nickname):
+        if not (street and city  and postal_code and country and nickname):
             messages.error(request, 'Tutti i campi sono obbligatori per aggiornare l\'indirizzo.')
         else:
             # Aggiorna l'indirizzo
@@ -227,3 +227,20 @@ def update_address(request, address_id):
             messages.success(request, 'Indirizzo aggiornato con successo!')
 
     return redirect(reverse('users:account'))
+
+
+def home_page(request):
+    # Reindirizza utenti autenticati alla home personalizzata
+
+    # Recupera gli ultimi prodotti pubblicati
+    latest_products = Product.objects.all().order_by('-created')[:8]
+
+    # Recupera alcune categorie principali
+    categories = Category.objects.all()[:6]
+
+    context = {
+        'latest_products': latest_products,
+        'categories': categories,
+    }
+
+    return render(request, 'core/home_page.html', context)

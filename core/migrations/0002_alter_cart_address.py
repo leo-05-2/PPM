@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cart', '0001_initial'),
+        ('core', '0001_initial'),
         ('users', '0004_alter_addresslist_unique_together_and_more'),
     ]
 

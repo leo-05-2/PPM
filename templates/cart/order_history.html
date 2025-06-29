@@ -34,7 +34,7 @@
                                 </td>
                                 <td>{{ order.total_price }} €</td>
                                 <td>
-                                    <a href="{% url 'cart:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">Dettagli</a>
+                                    <a href="{% url 'core:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">Dettagli</a>
                                 </td>
                             </tr>
                             {% endfor %}

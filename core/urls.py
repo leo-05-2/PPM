@@ -1,18 +1,20 @@
 from django.urls import path
-from .views import (
-    home_page,
-    about_page,
-    contact_page,
-    privacy_policy_page,
-    terms_of_service_page,
-)
+
+from .views import *
+
 app_name = 'core'
 
 urlpatterns = [
-    path('', home_page, name='home'),
-    path('about/', about_page, name='about'),
-    path('contact/', contact_page, name='contact'),
-    path('privacy_policy/', privacy_policy_page, name='privacy_policy'),
-    path('terms_of_service/', terms_of_service_page, name='terms_of_service'),
-]
 
+    path('', view_cart, name='view_cart'),
+    path('add_item/', add_cart_item, name='add_cart_item'),
+    path( 'update_item/<int:item_id>/', update_item, name='update_item'),
+    path('remove_item/<int:item_id>/', remove_item, name='remove_item'),
+    path('checkout/', checkout, name='checkout'),
+    path('update_shipping/<str:method>/', update_shipping, name='update_shipping'),
+    path ('checkout_success/', checkout_success, name='checkout_success'),
+    path ('order_detail/<int:order_id>/', OrderDetailView.as_view(), name='order_detail'),
+    path('order_history/', OrderHistoryView.as_view(), name='order_history'),
+    path (' update_order_status/<int:order_id>/', update_order_status, name='update_order_status'),
+
+]

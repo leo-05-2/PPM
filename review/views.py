@@ -6,7 +6,7 @@ from .models import *
 from django.db.models import Avg
 
 from products.models import Product
-from cart.models import *
+from core.models import *
 
 
 # Create your views here.
@@ -47,17 +47,24 @@ def write_review(request, product_id):
 @login_required
 def delete_review(request, review_id):
 
-    review = get_object_or_404(Review, id = review_id, user=request.user)
+    review = get_object_or_404(Review, id = review_id)
     product = review.product
+
 
     if request.method == 'POST':
         # Check if the user is the owner of the review
-        if review.user != request.user:
+
+        if review.user != request.user and not request.user.has_perm('review.delete_review'):
             messages.error(request, 'You are not authorized to delete this review.')
             return redirect('products:product_info', product_id=product.id)
-        review.delete()
-        return redirect('users:account', product_id=product.id)
+        # If the user is authorized, delete the review
 
+        elif request.user.has_perm('review.delete_review'):
+            review.delete()
+            return redirect('users:store_manager_dashboard')
+        else:
+            review.delete()
+            return redirect('users:account', product_id=product.id)
 
     context = {
         'product': product,

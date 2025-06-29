@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 
-from cart.models import Cart
+from core.models import Cart
 from products.models import Product, Category
 from .forms import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
@@ -10,6 +10,9 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Q, Avg
 from review.models import Review
+from .models import *
+from django.shortcuts import redirect
+
 
 
 # Create your views here.
@@ -56,7 +59,7 @@ def product_info(request, product_id):
         'stock': stock,
         'related_products': related_products,
         'source': source,
-        'cart': cart,
+        'core': cart,
         'store_manager': is_store_manager(user) if user else False,
         'average_rating': average_rating,
         'reviews': review,
@@ -226,3 +229,20 @@ def product_list(request):
     }
 
     return render(request, 'products/product_list.html', context)
+
+def category_create(request):
+    categories = Category.objects.all()
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('products:category_create')
+    else:
+        form = CategoryForm()
+
+    return render(request, 'products/category_form.html', {
+        'form': form,
+        'categories': categories,
+        'CATEGORY_CHOICES': CATEGORY_CHOICES
+    })
