@@ -106,8 +106,8 @@
             <!-- Pulsanti di azione -->
         
             <div class="d-grid gap-2 d-md-flex">
-                {% if stock > 0 and product.available and  user.is_authenticated and not store_manager %}
-                   <form method="POST" action="{% url 'core:add_cart_item' %}" >
+                {% if stock > 0 and product.available and request.user.is_authenticated and not store_manager %}
+                    <form method="POST" action="{% url 'core:add_cart_item' %}" >
                         {% csrf_token %}
                         <input type="hidden" name="product_id" value="{{ product.id }}">
                         <input type="hidden" name="quantity" value="1">
@@ -115,19 +115,37 @@
                         <button type="submit" class="btn btn-primary" >
                             <i class="bi bi-cart-plus"></i> Aggiungi al carrello
                         </button>
-                        <button  class="btn btn-outline-primary" type="button">
+                    </form>
+                <form method="post" action="{% url 'users:toggle_favorite' product.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    {% if product in user.favorite_list.all %}
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-heart-fill"></i> Rimuovi dai preferiti
+                        </button>
+                    {% else %}
+                        <button type="submit" class="btn btn-outline-primary">
                             <i class="bi bi-heart"></i> Aggiungi ai preferiti
                         </button>
+                    {% endif %}
+                </form>
 
-                   </form>
-                {% elif stock == 0 or not available  %}
+                {% elif stock == 0 or not available and request.user.is_authenticated%}
                     <button class="btn btn-secondary" type="button" disabled>
                         <i class="bi bi-cart-plus"></i> Aggiungi al carrello
 
-                    <button  class="btn btn-outline-primary" type="button">
-                        <i class="bi bi-heart"></i> Aggiungi ai preferiti
-                    </button>
-                {% elif not   user.is_authenticated %}
+                    <form method="post" action="{% url 'users:toggle_favorite' product.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        {% if product in user.favorite_list.all %}
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-heart-fill"></i> Rimuovi dai preferiti
+                            </button>
+                        {% else %}
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-heart"></i> Aggiungi ai preferiti
+                            </button>
+                        {% endif %}
+                    </form>
+                {% elif not  user.is_authenticated %}
                     <a href="{% url 'users:login' %}" class="btn btn-secondary" type="button" disabled>
                         <i class="bi bi-cart-plus"></i> Aggiungi al carrello
                     </a>
@@ -138,7 +156,7 @@
                 {% endif %}
             
             </div>
-        
+
 
 
 
@@ -209,7 +227,7 @@
                               <i class="bi bi-pencil-square"></i> Scrivi una recensione
                             </a>
                           {% else %}
-                            <a href="{% url 'users:login' %}?next={% url 'products:write_review' product.id %}" class="btn btn-secondary">
+                            <a href="{% url 'users:login' %}?next={% url 'review:write_review' product.id %}" class="btn btn-secondary">
                               Accedi per scrivere una recensione
                             </a>
                           {% endif %}

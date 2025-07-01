@@ -82,7 +82,7 @@ def view_cart(request):
     }
 
 
-    return render(request, 'cart/view_cart.html', context)
+    return render(request, 'core/view_cart.html', context)
 
 @login_required
 def add_cart_item(request):
@@ -159,7 +159,7 @@ def update_item(request, item_id):
 
 
 
-    return redirect('cart:view_cart')
+    return redirect('core:view_cart')
 
 
 @login_required
@@ -171,7 +171,7 @@ def remove_item(request, item_id):
     if request.method == 'POST':
         cart_item.delete()
 
-    return redirect('cart:view_cart')
+    return redirect('core:view_cart')
 
 @login_required
 def checkout(request):
@@ -255,7 +255,7 @@ def checkout(request):
                         request,
                         f"Quantità insufficiente per {prod['nome']}. Disponibili: {prod['disponibili']}, Richiesti: {prod['richiesti']}"
                     )
-                return redirect('cart:view_cart')
+                return redirect('core:view_cart')
 
             # Altrimenti, procedi con l'aggiornamento dello stock
             for cart_item in cart.items.all():
@@ -274,7 +274,7 @@ def checkout(request):
             if 'checkout_data' in request.session:
                 del request.session['checkout_data']
 
-            return redirect('cart:checkout_success')
+            return redirect('core:checkout_success')
 
 
     else:
@@ -297,7 +297,7 @@ def checkout(request):
         'delivery_date': delivery_date.strftime('%d/%m/%Y')
     }
 
-    return render(request, 'cart/checkout_cart.html', context)
+    return render(request, 'core/checkout_cart.html', context)
 
 
 @login_required
@@ -314,16 +314,16 @@ def update_shipping(request, method):
         del request.session['delivery_date']
 
     # Reindirizza alla pagina del carrello
-    return redirect('cart:view_cart')
+    return redirect('core:view_cart')
 
 def checkout_success(request):
 
-    return render(request, 'cart/checkout_success.html')
+    return render(request, 'core/checkout_success.html')
 
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
-    template_name = 'cart/order_detail.html'
+    template_name = 'core/order_detail.html'
     context_object_name = 'order'
     pk_url_kwarg = 'order_id'  # Parametro URL per l'ID dell'ordine
 
@@ -352,9 +352,9 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
 
 class OrderHistoryView(LoginRequiredMixin, ListView):
     model = Order
-    template_name = 'cart/order_history.html'
+    template_name = 'core/order_history.html'
     context_object_name = 'orders'
-    paginate_by = 10  # 10 ordini per pagina
+    paginate_by = 10
 
     def get_queryset(self):
         user = self.request.user

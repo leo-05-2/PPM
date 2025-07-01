@@ -65,7 +65,7 @@ class StoreManagerDashboardView(LoginRequiredMixin, UserPassesTestMixin, Templat
         context['shipped_not_delivered'] = Order.objects.filter(status = 'shipped')
         context['pending_orders_list'] = Order.objects.filter(status = 'pending').order_by('-created_at')[:5]
         context['shipped'] = Order.objects.filter(status='shipped').order_by('-created_at')[:5]
-        context['all_products'] = Product.objects.all().order_by('-created')
+        context['all_products'] = Product.objects.all().order_by('-created')[:5]
         context['all_reviews'] = Review.objects.order_by('-created_at')[:5]
         context['your_products'] =  your_products
         context['your_products_reviews'] = your_products_reviews
@@ -120,7 +120,7 @@ class UserLogoutView(LogoutView):
 
 
 class UserAccountView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/account.html'  # Specifica il template per la pagina dell'account
+    template_name = 'users/account.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -129,6 +129,8 @@ class UserAccountView(LoginRequiredMixin, TemplateView):
         context['addresses'] = Address.objects.filter(user=self.request.user)
         context['help_texts'] = password_validators_help_texts()
         context['user_reviews'] = Review.objects.filter(user=self.request.user).order_by('-created_at')
+        context['favorite_products'] = self.request.user.favorite_list.all()
+
 
         return context
 
@@ -254,4 +256,4 @@ def home_page(request):
         'categories': categories,
     }
 
-    return render(request, 'core/home_page.html', context)
+    return render(request, 'users/home_page.html', context)

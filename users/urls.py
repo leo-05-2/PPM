@@ -16,6 +16,7 @@ urlpatterns = [
     path('delete_address/<int:address_id>/', delete_address, name='delete_address'),
     path('update_address/<int:address_id>/', update_address, name='update_address'),
     path('store_manager_dashboard/', StoreManagerDashboardView.as_view(), name='store_manager_dashboard'),
+    path('toggle_favorite/<int:product_id>/', toggle_favorite, name='toggle_favorite'),
 
 
 ]

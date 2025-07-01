@@ -64,7 +64,7 @@ def delete_review(request, review_id):
             return redirect('users:store_manager_dashboard')
         else:
             review.delete()
-            return redirect('users:account', product_id=product.id)
+            return redirect('users:account', product_id=product.id) #todo: add a way to check in account template
 
     context = {
         'product': product,

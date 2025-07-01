@@ -101,28 +101,6 @@
                                     </tr>
                                     {% endfor %}
 
-                                <tr>
-                                    <td>1</td>
-                                    <td>Esempio Prodotto 1</td>
-                                    <td>29.99 €</td>
-                                    <td>150</td>
-                                    <td><span class="badge bg-success">Sì</span></td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-info me-1">Modifica</a>
-                                        <a href="#" class="btn btn-sm btn-danger">Elimina</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Esempio Prodotto 2</td>
-                                    <td>49.99 €</td>
-                                    <td>0</td>
-                                    <td><span class="badge bg-danger">No</span></td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-info me-1">Modifica</a>
-                                        <a href="#" class="btn btn-sm btn-danger">Elimina</a>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -204,26 +182,7 @@
                                     </tr>
                                     {% endfor %}
 
-                                <tr>
-                                    <td>1001</td>
-                                    <td>Mario Rossi</td>
-                                    <td><span class="badge bg-processing">In Elaborazione</span></td>
-                                    <td>15/06/2025</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-outline-primary me-1">Dettagli</a>
-                                        <a href="#" class="btn btn-sm btn-warning">Aggiorna Stato</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>1002</td>
-                                    <td>Luisa Bianchi</td>
-                                    <td><span class="badge bg-success">Completato</span></td>
-                                    <td>14/06/2025</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-outline-primary me-1">Dettagli</a>
-                                        <a href="#" class="btn btn-sm btn-warning">Aggiorna Stato</a>
-                                    </td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -268,28 +227,7 @@
                                 </tr>
                                 {% endfor %}
 
-                                <tr>
-                                    <td>201</td>
-                                    <td>Esempio Prodotto 1</td>
-                                    <td>Utente A</td>
-                                    <td>5 stelle</td>
-                                    <td>Prodotto ottimo, spedizione veloce!</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
-                                        <a href="#" class="btn btn-sm btn-danger">Elimina</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>202</td>
-                                    <td>Esempio Prodotto 2</td>
-                                    <td>Utente B</td>
-                                    <td>2 stelle</td>
-                                    <td>Non sono molto soddisfatto della qualità.</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
-                                        <a href="#" class="btn btn-sm btn-danger">Elimina</a>
-                                    </td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -427,7 +365,7 @@
     if (tabButton) {
         new bootstrap.Tab(tabButton).show();
     }
-    // Pulisci l'URL se c'era il parametro
+
     if (params.get("tab")) {
         window.history.replaceState({}, document.title, window.location.pathname);
     }

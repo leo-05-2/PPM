@@ -21,7 +21,7 @@ def product_info(request, product_id):
     # Recupera il prodotto in base all'ID
     product = Product.objects.get(id=product_id)
 
-    # Recupera le categorie associate al prodotto
+
     categories = product.category.all()
 
     name = product.name
@@ -59,7 +59,7 @@ def product_info(request, product_id):
         'stock': stock,
         'related_products': related_products,
         'source': source,
-        'core': cart,
+        'cart': cart,
         'store_manager': is_store_manager(user) if user else False,
         'average_rating': average_rating,
         'reviews': review,
@@ -144,14 +144,14 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView, Per
     permission_required = 'products.add_product'
     model = Product
     form_class = ProductForm
-    template_name = 'products/product_form.html'  # Useremo un form generico per create/update
-    success_url = reverse_lazy('users:store_manager_dashboard')  # Reindirizza alla dashboard del manager
+    template_name = 'products/product_form.html'
+    success_url = reverse_lazy('users:store_manager_dashboard')
 
     def test_func(self):
         return is_store_manager(self.request.user)
 
     def form_valid(self, form):
-        form.instance.added_by = self.request.user  # Imposta l'utente che ha aggiunto il prodotto
+        form.instance.added_by = self.request.user
         messages.success(self.request, "Prodotto aggiunto con successo!")
         return super().form_valid(form)
 
@@ -169,7 +169,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView, Per
 
     def form_valid(self, form):
 
-        form.instance.modified_by = self.request.user  # Imposta l'utente che ha modificato il prodotto
+        form.instance.modified_by = self.request.user
         messages.success(self.request, "Prodotto aggiornato con successo!")
         return super().form_valid(form)
 

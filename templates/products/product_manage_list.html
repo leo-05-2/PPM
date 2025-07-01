@@ -59,7 +59,13 @@
                                     {{ product.name }}
                                 </a>
                             </td>
-                            <td>{{ product.category.name }}</td>
+                            <td>
+                                {% for cat in product.category.all %}
+                                    {{ cat.name }}{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                    <span class="text-muted">Nessuna categoria</span>
+                                {% endfor %}
+                            </td>
                             <td>{{ product.price }} €</td>
                             <td>
                                 {% if product.stock > 10 %}
