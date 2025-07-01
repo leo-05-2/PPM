@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.validators import RegexValidator
 
 # Create your models here.
 
@@ -24,8 +25,14 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(username, password, **extra_fields)
 
 class CustomUser(AbstractUser):
-   phone_number = models.CharField(max_length=15, blank=True, null=True)
+   phone_number = models.CharField(max_length=15, blank=True, null=True, validators=[
+            RegexValidator(
+                regex=r'^\+\d{2,3}\d{10}$',
+                message="Il numero di telefono deve essere nel formato +CCXXXXXXXXXX o +CCCXXXXXXXXXX (prefisso di 2 o 3 cifre seguito da 10 cifre)."
+            )
+        ])
    payment_method = models.CharField(max_length=50, blank=True, null=True)
+   favorite_list = models.ManyToManyField('products.Product', blank=True, related_name='favorited_by')
    objects = CustomUserManager()
 
    def __str__(self):

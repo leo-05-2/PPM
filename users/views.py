@@ -228,6 +228,17 @@ def update_address(request, address_id):
 
     return redirect(reverse('users:account'))
 
+@login_required
+def toggle_favorite(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    user = request.user
+    base_url = reverse('products:product_info', args=[product.id])
+    if product in user.favorite_list.all():
+        user.favorite_list.remove(product)
+        return redirect(f"{base_url}?fav=removed")
+    else:
+        user.favorite_list.add(product)
+        return redirect(f"{base_url}?fav=added")
 
 def home_page(request):
     # Reindirizza utenti autenticati alla home personalizzata
