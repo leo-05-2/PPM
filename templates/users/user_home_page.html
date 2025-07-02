@@ -22,6 +22,16 @@
             </a>
         </div>
     </div>
+{% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
 
     <!-- Ordini recenti -->
     <div class="card mb-5">
@@ -97,7 +107,7 @@
     <!-- Prodotti consigliati -->
     <h2 class="mb-4">Prodotti consigliati per te</h2>
     <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
-        {% for product in latest_products %}
+        {% for product in suggested_products %}
         <div class="col">
             <a href="{% url 'products:product_info' product.id %}?source=user_home_page" class="card h-100">
                 <!-- <img src="{ product.image.url|default:'https:www.placehold.co/30x20' }}" class="card-img-top" alt="{ product.name }}">
@@ -141,26 +151,6 @@
         {% endfor %}
     </div>
 
-    <!-- Collegamenti rapidi -->
- <!--todo   <h2 class="mb-4">Collegamenti rapidi</h2>
-    <div class="row mb-5">
-        <div class="col-md-6 mb-6">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="card-title">lista salvati</h3>
-                    <p class="card-text">I prodotti che hai salvato per dopo</p>
-                    
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-6">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="card-title">Messaggi</h3>
-                    <p class="card-text">Controlla le tue recensioni</p>
-                </div>
-            </div>
-        </div>
-    </div> -->
+
 </div>
 {% endblock %}

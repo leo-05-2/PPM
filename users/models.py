@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
                 message="Il numero di telefono deve essere nel formato +CCXXXXXXXXXX o +CCCXXXXXXXXXX (prefisso di 2 o 3 cifre seguito da 10 cifre)."
             )
         ])
-   payment_method = models.CharField(max_length=50, blank=True, null=True)
+
    favorite_list = models.ManyToManyField('products.Product', blank=True, related_name='favorited_by')
    objects = CustomUserManager()
 
@@ -51,3 +51,22 @@ class Address(models.Model):
 
     class Meta:
         verbose_name_plural = "Address Lists"
+class PaymentMethod(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='payment_methods')
+    card_number = models.CharField(
+        max_length=16,
+        validators=[
+            RegexValidator(regex=r'^\d{16}$', message="Il numero della carta deve essere di 16 cifre numeriche.")]
+    )
+    card_expiry = models.CharField(
+        max_length=5,
+        validators=[
+            RegexValidator(regex=r'^\d{2}/\d{2}$', message="La data di scadenza deve essere nel formato MM/AA.")]
+    )
+    card_cvv = models.CharField(
+        max_length=3,
+        validators=[RegexValidator(regex=r'^\d{3}$', message="Il CVV deve essere di 3 cifre numeriche.")]
+    )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.card_number[-4:]}"  # Show last 4 digits of the card

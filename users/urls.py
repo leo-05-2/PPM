@@ -17,6 +17,8 @@ urlpatterns = [
     path('update_address/<int:address_id>/', update_address, name='update_address'),
     path('store_manager_dashboard/', StoreManagerDashboardView.as_view(), name='store_manager_dashboard'),
     path('toggle_favorite/<int:product_id>/', toggle_favorite, name='toggle_favorite'),
+    path('add_payment_method/', add_payment_method, name='add_payment_method'),
+    path('delete_payment_method/<int:card_id>/', delete_payment_method, name='delete_payment_method'),
 
 
 ]

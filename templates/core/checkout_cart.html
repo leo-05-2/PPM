@@ -95,15 +95,32 @@
                         </div>
                         
                         <!-- Sezione per i dati della carta -->
-                        <div class="row">
-                            <div class="col-12">
-                                {{ form.card_number|as_crispy_field }}
-                            </div>
-                            <div class="col-md-6">
-                                {{ form.card_expiry|as_crispy_field }}
-                            </div>
-                            <div class="col-md-6">
-                                {{ form.card_cvv|as_crispy_field }}
+                        <!-- Sezione per metodo di pagamento esistente o nuovo -->
+                        <div class="form-group mb-4">
+                            {{ form.use_existing_payment|as_crispy_field }}
+                        </div>
+
+                        <div id="existing-payment" class="mb-4">
+                            {{ form.payment_method|as_crispy_field }}
+                            {% if saved_payments.count == 0 %}
+                                <div class="alert alert-warning">Nessun metodo di pagamento salvato.</div>
+                            {% endif %}
+                        </div>
+
+                        <div id="new-payment" class="mb-4" style="display: none;">
+                            <div class="row">
+                                <div class="col-12">
+                                    {{ form.card_number|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.card_expiry|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.card_cvv|as_crispy_field }}
+                                </div>
+                                <div class="col-12">
+                                    {{ form.save_as_default_payment|as_crispy_field }}
+                                </div>
                             </div>
                         </div>
                         
@@ -133,6 +150,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     useExistingCheckbox.addEventListener('change', toggleAddressFields);
     toggleAddressFields(); // Inizializza correttamente
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const useExistingPaymentCheckbox = document.getElementById('id_use_existing_payment');
+    const existingPaymentDiv = document.getElementById('existing-payment');
+    const newPaymentDiv = document.getElementById('new-payment');
+    function togglePaymentFields() {
+        if (useExistingPaymentCheckbox && useExistingPaymentCheckbox.checked) {
+            existingPaymentDiv.style.display = 'block';
+            newPaymentDiv.style.display = 'none';
+        } else {
+            existingPaymentDiv.style.display = 'none';
+            newPaymentDiv.style.display = 'block';
+        }
+    }
+    if (useExistingPaymentCheckbox) {
+        useExistingPaymentCheckbox.addEventListener('change', togglePaymentFields);
+        togglePaymentFields();
+    }
 });
 </script>
 {% endblock %}

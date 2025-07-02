@@ -8,18 +8,18 @@
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            {% if request.GET.source == 'home' %}
+            {% if not request.user.is_authenticated and not request.GET.source == product_list%}
               <!-- Percorso per utenti non autenticati (dalla home) -->
                   <li class="breadcrumb-item"><a href="{% url 'users:home_page' %}">Home</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-            {% elif request.GET.source == 'user_home_page' or user.is_authenticated and not store_manager %}
+            {% elif request.user.is_authenticated  and not store_manager and not request.GET.source == product_list%}
               <!-- Percorso per utenti autenticati (dalla dashboard) -->
                   <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Dashboard</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-            {% elif request.GET.source == 'category_user' %}
+            {% elif request.GET.source == product_list %}
               <!-- Percorso per navigazione da categoria -->
-                  <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">categor</a></li>
-                  <li class="breadcrumb-item"><a href="{% url 'products:category' product.category.slug %}">{{ product.category.name }}</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Dashboard</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'products:product_list_category'  %}">Prodotti</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
                 
             {% elif request.GET.source == 'category_guest' %} <!--todo: decidere se lasciare e creare una source dedicata-->
@@ -27,11 +27,7 @@
                   <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
                   <li class="breadcrumb-item"><a href="{% url 'products:category' product.category.slug %}">{{ product.category.name }}</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-            {% elif request.GET.source == 'store_manager_dashboard' or store_manager%}
-                
-                  <li class="breadcrumb-item"><a href="{% url 'users:store_manager_dashboard'  %}">dashboard</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-                
+
             
             {% else %}
               <!-- Percorso generico predefinito -->
@@ -273,18 +269,20 @@
                             {% for i in related_products %}
                             <div class="col-md-3 mb-4">
                                 <div class="card h-100 shadow-sm">
+                                <a href="{% url 'products:product_info' i.id %}" class="stretched-link text-decoration-none text-dark">
                                     <div class="bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
                                         <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
                                     </div>
                                     <div class="card-body">
-                                        {% with category=categories|first %}
-                                        <span class="badge bg-secondary mb-2">{{ category.get_name_display }}</span>
-                                        {% endwith %}
+                                        {% for category in i.categories.all %}
+                                            <span class="badge bg-secondary mb-2">{{ category.get_name_display }}</span>
+                                        {% endfor %}
                                         <h5 class="card-title">Prodotto correlato {{ i }}</h5>
-                                        <p class="card-text text-primary">{{ price }} €</p>
+                                        <p class="card-text text-primary">{{ i.price }} €</p>
                                         <a href="#" class="btn btn-sm btn-outline-primary">Visualizza</a>
                                     </div>
                                 </div>
+                                </a>
                             </div>
                             {% endfor %}
                         </div>
@@ -368,7 +366,7 @@
 </div>
     
 
-<!-- Aggiungi un margine al contenuto principale per fare spazio alla sidebar -->
+
 <style>
   .container {
     margin-right: 300px;

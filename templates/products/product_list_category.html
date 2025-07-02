@@ -152,7 +152,7 @@
 
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">
-                                    <a href="{% url 'products:product_info' product.id %}{% if source %}?source={{ source }}{% endif %}" class="text-decoration-none text-dark">{{ product.name }}</a>
+                                    <a href="{% url 'products:product_info' product.id %}?source=product_list" class="text-decoration-none text-dark">{{ product.name }}</a>
                                 </h5>
                                 <p class="card-text flex-grow-1">{{ product.description|truncatechars:80 }}</p>
 

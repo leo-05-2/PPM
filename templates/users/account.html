@@ -1,16 +1,29 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block title %}Il tuo account - Marketplace{% endblock %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load crispy_forms_field %}
+
 
 {% block content %}
 <div class="container py-5">
+
     <div class="row">
+        <nav aria-label="breadcrumb" class="mb-3">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Account</li>
+          </ol>
+        </nav>
         <!-- Intestazione pagina -->
         <div class="col-12 mb-4">
             <h1 class="display-5">Il tuo account</h1>
             <p class="lead">Gestisci i tuoi dati personali e le preferenze</p>
             <hr>
         </div>
+
     </div>
 
 
@@ -48,6 +61,7 @@
             </div>
         </div>
 
+
         <!-- Contenuto principale -->
         <div class="col-md-9">
             <div class="tab-content">
@@ -64,36 +78,115 @@
                                     <div class="col-md-6">
                                         <label for="username" class="form-label">Username</label>
                                         <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" readonly>
+
                                     </div>
                                     <div class="col-md-6">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                                        <input type="email"
+                                               class="form-control{% if form.email.errors %} is-invalid{% endif %}"
+                                               id="email" name="email" value="{{ form.email.value|default_if_none:'' }}">
+                                        {% for error in form.email.errors %}
+                                            <div class="invalid-feedback d-block">{{ error }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="first_name" class="form-label">Nome</label>
-                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
+                                        <input type="text"
+                                               class="form-control{% if form.first_name.errors %} is-invalid{% endif %}"
+                                               id="first_name" name="first_name" value="{{ form.first_name.value|default_if_none:'' }}">
+                                        {% for error in form.first_name.errors %}
+                                            <div class="invalid-feedback d-block">{{ error }}</div>
+                                        {% endfor %}
                                     </div>
                                     <div class="col-md-6">
                                         <label for="last_name" class="form-label">Cognome</label>
-                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
+                                        <input type="text"
+                                               class="form-control{% if form.last_name.errors %} is-invalid{% endif %}"
+                                               id="last_name" name="last_name" value="{{ form.last_name.value|default_if_none:'' }}">
+                                        {% for error in form.last_name.errors %}
+                                            <div class="invalid-feedback d-block">{{ error }}</div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="phone_number" class="form-label">Phone</label>
-                                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}">
+                                        <input type="text"
+                                               class="form-control{% if form.phone_number.errors %} is-invalid{% endif %}"
+                                               id="phone_number" name="phone_number" value="{{ form.phone_number.value|default_if_none:'' }}">
+                                        {% for error in form.phone_number.errors %}
+                                            <div class="invalid-feedback d-block">{{ error }}</div>
+                                        {% endfor %}
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="payment_method" class="form-label">Payment method</label>
-                                        <input type="text" class="form-control" id="payment_method" name="payment_method" value="{{ user.payment_method }}">
+                                        <div class="d-flex align-items-end h-100 w-100"">
+                                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#paymentMethodsModal">
+                                                <i class="bi bi-credit-card me-1"></i> Gestisci carte
+                                            </button>
+                                        </div>
                                     </div>
+
                                 </div>
+
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <button type="submit" class="btn btn-primary">Aggiorna profilo</button>
                                 </div>
                             </form>
+                            <!-- Modale gestione carte -->
+                            <div class="modal fade" id="paymentMethodsModal" tabindex="-1" aria-labelledby="paymentMethodsModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                  <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="paymentMethodsModalLabel"><i class="bi bi-credit-card-2-front me-2"></i>I tuoi metodi di pagamento</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <!-- Lista carte -->
+                                    <h6 class="mb-3">Carte salvate</h6>
+                                    <ul class="list-group mb-4">
+                                      {% for card in user.payment_methods.all %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                          <span>
+                                            <i class="bi bi-credit-card-2-front me-2 text-primary"></i>
+                                            **** **** **** {{ card.card_number|slice:"-4:" }} - <span class="text-muted">Scad. {{ card.card_expiry }}</span>
+                                            {% if card.is_default %}
+                                              <span class="badge bg-primary ms-2">Predefinita</span>
+                                            {% endif %}
+                                          </span>
+                                          <form method="post" action="{% url 'users:delete_payment_method' card.id %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Elimina</button>
+                                          </form>
+                                        </li>
+                                      {% empty %}
+                                        <li class="list-group-item text-center text-muted">Nessuna carta salvata.</li>
+                                      {% endfor %}
+                                    </ul>
+                                    <hr>
+                                    <!-- Form aggiunta carta -->
+                                    <h6 class="mb-3">Aggiungi nuova carta</h6>
+                                    <form method="post" action="{% url 'users:add_payment_method' %}" class="row g-3">
+                                      {% csrf_token %}
+                                      <div class="col-md-6">
+                                        {{ payment_form.card_number|as_crispy_field }}
+                                      </div>
+                                      <div class="col-md-3">
+                                        {{ payment_form.card_expiry|as_crispy_field }}
+                                      </div>
+                                      <div class="col-md-3">
+                                        {{ payment_form.card_cvv|as_crispy_field }}
+                                      </div>
+                                      <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i> Aggiungi carta</button>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
 
                             <hr class="my-4">
 
@@ -237,20 +330,17 @@
                                                                         <label for="edit_nickname" class="form-label">Nome indirizzo</label>
                                                                         <input type="text" class="form-control" id="edit_nickname" name="nickname">
                                                                     </div>
-                                                                    <div class="mb-3">
-                                                                        <label for="edit_street" class="form-label">Via e numero civico</label>
-                                                                        <input type="text" class="form-control" id="edit_street" name="street">
-                                                                    </div>
-                                                                    <div class="row mb-3">
+                                                                    <div class="mb-3 row">
                                                                         <div class="col">
+                                                                            <label for="edit_street" class="form-label">Via e numero civico</label>
+                                                                            <input type="text" class="form-control" id="edit_street" name="street">
                                                                             <label for="edit_city" class="form-label">Città</label>
                                                                             <input type="text" class="form-control" id="edit_city" name="city">
                                                                         </div>
-                                                                        <div class="col">
-                                                                            <label for="edit_province" class="form-label">Provincia</label>
-                                                                            <input type="text" class="form-control" id="edit_province" name="province">
-                                                                        </div>
                                                                     </div>
+
+
+
                                                                     <div class="row mb-3">
                                                                         <div class="col">
                                                                             <label for="edit_postal_code" class="form-label">CAP</label>
@@ -360,6 +450,16 @@
                     </div>
                 </div>
             </div>
+            {% if messages %}
+              <div class="container mt-3">
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -376,31 +476,23 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="nickname" class="form-label">Nome indirizzo</label>
-                        <input type="text" class="form-control" id="nickname" name="nickname" placeholder="Es. Casa, Ufficio">
+                        {{ address_form.nickname|as_crispy_field }}
                     </div>
                     <div class="mb-3">
-                        <label for="street" class="form-label">Via e numero civico</label>
-                        <input type="text" class="form-control" id="street" name="street">
+                        {{ address_form.street|as_crispy_field }}
+                    </div>
+                    <div class=" mb-3">
+                        <div class="col">
+                            {{ address_form.city|as_crispy_field }}
+                        </div>
+
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="city" class="form-label">Città</label>
-                            <input type="text" class="form-control" id="city" name="city">
+                            {{ address_form.postal_code|as_crispy_field }}
                         </div>
                         <div class="col">
-                            <label for="province" class="form-label">Provincia</label>
-                            <input type="text" class="form-control" id="province" name="province">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="postal_code" class="form-label">CAP</label>
-                            <input type="text" class="form-control" id="postal_code" name="postal_code">
-                        </div>
-                        <div class="col">
-                            <label for="country" class="form-label">Paese</label>
-                            <input type="text" class="form-control" id="country" name="country" value="Italia">
+                            {{ address_form.country|as_crispy_field }}
                         </div>
                     </div>
                 </div>
@@ -413,81 +505,93 @@
     </div>
 </div>
     
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
 
 
 
 
-        const activeTab = localStorage.getItem('activeTab');
-        if (activeTab) {
-            const tab = document.querySelector(`a[href="${activeTab}"]`);
-            if (tab) {
-                new bootstrap.Tab(tab).show();
-            }
+    const activeTab = localStorage.getItem('activeTab');
+    if (activeTab) {
+        const tab = document.querySelector(`a[href="${activeTab}"]`);
+        if (tab) {
+            new bootstrap.Tab(tab).show();
         }
+    }
 
 
 
-        document.querySelectorAll('a[data-bs-toggle="list"]').forEach(tabEl => {
-            tabEl.addEventListener('shown.bs.tab', function(e) {
-                const hash = e.target.getAttribute('href');
-                localStorage.setItem('activeTab', hash);
+    document.querySelectorAll('a[data-bs-toggle="list"]').forEach(tabEl => {
+        tabEl.addEventListener('shown.bs.tab', function(e) {
+            const hash = e.target.getAttribute('href');
+            localStorage.setItem('activeTab', hash);
 
-            });
         });
-        document.querySelectorAll('.toggle-password').forEach(button => {
-        button.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const input = document.getElementById(targetId);
-            
-
-            if (input.type === 'password') {
-                input.type = 'text';
-                this.innerHTML = '<i class="bi bi-eye-slash"></i>';
-            } else {
-                input.type = 'password';
-                this.innerHTML = '<i class="bi bi-eye"></i>';
-            }
-        });
-        const toastElList = document.querySelectorAll('.toast');
-        const toastList = [...toastElList].map(toastEl => {
-            const toast = new bootstrap.Toast(toastEl, {
-                autohide: true,
-                delay: 5000 // Scompare dopo 5 secondi
-            });
-            toast.show();
-            return toast;
-            
-        });
-        document.querySelectorAll('[data-bs-target="#editAddressModal"]').forEach(button => {
-        button.addEventListener('click', function() {
-            const addressId = this.getAttribute('data-address-id');
-            document.getElementById('edit_address_id').value = addressId;
-            
-            // Recupera i dati dell'indirizzo e compila i campi
-            const addressCard = this.closest('.card');
-            const addressText = addressCard.querySelector('.card-text').textContent.trim().split('\n');
-            const addressTitle = addressCard.querySelector('.card-title').textContent.trim();
-            
-            document.getElementById('edit_nickname').value = addressTitle;
-            document.getElementById('edit_street').value = addressText[0].trim();
-            
-            const cityProvince = addressText[1].split(',');
-            document.getElementById('edit_city').value = cityProvince[0].trim();
-            document.getElementById('edit_province').value = cityProvince[1].trim();
-            
-            document.getElementById('edit_postal_code').value = addressText[2].trim();
-            document.getElementById('edit_country').value = addressText[3] ? addressText[3].trim() : 'Italia';
-            
-            // Aggiorna l'URL del form
-            const form = document.getElementById('editAddressForm');
-            form.action = form.action.replace('/0', `/${addressId}`);
     });
+    document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+        } else {
+            input.type = 'password';
+            this.innerHTML = '<i class="bi bi-eye"></i>';
+        }
+    });
+    const toastElList = document.querySelectorAll('.toast');
+    const toastList = [...toastElList].map(toastEl => {
+        const toast = new bootstrap.Toast(toastEl, {
+            autohide: true,
+            delay: 5000 // Scompare dopo 5 secondi
+        });
+        toast.show();
+        return toast;
+
+    });
+    document.querySelectorAll('[data-bs-target="#editAddressModal"]').forEach(button => {
+    button.addEventListener('click', function() {
+        const addressId = this.getAttribute('data-address-id');
+        document.getElementById('edit_address_id').value = addressId;
+
+        // Recupera i dati dell'indirizzo e compila i campi
+        const addressCard = this.closest('.card');
+        const addressText = addressCard.querySelector('.card-text').textContent.trim().split('\n');
+        const addressTitle = addressCard.querySelector('.card-title').textContent.trim();
+
+        document.getElementById('edit_nickname').value = addressTitle;
+        document.getElementById('edit_street').value = addressText[0].trim();
+
+        const cityProvince = addressText[1].split(',');
+        document.getElementById('edit_city').value = cityProvince[0].trim();
+        document.getElementById('edit_province').value = cityProvince[1].trim();
+
+        document.getElementById('edit_postal_code').value = addressText[2].trim();
+        document.getElementById('edit_country').value = addressText[3] ? addressText[3].trim() : 'Italia';
+
+        // Aggiorna l'URL del form
+        const form = document.getElementById('editAddressForm');
+        form.action = form.action.replace('/0', `/${addressId}`);
 });
-        
-    });
-    });
+});
+
+});
+});
 </script>
+    {% if open_add_address_modal %}
+        <script>
+            var addModal = new bootstrap.Modal(document.getElementById('addAddressModal'));
+            addModal.show();
+        </script>
+    {% endif %}
+    {% if open_payment_modal %}
+    <script>
+        var paymentModal = new bootstrap.Modal(document.getElementById('paymentMethodsModal'));
+        paymentModal.show();
+    </script>
+    {% endif %}
 {% endblock %}
 

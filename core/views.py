@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from users.views import is_store_manager
 from django.contrib.auth.decorators import permission_required
+from users.models import PaymentMethod, Address
 
 # Create your views here.
 
@@ -65,7 +66,7 @@ def view_cart(request):
         formatted_delivery_date = delivery_date_str
 
     context = {
-        'core': cart,
+        'cart': cart,
         'items': items,
         'shipping_form': shipping_form,
         'subtotal': subtotal,
@@ -100,7 +101,7 @@ def add_cart_item(request):
         if not created:
             cart_item.quantity += quantity
             cart_item.save()
-        messages.success(request, f"{product.name} è stato aggiunto al carrello.")
+        # messages.success(request, f"{product.name} è stato aggiunto al carrello.")
 
         redirect_url = f'/products/product/{product_id}/'
         if source:
@@ -186,6 +187,8 @@ def checkout(request):
     shipping_method = checkout_data.get('shipping_method', 'standard')
 
     user_addresses = request.user.addresses.all().order_by('nickname')
+    saved_payments = PaymentMethod.objects.filter(user=request.user)
+
 
     if request.method == 'POST':
         form = CheckoutForm(request.POST, user=request.user)
@@ -205,6 +208,20 @@ def checkout(request):
 
                 )
                 address.save()
+
+            if form.cleaned_data['use_existing_payment']:
+                payment = form.cleaned_data['payment_method']
+            else:
+                # Crea nuovo metodo di pagamento
+                payment = PaymentMethod.objects.create(
+                    user=request.user,
+                    card_number=form.cleaned_data['card_number'],
+                    card_expiry=form.cleaned_data['card_expiry'],
+                    card_cvv=form.cleaned_data['card_cvv'],
+                )
+                if not payment.card_number or not payment.card_expiry or not payment.card_cvv:
+                    request.user.payment_method = payment
+                    request.user.save()
 
             delivery_address = DeliveryAddress(
                 street=address.street,
@@ -279,6 +296,7 @@ def checkout(request):
 
     else:
 
+
         initial_data = {}
         if user_addresses.exists():
             initial_data['use_existing_address'] = True
@@ -287,14 +305,16 @@ def checkout(request):
         form = CheckoutForm(user=request.user, initial=initial_data)
 
     context = {
-        'core': cart,
+        'cart': cart,
         'form': form,
         'user_addresses': user_addresses,
         'subtotal': subtotal,
         'shipping_cost': shipping_cost_view,
         'total': total,
         'shipping_method': shipping_method,
-        'delivery_date': delivery_date.strftime('%d/%m/%Y')
+        'delivery_date': delivery_date.strftime('%d/%m/%Y'),
+        'saved_payments': saved_payments,
+        'form': form,
     }
 
     return render(request, 'core/checkout_cart.html', context)
