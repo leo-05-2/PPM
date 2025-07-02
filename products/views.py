@@ -32,7 +32,7 @@ def product_info(request, product_id):
 
     stock = product.stock
 
-    related_products = Product.objects.filter(category__in=categories).exclude(id=product_id)[:4]
+    related_products = Product.objects.filter(category__in=categories).exclude(id=product_id)[:8]
 
     source = request.GET.get('source')
 

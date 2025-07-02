@@ -20,11 +20,12 @@ from django.views.generic import TemplateView, View # Importa View
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import password_validators_help_texts
+from django.views.decorators.http import require_POST
 
 
 
 
-from core.models import Order
+from core.models import Order , OrderItem
 
 
 # Create your views here.
@@ -36,11 +37,21 @@ def user_home_page(request):
     categories = Category.objects.all()
 
     latest_products = Product.objects.all().order_by('-created')[:8]
+    alredy_bought_products_list = recent_orders.first()
+    alredy_bought_products =  OrderItem.objects.filter(order=alredy_bought_products_list)
+    alredy_bought_products_category = Category.objects.filter(product__in=alredy_bought_products.values_list('product', flat=True))
+    if alredy_bought_products_category.exists() and alredy_bought_products.exists():
+        suggested_products = Product.objects.filter(category__in=alredy_bought_products_category).exclude(id__in=alredy_bought_products)[:4]
+    else:
+        suggested_products = Product.objects.all().order_by('-created')[:4]
+
+
     context = {
         'user': user,
         'recent_orders': recent_orders,
         'latest_products': latest_products,
         'categories': categories,
+        'suggested_products': suggested_products
 
     }
     return render(request, 'users/user_home_page.html', context)
@@ -130,6 +141,10 @@ class UserAccountView(LoginRequiredMixin, TemplateView):
         context['help_texts'] = password_validators_help_texts()
         context['user_reviews'] = Review.objects.filter(user=self.request.user).order_by('-created_at')
         context['favorite_products'] = self.request.user.favorite_list.all()
+        context['form'] = UserProfileForm(instance=self.request.user)
+        context['payment_form'] = PaymentMethodForm()
+        context['address_form'] = AddressForm()
+
 
 
         return context
@@ -228,18 +243,27 @@ def change_password(request):
 @login_required
 def add_address(request):
     if request.method == 'POST':
-        Address.objects.create(
-            user=request.user,
-            street=request.POST.get('street'),
-            city=request.POST.get('city'),
-            province=request.POST.get('province'),
-            postal_code=request.POST.get('postal_code'),
-            country=request.POST.get('country'),
-
-            nickname=request.POST.get('nickname'),
-
-        )
-        messages.success(request, 'Indirizzo aggiunto con successo!')
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+            return redirect('users:account')
+        else:
+            # Passa il form con errori e il flag per riaprire la modale
+            context = {
+                'user': request.user,
+                'orders': Order.objects.filter(user=request.user).order_by('-created_at'),
+                'addresses': Address.objects.filter(user=request.user),
+                'help_texts': password_validators_help_texts(),
+                'user_reviews': Review.objects.filter(user=request.user).order_by('-created_at'),
+                'favorite_products': request.user.favorite_list.all(),
+                'form': UserProfileForm(instance=request.user),
+                'address_form': form,
+                'payment_form': PaymentMethodForm(),
+                'open_add_address_modal': True,
+            }
+            return render(request, 'users/account.html', context)
     return redirect('users:account')
 
 

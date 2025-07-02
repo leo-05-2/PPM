@@ -5,6 +5,7 @@ from .models import *
 import os
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.core.files.storage import default_storage
 
 class PriceFilterForm(forms.Form):
     min_price = forms.IntegerField(label='Prezzo minimo', required=False)
@@ -22,13 +23,15 @@ class PriceFilterForm(forms.Form):
 
 def get_product_images():
     images_dir = os.path.join(settings.MEDIA_ROOT, 'product_images')
+    choices = [('', 'Nessuna immagine')]  # Opzione vuota per nessuna immagine
     if not os.path.exists(images_dir):
-        return []
-    return [
+        return choices
+    choices += [
         (f'product_images/{f}', f)
         for f in os.listdir(images_dir)
         if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp'))
     ]
+    return choices
 
 class ProductForm(forms.ModelForm):
     queryset = Category.objects.all(),
@@ -86,7 +89,7 @@ class ProductForm(forms.ModelForm):
 
         if image_file:
 
-            from django.core.files.storage import default_storage
+
             path = default_storage.save(f'product_images/{image_file.name}', image_file)
             product.image = path
         elif image_choice:

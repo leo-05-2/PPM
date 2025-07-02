@@ -1,10 +1,11 @@
 from crispy_forms.helper import FormHelper
 from django import forms
 from .models import Cart
-from users.models import Address  # Modifica qui: importa da users.models
+from users.models import Address, PaymentMethod  # Modifica qui: importa da users.models
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.layout import Submit
 from crispy_forms.layout import Layout, Field, ButtonHolder, Fieldset
+from django.core.validators import RegexValidator
 
 class CartForm(forms.ModelForm):
 
@@ -40,20 +41,71 @@ class CheckoutForm(forms.Form):
         label="Seleziona indirizzo"
     )
 
+    street = forms.CharField(
+        max_length=255,
+        required=False,
+        label="Via",
+        validators=[
+            RegexValidator(
+                r'^[A-Za-zÀ-ÿ\s\'\-\.]+,\s*\d+[A-Za-z]?$',
+                "Inserisci la via nel formato: nome via, numero civico (es. Via Roma, 12)"
+            )
+        ]
+    )
+    city = forms.CharField(
+        max_length=100,
+        required=False,
+        label="Città",
+        validators=[RegexValidator(r'^[A-Za-z\s]+$', 'La città deve contenere solo lettere e spazi.')]
+    )
+    postal_code = forms.CharField(
+        max_length=20,
+        required=False,
+        label="CAP",
+        validators=[RegexValidator(r'^\d{5}$', 'Il CAP deve essere di 5 cifre numeriche.')]
+    )
 
-    street = forms.CharField(max_length=255, required=False, label="Via")
-    city = forms.CharField(max_length=100, required=False, label="Città")
-    postal_code = forms.CharField(max_length=20, required=False, label="CAP")
 
 
-    card_number = forms.CharField(max_length=16, required=True, label="Numero carta")
-    card_expiry = forms.CharField(max_length=5, required=True, label="Scadenza (MM/AA)")
-    card_cvv = forms.CharField(max_length=4, required=True, label="CVV")
     nickname = forms.CharField(
         label='Nome identificativo dell\'indirizzo',
         max_length=50,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False
+    )
+
+    use_existing_payment = forms.BooleanField(
+        required=False,
+        initial=True,
+        label="Usa un metodo di pagamento salvato"
+    )
+    payment_method = forms.ModelChoiceField(
+        queryset=PaymentMethod.objects.none(),
+        required=False,
+        label="Metodo di pagamento salvato"
+    )
+    save_as_default_payment = forms.BooleanField(
+        required=False,
+        initial=True,
+        label="Imposta come metodo di pagamento predefinito"
+    )
+    card_number = forms.CharField(
+        max_length=16,
+        required=False,
+        label="Numero carta",
+        validators=[RegexValidator(r'^\d{16}$', 'Inserisci un numero di carta valido (16 cifre).')]
+    )
+    card_expiry = forms.CharField(
+        max_length=5,
+        required=False,
+        label="Scadenza (MM/AA)",
+        validators=[RegexValidator(r'^\d{2}/\d{2}$', 'Formato scadenza non valido (MM/AA).')]
+    )
+    card_cvv = forms.CharField(
+        max_length=3,
+        required=False,
+        label="CVV",
+        validators=[RegexValidator(r'^\d{3}$', 'CVV non valido.')]
     )
 
     def __init__(self, *args, **kwargs):
@@ -69,11 +121,10 @@ class CheckoutForm(forms.Form):
             'postal_code',
 
         )
-
-
-
         if user:
             self.fields['address'].queryset = Address.objects.filter(user=user)
+            self.fields['payment_method'].queryset = PaymentMethod.objects.filter(user=user)
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -88,9 +139,14 @@ class CheckoutForm(forms.Form):
                 if not cleaned_data.get(field):
                     self.add_error(field, f'Questo campo è obbligatorio')
 
-        for field in ['card_number', 'card_expiry', 'card_cvv']:
-            if not cleaned_data.get(field):
-                self.add_error(field, 'Questo campo è obbligatorio')
+        if cleaned_data.get('use_existing_payment'):
+            if not cleaned_data.get('payment_method'):
+                self.add_error('payment_method', 'Seleziona un metodo di pagamento salvato')
+        else:
+            for field in ['card_number', 'card_expiry', 'card_cvv']:
+                if not cleaned_data.get(field):
+                    self.add_error(field, 'Questo campo è obbligatorio')
+
 
 
 
