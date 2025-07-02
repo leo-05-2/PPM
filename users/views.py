@@ -137,15 +137,64 @@ class UserAccountView(LoginRequiredMixin, TemplateView):
 
 @login_required
 def update_profile(request):
+    user = request.user
     if request.method == 'POST':
-        user = request.user
-        user.email = request.POST.get('email')
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.phone_number = request.POST.get('phone_number')
-        user.payment_method = request.POST.get('payment_method')
-        user.save()
-        messages.success(request, 'Profilo aggiornato con successo!')
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            payment_method = form.cleaned_data.get('payment_method')
+            if payment_method:
+                PaymentMethod.objects.filter(user=user).update(is_default=False)
+                payment_method.is_default = True
+                payment_method.save()
+            messages.success(request, 'Profilo aggiornato con successo!')
+            return redirect('users:account')
+        else:
+            context = {
+                'user': user,
+                'orders': Order.objects.filter(user=user).order_by('-created_at'),
+                'addresses': Address.objects.filter(user=user),
+                'help_texts': password_validators_help_texts(),
+                'user_reviews': Review.objects.filter(user=user).order_by('-created_at'),
+                'favorite_products': user.favorite_list.all(),
+                'form': form,
+            }
+            return render(request, 'users/account.html', context)
+
+    return redirect('users:account')
+
+@login_required
+@require_POST
+def add_payment_method(request):
+    form = PaymentMethodForm(request.POST)
+    if form.is_valid():
+        payment = form.save(commit=False)
+        payment.user = request.user
+        payment.save()
+        messages.success(request, "Carta aggiunta con successo.")
+        return redirect('users:account')
+    else:
+
+        context = {
+            'user': request.user,
+            'orders': Order.objects.filter(user=request.user).order_by('-created_at'),
+            'addresses': Address.objects.filter(user=request.user),
+            'help_texts': password_validators_help_texts(),
+            'user_reviews': Review.objects.filter(user=request.user).order_by('-created_at'),
+            'favorite_products': request.user.favorite_list.all(),
+            'form': UserProfileForm(instance=request.user),
+            'address_form': AddressForm(),
+            'payment_form': form,
+            'open_payment_modal': True,
+        }
+        return render(request, 'users/account.html', context)
+
+@login_required
+@require_POST
+def delete_payment_method(request, card_id):
+    card = get_object_or_404(PaymentMethod, id=card_id, user=request.user)
+    card.delete()
+    messages.success(request, "Carta eliminata.")
     return redirect('users:account')
 
 
