@@ -101,7 +101,7 @@ def add_cart_item(request):
         if not created:
             cart_item.quantity += quantity
             cart_item.save()
-        # messages.success(request, f"{product.name} è stato aggiunto al carrello.")
+        messages.success(request, f"{product.name} è stato aggiunto al carrello.")
 
         redirect_url = f'/products/product/{product_id}/'
         if source:

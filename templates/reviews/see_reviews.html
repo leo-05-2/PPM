@@ -29,11 +29,11 @@
                         <p class="card-subtitle mb-2 text-muted">Valutazione: {{ review.rating }} stelle</p>
                         <p class="card-text">{{ review.comment }}</p>
                         <p class="text-end text-muted small">Pubblicato il: {{ review.created_at|date:"d M Y" }}</p>
-                        {% if request.user == review.user %}
-                            <div class="mt-2 text-end">
-                                <a href="{% url 'reviews:delete_review'%}" class="btn btn-sm btn-outline-danger">Elimina la tua recensione</a>
-                            </div>
-                        {% endif %}
+
+                        <div class="mt-2 text-end">
+                            <a href="{% url 'review:delete_review' review.id%}" class="btn btn-sm btn-outline-danger">Elimina la  recensione</a>
+                        </div>
+
                     </div>
                 </div>
                 {% endfor %}

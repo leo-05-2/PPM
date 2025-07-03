@@ -54,7 +54,7 @@
             <button class="nav-link" id="your-products-reviews-tab" data-bs-toggle="tab" data-bs-target="#your-products-reviews" type="button" role="tab" aria-controls="your-products-reviews" aria-selected="false">Recensioni dei tuoi prodotti</button>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="logout-tab" href="{% url 'users:logout' %}">Logout</a>
+            <a class="nav-link text-danger" id="logout-tab" href="{% url 'users:logout' %}">Logout</a>
         </li>
     </ul>
 
@@ -193,8 +193,10 @@
 
         <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
             <div class="card shadow-sm">
-                <div class="card-header bg-light">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Gestione Recensioni</h5>
+                    <a href="{% url 'review:see_all_reviews' %}" class="btn btn-outline-primary mt-3">Vedi tutte le recensioni</a>
+
                 </div>
                 <div class="card-body">
                     <p>Qui puoi moderare le recensioni dei prodotti.</p>
@@ -231,7 +233,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <a href="#" class="btn btn-outline-primary mt-3">Vedi tutte le recensioni</a>
                 </div>
             </div>
         </div>
@@ -338,6 +339,9 @@
                                 <td>{{ review.comment|truncatechars:70 }}</td>
                                 <td>
                                     <a href="{% url 'review:see_reviews' review.product_id %}" class="btn btn-sm btn-outline-primary me-1">Vedi</a>
+                                    <a href="{% url 'review:delete_review' review.id %}" class="btn btn-sm btn-danger">
+                                        Elimina
+                                    </a>
                                 </td>
                             </tr>
                             {% empty %}

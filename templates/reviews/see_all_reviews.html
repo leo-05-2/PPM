@@ -36,7 +36,7 @@
                             <td>{{ review.comment|truncatechars:50 }}</td>
                             <td>{{ review.created_at|date:"d/m/Y" }}</td>
                             <td>
-                                <a href="{% url 'reviews:delete_review' review.product.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa recensione?');">
+                                <a href="{% url 'review:delete_review' review.product.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa recensione?');">
                                     <i class="bi bi-trash"></i> Elimina
                                 </a>
                                 </td>
