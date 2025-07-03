@@ -98,7 +98,6 @@ class CustomLoginView(LoginView):
         if user is not None:
             login(self.request, user)
             if is_store_manager(user):
-                messages.success(self.request, f"Benvenuto Store Manager, {user.username}!")
                 return redirect('users:store_manager_dashboard')
             else:
                 messages.success(self.request, f"Benvenuto, {user.username}!")

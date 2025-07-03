@@ -84,14 +84,15 @@ def see_reviews(request, product_id):
     }
     return render(request, 'reviews/see_reviews.html', context)
 
-@permission_required('reviews.view_all_review', raise_exception=True)
+@permission_required('review.view_all_review', raise_exception=True)
 def see_all_reviews(request):
 
     reviews = Review.objects.all().order_by('-created_at')
-    products = Product.objects.all().order_by('-created_at')
+    products = Product.objects.all().order_by('-created')
     #todo: se raggruppare per prodotto e chi lo ha aggiunto al sito e un insieme generale, e aggiungere il permesso da assegnadolo da admin agli store manager
 
     context = {
         'reviews': reviews,
+
     }
     return render(request, 'reviews/see_all_reviews.html', context)
