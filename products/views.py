@@ -34,6 +34,13 @@ def product_info(request, product_id):
 
     related_products = Product.objects.filter(category__in=categories).exclude(id=product_id)[:8]
 
+    if related_products.count() >4:
+        related_products_one = related_products[:4]
+        related_products_two = related_products[4:]
+    else:
+        related_products_one = related_products
+        related_products_two = []
+
     source = request.GET.get('source')
 
     review = Review.objects.filter(product=product).order_by('-created_at')
@@ -64,6 +71,8 @@ def product_info(request, product_id):
         'average_rating': average_rating,
         'reviews': review,
         'available': product.available,
+        'related_products_one': related_products_one,
+        'related_products_two': related_products_two,
 
     }
 
@@ -215,20 +224,8 @@ class ProductManageListView(LoginRequiredMixin, UserPassesTestMixin, ListView, P
         context['search_query'] = self.request.GET.get('q', '')
         return context
     #todo: add a template to use q
-def product_list(request):
-    products = Product.objects.all()
-    categories = Category.objects.all()
-
-    # Gestione del filtro per prezzo
 
 
-    context = {
-        'products': products,
-        'categories': categories,
-
-    }
-
-    return render(request, 'products/product_list.html', context)
 
 def category_create(request):
     categories = Category.objects.all()

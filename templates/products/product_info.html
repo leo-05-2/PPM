@@ -12,27 +12,26 @@
               <!-- Percorso per utenti non autenticati (dalla home) -->
                   <li class="breadcrumb-item"><a href="{% url 'users:home_page' %}">Home</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-            {% elif request.user.is_authenticated  and not store_manager and not request.GET.source == product_list%}
+            {% elif request.user.is_authenticated  and  not store_manager and  request.GET.source != "product_list"%}
               <!-- Percorso per utenti autenticati (dalla dashboard) -->
                   <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Dashboard</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-            {% elif request.GET.source == product_list %}
+            {% elif request.GET.source == "product_list" %}
               <!-- Percorso per navigazione da categoria -->
                   <li class="breadcrumb-item"><a href="{% url 'users:user_home_page' %}">Dashboard</a></li>
                   <li class="breadcrumb-item"><a href="{% url 'products:product_list_category'  %}">Prodotti</a></li>
                   <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
                 
-            {% elif request.GET.source == 'category_guest' %} <!--todo: decidere se lasciare e creare una source dedicata-->
-              <!-- Percorso per navigazione da categoria -->
-                  <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
-                  <li class="breadcrumb-item"><a href="{% url 'products:category' product.category.slug %}">{{ product.category.name }}</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-
-            
             {% else %}
-              <!-- Percorso generico predefinito -->
-                  <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+
+                <!-- Percorso per store manager -->
+                <li class="breadcrumb-item"><a href="{% url 'users:store_manager_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'products:product_manage_list' %}">Prodotti</a></li>
+
+
+
+
+
             {% endif %}
             
         </ol>
@@ -57,7 +56,7 @@
             <!-- Categorie -->
             <div class="mb-3">
                 {% for category in categories %}
-                <span class="badge bg-secondary me-1">{{ category.get_name_display }}</span>
+                <span class="badge bg-secondary me-1">{{ category.name }}</span>
                 {% endfor %}
             </div>
 
@@ -108,48 +107,60 @@
                         <input type="hidden" name="product_id" value="{{ product.id }}">
                         <input type="hidden" name="quantity" value="1">
                         <input type="hidden" name="source" value="{{ request.GET.source }}">
-                        <button type="submit" class="btn btn-primary" >
+                        <button type="submit" class="btn btn-primary w-100" >
                             <i class="bi bi-cart-plus"></i> Aggiungi al carrello
                         </button>
                     </form>
                 <form method="post" action="{% url 'users:toggle_favorite' product.id %}" style="display: inline;">
                     {% csrf_token %}
                     {% if product in user.favorite_list.all %}
-                        <button type="submit" class="btn btn-outline-danger">
+                        <button type="submit" class="btn btn-outline-danger w-100">
                             <i class="bi bi-heart-fill"></i> Rimuovi dai preferiti
                         </button>
                     {% else %}
-                        <button type="submit" class="btn btn-outline-primary">
+                        <button type="submit" class="btn btn-outline-primary w-100">
                             <i class="bi bi-heart"></i> Aggiungi ai preferiti
                         </button>
                     {% endif %}
                 </form>
 
                 {% elif stock == 0 or not available and request.user.is_authenticated%}
-                    <button class="btn btn-secondary" type="button" disabled>
+                    <button class="btn btn-secondary w-100" type="button" disabled>
                         <i class="bi bi-cart-plus"></i> Aggiungi al carrello
+                    </button>
 
                     <form method="post" action="{% url 'users:toggle_favorite' product.id %}" style="display: inline;">
                         {% csrf_token %}
                         {% if product in user.favorite_list.all %}
-                            <button type="submit" class="btn btn-outline-danger">
+                            <button type="submit" class="btn btn-outline-danger w-100">
                                 <i class="bi bi-heart-fill"></i> Rimuovi dai preferiti
                             </button>
                         {% else %}
-                            <button type="submit" class="btn btn-outline-primary">
+                            <button type="submit" class="btn btn-outline-primary w-100">
                                 <i class="bi bi-heart"></i> Aggiungi ai preferiti
                             </button>
                         {% endif %}
                     </form>
                 {% elif not  user.is_authenticated %}
-                    <a href="{% url 'users:login' %}" class="btn btn-secondary" type="button" disabled>
+                    <a href="{% url 'users:login' %}" class="btn btn-secondary w-100" type="button" disabled>
                         <i class="bi bi-cart-plus"></i> Aggiungi al carrello
                     </a>
     
-                    <a href="{% url 'users:login' %}" class="btn btn-outline-primary" type="button">
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-primary w-100" type="button">
                         <i class="bi bi-heart"></i> Aggiungi ai preferiti
                     </a>
                 {% endif %}
+            {% if messages %}
+              <div class="mb-3">
+                {% for message in messages %}
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+                  </div>
+                {% endfor %}
+              </div>
+{% endif %}
+
             
             </div>
 
@@ -190,7 +201,7 @@
                                 <th scope="row">Categorie</th>
                                 <td>
                                     {% for category in categories %}
-                                    {{ category.get_name_display }}{% if not forloop.last %}, {% endif %}
+                                    {{ category.name }}{% if not forloop.last %}, {% endif %}
                                     {% endfor %}
                                 </td>
                             </tr>
@@ -262,51 +273,73 @@
             <h3 class="mb-4">Prodotti correlati</h3>
 
             <div id="relatedProductsCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <!-- Primo gruppo di prodotti -->
-                    <div class="carousel-item active">
-                        <div class="row">
-                            {% for i in related_products %}
-                            <div class="col-md-3 mb-4">
-                                <div class="card h-100 shadow-sm">
-                                <a href="{% url 'products:product_info' i.id %}" class="stretched-link text-decoration-none text-dark">
-                                    <div class="bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
-                                        <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <div class="card-body">
-                                        {% for category in i.categories.all %}
-                                            <span class="badge bg-secondary mb-2">{{ category.get_name_display }}</span>
-                                        {% endfor %}
-                                        <h5 class="card-title">Prodotto correlato {{ i }}</h5>
-                                        <p class="card-text text-primary">{{ i.price }} €</p>
-                                        <a href="#" class="btn btn-sm btn-outline-primary">Visualizza</a>
-                                    </div>
-                                </div>
-                                </a>
-                            </div>
+              <div class="carousel-inner">
+                <!-- Primo gruppo -->
+                <div class="carousel-item active">
+                  <div class="row px-5">
+                    {% for i in related_products_one %}
+                    <div class="col-md-3 mb-4 col-6">
+                      <div class="card h-100 shadow-sm">
+                        <a href="{% url 'products:product_info' i.id %}" class="stretched-link text-decoration-none text-dark">
+                          <div class="bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
+                            <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                          </div>
+                          <div class="card-body">
+                            {% for category in i.category.all %}
+                              <span class="badge bg-secondary mb-2">{{ category.get_name_display }}</span>
                             {% endfor %}
-                        </div>
+                            <h5 class="card-title">{{ i.name }}</h5>
+                            <p class="card-text text-primary">{{ i.price }} €</p>
+                            <button class="btn btn-sm btn-outline-primary">Visualizza</button>
+                          </div>
+                        </a>
+                      </div>
                     </div>
-
-                    <!-- Secondo gruppo di prodotti -->
-
+                    {% endfor %}
+                  </div>
                 </div>
-
-                <!-- Controlli del carousel -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide="prev" style="width: 5%;">
-                    <span class="carousel-control-prev-icon bg-primary rounded-circle" aria-hidden="true"></span>
-                    <span class="visually-hidden">Precedente</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide="next" style="width: 5%;">
-                    <span class="carousel-control-next-icon bg-primary rounded-circle" aria-hidden="true"></span>
-                    <span class="visually-hidden">Successivo</span>
-                </button>
-
-
-                <div class="carousel-indicators" style="bottom: -40px;">
-                    <button type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide-to="0" class="active bg-primary" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide-to="1" class="bg-primary" aria-label="Slide 2"></button>
+                <!-- Secondo gruppo, se esiste -->
+                {% if related_products_two %}
+                <div class="carousel-item">
+                  <div class="row">
+                    {% for i in related_products_two %}
+                    <div class="col-md-3 mb-4 col-6">
+                      <div class="card h-100 shadow-sm">
+                        <a href="{% url 'products:product_info' i.id %}" class="stretched-link text-decoration-none text-dark">
+                          <div class="bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
+                            <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                          </div>
+                          <div class="card-body">
+                            {% for category in i.categories.all %}
+                              <span class="badge bg-secondary mb-2">{{ category.get_name_display }}</span>
+                            {% endfor %}
+                            <h5 class="card-title">{{ i.name }}</h5>
+                            <p class="card-text text-primary">{{ i.price }} €</p>
+                            <button class="btn btn-sm btn-outline-primary">Visualizza</button>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
                 </div>
+                {% endif %}
+              </div>
+              <!-- Controlli carosello -->
+              {% if related_products_two %}
+              <button class="carousel-control-prev" type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-primary rounded-circle" aria-hidden="true"></span>
+                <span class="visually-hidden">Precedente</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-primary rounded-circle" aria-hidden="true"></span>
+                <span class="visually-hidden">Successivo</span>
+              </button>
+              <div class="carousel-indicators" style="bottom: -40px;">
+                <button type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide-to="0" class="active bg-primary" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#relatedProductsCarousel" data-bs-slide-to="1" class="bg-primary" aria-label="Slide 2"></button>
+              </div>
+              {% endif %}
             </div>
         </div>
     </div>
@@ -320,7 +353,7 @@
 </div>
     {% endif %}
     {% if not store_manager %}
-    <div class="position-fixed top-0 end-0 h-100 bg-light shadow" style="width: 300px; z-index: 1030; overflow-y: auto;" id="cartSidebar">
+    <div class="position-fixed top-0 end-0 h-100 bg-light shadow d-none d-md-block" style="width: 300px; z-index: 1030; overflow-y: auto;" id="cartSidebar">
   <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-primary text-white">
     <h5 class="mb-0">Il tuo carrello</h5>
   </div>
@@ -368,10 +401,12 @@
 
 
 <style>
+  @media (min-width: 768px) {
   .container {
     margin-right: 300px;
     max-width: calc(100% - 300px);
   }
+}
 </style>
     {% endif %}
     
