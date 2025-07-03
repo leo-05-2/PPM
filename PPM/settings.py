@@ -19,8 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
 }
-dj_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(dj_from_env)
+# dj_from_env = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'].update(dj_from_env)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure--zmetloj=8c7$d
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 #ALLOWED_HOSTS = []
-ALLOWED_HOSTS = [djangorailway-production.up.railway.app,127.0.0.1 ,'localhost ']
+ALLOWED_HOSTS = ['djangorailway-production.up.railway.app', '127.0.0.1', 'localhost']
 
 
 # Application definition

@@ -1,11 +1,11 @@
 asgiref===3.8.1
 crispy-bootstrap5==2025.4
-Django ==5.2
+Django==5.2
 django-crispy-forms==2.4
 gunicorn==23.0.0
 packaging==25.0
 pillow==11.2.1
 setuptools==78.1.1
-sqlparse== 0.4.4
+sqlparse==0.4.4
 wheel==0.45.1
 dj-database-url==3.0.1
