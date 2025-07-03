@@ -37,11 +37,11 @@ def user_home_page(request):
     categories = Category.objects.all()
 
     latest_products = Product.objects.all().order_by('-created')[:8]
-    alredy_bought_products_list = recent_orders.first()
-    alredy_bought_products =  OrderItem.objects.filter(order=alredy_bought_products_list)
-    alredy_bought_products_category = Category.objects.filter(product__in=alredy_bought_products.values_list('product', flat=True))
-    if alredy_bought_products_category.exists() and alredy_bought_products.exists():
-        suggested_products = Product.objects.filter(category__in=alredy_bought_products_category).exclude(id__in=alredy_bought_products)[:4]
+    already_bought_products_list = recent_orders.first()
+    already_bought_products =  OrderItem.objects.filter(order=already_bought_products_list)
+    already_bought_products_category = Category.objects.filter(product__in=already_bought_products.values_list('product', flat=True))
+    if already_bought_products_category.exists() and already_bought_products.exists():
+        suggested_products = Product.objects.filter(category__in=already_bought_products_category).exclude(id__in=already_bought_products)[:4]
     else:
         suggested_products = Product.objects.all().order_by('-created')[:4]
 

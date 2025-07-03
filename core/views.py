@@ -274,7 +274,7 @@ def checkout(request):
                     )
                 return redirect('core:view_cart')
 
-            # Altrimenti, procedi con l'aggiornamento dello stock
+
             for cart_item in cart.items.all():
                 product = cart_item.product
                 product.stock -= cart_item.quantity
@@ -327,13 +327,13 @@ def update_shipping(request, method):
     if method not in ['standard', 'express']:
         method = 'standard'
 
-    # Salva il metodo nella sessione
+
     request.session['shipping_method'] = method
 
     if 'delivery_date' in request.session:
         del request.session['delivery_date']
 
-    # Reindirizza alla pagina del carrello
+
     return redirect('core:view_cart')
 
 def checkout_success(request):

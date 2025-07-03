@@ -1,0 +1,8 @@
+asgiref @ file:///croot/asgiref_1724072470684/work
+crispy-bootstrap5==2025.4
+Django @ file:///croot/django_1745263580040/work
+django-crispy-forms==2.4
+pillow==11.2.1
+setuptools==78.1.1
+sqlparse @ file:///croot/sqlparse_1734704446487/work
+wheel==0.45.1

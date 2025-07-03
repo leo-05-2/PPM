@@ -14,14 +14,14 @@ from core.models import *
 @login_required
 def write_review(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    purchease_verified = False
+    purchase_verified = False
     if request.user.is_authenticated:
         #  if the user has purchased the product
         purchases_list = Order.objects.filter(user=request.user)
         purchases = OrderItem.objects.filter(product=product, order__in=purchases_list)
         delivered_purchases = purchases.filter(order__status='delivered')
         if purchases.exists() and delivered_purchases.exists():
-            purchease_verified = True
+            purchase_verified = True
 
 
 
@@ -40,7 +40,7 @@ def write_review(request, product_id):
     context = {
         'form': form,
         'product': product,
-        'purchease_verified': purchease_verified,
+        'purchase_verified': purchase_verified,
     }
     return render(request, 'reviews/write_review.html', context)
 
