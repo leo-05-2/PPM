@@ -41,8 +41,9 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure--zmetloj=8c7$d
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 #ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['djangorailway-production.up.railway.app', '127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
+ALLOWED_HOSTS = ['ppm-production-fc10.up.railway.app', '127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000' ,  'https://ppm-production-fc10.up.railway.app']  # Aggiungi il tuo dominio qui
+# https://ppm-production-fc10.up.railway.app/
 
 
 # Application definition
