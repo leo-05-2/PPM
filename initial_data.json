@@ -1,571 +1,1868 @@
 [
-  {
-    "model": "products.Category",
-    "pk": 1,
-    "fields": {
-      "name": "Alimenti"
-    }
-  },
-  {
-    "model": "users.Address",
-    "pk": 1,
-    "fields": {
-      "user": 1,
-      "city": "Roma",
-      "street": "Via Nuova 1",
-      "postal_code": "00100",
-      "nickname": "Casa",
-      "country": "Italia"
-    }
-  },
-  {
-    "model": "users.Address",
-    "pk": 2,
-    "fields": {
-      "user": 4,
-      "city": "Milano",
-      "street": "Via Vecchia 2",
-      "postal_code": "20100",
-      "nickname": "Ufficio",
-      "country": "Italia"
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 2,
-    "fields": {
-      "name": "Barretta Energetica",
-      "description": "Barretta proteica gusto cioccolato",
-      "price": "1.20",
-      "stock": 50,
-      "available": true,
-      "created": "2024-06-10T09:00:00Z",
-      "updated": "2024-06-10T09:00:00Z",
-      "image": "",
-      "category": [1],
-      "added_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 3,
-    "fields": {
-      "name": "Bevanda Isotonica",
-      "description": "Bevanda per sportivi",
-      "price": "1.80",
-      "stock": 80,
-      "available": true,
-      "created": "2024-06-10T09:10:00Z",
-      "updated": "2024-06-10T09:10:00Z",
-      "image": "",
-      "category": [1],
-      "added_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 4,
-    "fields": {
-      "name": "Creatina",
-      "description": "Integratore di creatina monoidrato",
-      "price": "9.90",
-      "stock": 30,
-      "available": true,
-      "created": "2024-06-10T09:20:00Z",
-      "updated": "2024-06-10T09:20:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 5,
-    "fields": {
-      "name": "Omega 3",
-      "description": "Integratore di olio di pesce",
-      "price": "7.50",
-      "stock": 40,
-      "available": true,
-      "created": "2024-06-10T09:30:00Z",
-      "updated": "2024-06-10T09:30:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 6
-    }
-  },
-  {
-    "model": "core.Order",
-    "pk": 3,
-    "fields": {
-      "user": 1,
-      "created_at": "2024-06-10T08:20:00Z",
-      "delivery_date": "2024-06-22",
-      "status": "delivered",
-      "shipping_cost": "0.00",
-      "shipping_method": "express"
-    }
-  },
-  {
-    "model": "core.Order",
-    "pk": 7,
-    "fields": {
-      "user": 1,
-      "created_at": "2024-06-17T08:00:00Z",
-      "delivery_date": "2024-06-19",
-      "status": "delivered",
-      "shipping_cost": "3.00",
-      "shipping_method": "standard"
-    }
-  },
-  {
-    "model": "core.OrderItem",
-    "pk": 12,
-    "fields": {
-      "order": 7,
-      "product": 17,
-      "price": "24.90",
-      "quantity": 1
-    }
-  },
-  {
-    "model": "core.Order",
-    "pk": 9,
-    "fields": {
-      "user": 1,
-      "created_at": "2024-06-18T08:00:00Z",
-      "delivery_date": "2024-06-21",
-      "status": "delivered",
-      "shipping_cost": "3.00",
-      "shipping_method": "standard"
-    }
-  },
-  {
-    "model": "core.OrderItem",
-    "pk": 14,
-    "fields": {
-      "order": 9,
-      "product": 4,
-      "price": "9.90",
-      "quantity": 1
-    }
-  },
-  {
-    "model": "core.OrderItem",
-    "pk": 15,
-    "fields": {
-      "order": 9,
-      "product": 5,
-      "price": "7.50",
-      "quantity": 1
-    }
-  },
-  {
-    "model": "core.Order",
-    "pk": 10,
-    "fields": {
-      "user": 4,
-      "created_at": "2024-06-18T09:00:00Z",
-      "delivery_date": "2024-06-22",
-      "status": "delivered",
-      "shipping_cost": "3.00",
-      "shipping_method": "express"
-    }
-  },
-  {
-    "model": "core.OrderItem",
-    "pk": 16,
-    "fields": {
-      "order": 10,
-      "product": 2,
-      "price": "1.20",
-      "quantity": 1
-    }
-  },
-  {
-    "model": "core.OrderItem",
-    "pk": 17,
-    "fields": {
-      "order": 10,
-      "product": 3,
-      "price": "1.80",
-      "quantity": 1
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 6,
-    "fields": {
-      "name": "Multivitaminico",
-      "description": "Integratore multivitaminico completo per il benessere quotidiano.",
-      "price": "12.00",
-      "stock": 60,
-      "available": true,
-      "created": "2024-06-10T09:40:00Z",
-      "updated": "2024-06-10T09:40:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 6,
-      "modified_by": 6
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 7,
-    "fields": {
-      "name": "BCAA",
-      "description": "Aminoacidi ramificati per il recupero muscolare.",
-      "price": "15.00",
-      "stock": 25,
-      "available": true,
-      "created": "2024-06-11T10:00:00Z",
-      "updated": "2024-06-11T10:00:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 2,
-      "modified_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 17,
-    "fields": {
-      "name": "Proteine Whey",
-      "description": "Proteine del siero del latte ad alto valore biologico.",
-      "price": "24.90",
-      "stock": 40,
-      "available": true,
-      "created": "2024-06-16T11:00:00Z",
-      "updated": "2024-06-16T11:00:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 4,
-      "modified_by": 4
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 4,
-    "fields": {
-      "product": 17,
-      "user": 1,
-      "rating": 4,
-      "comment": "Ottime proteine, si sciolgono bene.",
-      "created_at": "2024-06-17T10:00:00Z"
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 6,
-    "fields": {
-      "product": 3,
-      "user": 1,
-      "rating": 5,
-      "comment": "Bevanda isotonica molto rinfrescante.",
-      "created_at": "2024-06-18T12:00:00Z"
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 7,
-    "fields": {
-      "product": 4,
-      "user": 1,
-      "rating": 4,
-      "comment": "Creatina efficace, si scioglie bene.",
-      "created_at": "2024-06-18T13:00:00Z"
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 8,
-    "fields": {
-      "product": 5,
-      "user": 1,
-      "rating": 5,
-      "comment": "Omega 3 di qualità, nessun retrogusto.",
-      "created_at": "2024-06-18T14:00:00Z"
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 9,
-    "fields": {
-      "product": 2,
-      "user": 1,
-      "rating": 4,
-      "comment": "Barretta gustosa e saziante.",
-      "created_at": "2024-06-18T15:00:00Z"
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 10,
-    "fields": {
-      "product": 3,
-      "user": 4,
-      "rating": 5,
-      "comment": "Ottima per il recupero dopo l'allenamento.",
-      "created_at": "2024-06-18T16:00:00Z"
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 11,
-    "fields": {
-      "product": 4,
-      "user": 4,
-      "rating": 4,
-      "comment": "Buon integratore, spedizione veloce.",
-      "created_at": "2024-06-18T17:00:00Z"
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 12,
-    "fields": {
-      "product": 5,
-      "user": 4,
-      "rating": 5,
-      "comment": "Ottimo rapporto qualità/prezzo.",
-      "created_at": "2024-06-18T18:00:00Z"
-    }
-  },
-  {
-    "model": "review.Review",
-    "pk": 2,
-    "fields": {
-      "product": 2,
-      "user": 4,
-      "rating": 4,
-      "comment": "Buono ma migliorabile",
-      "created_at": "2024-06-16T11:00:00Z"
-    }
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2025-06-29T14:20:19.988Z",
+    "user": 3,
+    "content_type": 3,
+    "object_id": "1",
+    "object_repr": "Store Managers",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
   }
-  ,
-  {
-    "model": "products.Category",
-    "pk": 1,
-    "fields": { "name": "Alimenti" }
-  },
-  {
-    "model": "products.Category",
-    "pk": 3,
-    "fields": { "name": "Integratori" }
-  },
-  {
-    "model": "users.Address",
-    "pk": 1,
-    "fields": {
-      "user": 1,
-      "city": "Roma",
-      "street": "Via Nuova 1",
-      "postal_code": "00100",
-      "nickname": "Casa",
-      "country": "Italia"
-    }
-  },
-  {
-    "model": "users.Address",
-    "pk": 2,
-    "fields": {
-      "user": 4,
-      "city": "Milano",
-      "street": "Via Vecchia 2",
-      "postal_code": "20100",
-      "nickname": "Ufficio",
-      "country": "Italia"
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 2,
-    "fields": {
-      "name": "Barretta Energetica",
-      "description": "Barretta proteica gusto cioccolato",
-      "price": "1.20",
-      "stock": 50,
-      "available": true,
-      "created": "2024-06-10T09:00:00Z",
-      "updated": "2024-06-10T09:00:00Z",
-      "image": "",
-      "category": [1],
-      "added_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 3,
-    "fields": {
-      "name": "Bevanda Isotonica",
-      "description": "Bevanda per sportivi",
-      "price": "1.80",
-      "stock": 80,
-      "available": true,
-      "created": "2024-06-10T09:10:00Z",
-      "updated": "2024-06-10T09:10:00Z",
-      "image": "",
-      "category": [1],
-      "added_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 4,
-    "fields": {
-      "name": "Creatina",
-      "description": "Integratore di creatina monoidrato",
-      "price": "9.90",
-      "stock": 30,
-      "available": true,
-      "created": "2024-06-10T09:20:00Z",
-      "updated": "2024-06-10T09:20:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 6
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 5,
-    "fields": {
-      "name": "Omega 3",
-      "description": "Integratore di olio di pesce",
-      "price": "7.50",
-      "stock": 40,
-      "available": true,
-      "created": "2024-06-10T09:30:00Z",
-      "updated": "2024-06-10T09:30:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 6
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 6,
-    "fields": {
-      "name": "Multivitaminico",
-      "description": "Integratore multivitaminico completo per il benessere quotidiano.",
-      "price": "12.00",
-      "stock": 60,
-      "available": true,
-      "created": "2024-06-10T09:40:00Z",
-      "updated": "2024-06-10T09:40:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 6,
-      "modified_by": 6
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 7,
-    "fields": {
-      "name": "BCAA",
-      "description": "Aminoacidi ramificati per il recupero muscolare.",
-      "price": "15.00",
-      "stock": 25,
-      "available": true,
-      "created": "2024-06-11T10:00:00Z",
-      "updated": "2024-06-11T10:00:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 2,
-      "modified_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 8,
-    "fields": {
-      "name": "Barretta Frutta",
-      "description": "Barretta energetica alla frutta",
-      "price": "1.50",
-      "stock": 35,
-      "available": true,
-      "created": "2024-06-12T09:00:00Z",
-      "updated": "2024-06-12T09:00:00Z",
-      "image": "",
-      "category": [1],
-      "added_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 9,
-    "fields": {
-      "name": "Vitamina C",
-      "description": "Integratore di vitamina C",
-      "price": "5.00",
-      "stock": 20,
-      "available": true,
-      "created": "2024-06-13T09:00:00Z",
-      "updated": "2024-06-13T09:00:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 6
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 10,
-    "fields": {
-      "name": "Barretta Mandorle",
-      "description": "Barretta energetica alle mandorle",
-      "price": "1.60",
-      "stock": 40,
-      "available": true,
-      "created": "2024-06-14T09:00:00Z",
-      "updated": "2024-06-14T09:00:00Z",
-      "image": "",
-      "category": [1],
-      "added_by": 2
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 11,
-    "fields": {
-      "name": "Magnesio",
-      "description": "Integratore di magnesio puro",
-      "price": "6.00",
-      "stock": 30,
-      "available": true,
-      "created": "2024-06-15T09:00:00Z",
-      "updated": "2024-06-15T09:00:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 6
-    }
-  },
-  {
-    "model": "products.Product",
-    "pk": 17,
-    "fields": {
-      "name": "Proteine Whey",
-      "description": "Proteine del siero del latte ad alto valore biologico.",
-      "price": "24.90",
-      "stock": 40,
-      "available": true,
-      "created": "2024-06-16T11:00:00Z",
-      "updated": "2024-06-16T11:00:00Z",
-      "image": "",
-      "category": [3],
-      "added_by": 6,
-      "modified_by": 6
-    }
-  },
-  {
-    "model": "core.Order",
-    "pk": 3,
-    "fields": {
-      "user": 1,
-      "created_at": "2024-06-10T08:20:00Z",
-      "delivery_date": "2024-06-22",
-      "status": "delivered",
-      "shipping_cost": "0.00",
-      "shipping_method": "express"
-    }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2025-06-29T14:21:22.096Z",
+    "user": 3,
+    "content_type": 3,
+    "object_id": "2",
+    "object_repr": "Customers",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
   }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2025-06-29T14:22:08.484Z",
+    "user": 3,
+    "content_type": 6,
+    "object_id": "2",
+    "object_repr": "store_menager",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 1,
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 1,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 2,
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 1,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 3,
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 1,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 4,
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": 1,
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 5,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 2,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 6,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 2,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 7,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 2,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 8,
+  "fields": {
+    "name": "Can view permission",
+    "content_type": 2,
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 9,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 3,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 10,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 3,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 11,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 3,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 12,
+  "fields": {
+    "name": "Can view group",
+    "content_type": 3,
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 13,
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 4,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 14,
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 4,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 15,
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 4,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 16,
+  "fields": {
+    "name": "Can view content type",
+    "content_type": 4,
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can add session",
+    "content_type": 5,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can change session",
+    "content_type": 5,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 5,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can view session",
+    "content_type": 5,
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 6,
+    "codename": "add_customuser"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 6,
+    "codename": "change_customuser"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 6,
+    "codename": "delete_customuser"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 24,
+  "fields": {
+    "name": "Can view user",
+    "content_type": 6,
+    "codename": "view_customuser"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add address",
+    "content_type": 7,
+    "codename": "add_address"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can change address",
+    "content_type": 7,
+    "codename": "change_address"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can delete address",
+    "content_type": 7,
+    "codename": "delete_address"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 28,
+  "fields": {
+    "name": "Can view address",
+    "content_type": 7,
+    "codename": "view_address"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 29,
+  "fields": {
+    "name": "Can add category",
+    "content_type": 8,
+    "codename": "add_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 30,
+  "fields": {
+    "name": "Can change category",
+    "content_type": 8,
+    "codename": "change_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 31,
+  "fields": {
+    "name": "Can delete category",
+    "content_type": 8,
+    "codename": "delete_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 32,
+  "fields": {
+    "name": "Can view category",
+    "content_type": 8,
+    "codename": "view_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 33,
+  "fields": {
+    "name": "Can add product",
+    "content_type": 9,
+    "codename": "add_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 34,
+  "fields": {
+    "name": "Can change product",
+    "content_type": 9,
+    "codename": "change_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 35,
+  "fields": {
+    "name": "Can delete product",
+    "content_type": 9,
+    "codename": "delete_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 36,
+  "fields": {
+    "name": "Can view product",
+    "content_type": 9,
+    "codename": "view_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 37,
+  "fields": {
+    "name": "Can add cart",
+    "content_type": 10,
+    "codename": "add_cart"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 38,
+  "fields": {
+    "name": "Can change cart",
+    "content_type": 10,
+    "codename": "change_cart"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 39,
+  "fields": {
+    "name": "Can delete cart",
+    "content_type": 10,
+    "codename": "delete_cart"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 40,
+  "fields": {
+    "name": "Can view cart",
+    "content_type": 10,
+    "codename": "view_cart"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 41,
+  "fields": {
+    "name": "Can add order",
+    "content_type": 11,
+    "codename": "add_order"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 42,
+  "fields": {
+    "name": "Can change order",
+    "content_type": 11,
+    "codename": "change_order"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 43,
+  "fields": {
+    "name": "Can delete order",
+    "content_type": 11,
+    "codename": "delete_order"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 44,
+  "fields": {
+    "name": "Can view order",
+    "content_type": 11,
+    "codename": "view_order"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 45,
+  "fields": {
+    "name": "Può vedere tutti gli ordini",
+    "content_type": 11,
+    "codename": "view_all_orders"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 46,
+  "fields": {
+    "name": "Can add order item",
+    "content_type": 12,
+    "codename": "add_orderitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 47,
+  "fields": {
+    "name": "Can change order item",
+    "content_type": 12,
+    "codename": "change_orderitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 48,
+  "fields": {
+    "name": "Can delete order item",
+    "content_type": 12,
+    "codename": "delete_orderitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 49,
+  "fields": {
+    "name": "Can view order item",
+    "content_type": 12,
+    "codename": "view_orderitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 50,
+  "fields": {
+    "name": "Can add cart item",
+    "content_type": 13,
+    "codename": "add_cartitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 51,
+  "fields": {
+    "name": "Can change cart item",
+    "content_type": 13,
+    "codename": "change_cartitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 52,
+  "fields": {
+    "name": "Can delete cart item",
+    "content_type": 13,
+    "codename": "delete_cartitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can view cart item",
+    "content_type": 13,
+    "codename": "view_cartitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can add delivery address",
+    "content_type": 14,
+    "codename": "add_deliveryaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can change delivery address",
+    "content_type": 14,
+    "codename": "change_deliveryaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can delete delivery address",
+    "content_type": 14,
+    "codename": "delete_deliveryaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can view delivery address",
+    "content_type": 14,
+    "codename": "view_deliveryaddress"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can add review",
+    "content_type": 15,
+    "codename": "add_review"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can change review",
+    "content_type": 15,
+    "codename": "change_review"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can delete review",
+    "content_type": 15,
+    "codename": "delete_review"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 61,
+  "fields": {
+    "name": "Can view review",
+    "content_type": 15,
+    "codename": "view_review"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 62,
+  "fields": {
+    "name": "Can view all reviews",
+    "content_type": 15,
+    "codename": "view_all_review"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 63,
+  "fields": {
+    "name": "Can add payment method",
+    "content_type": 16,
+    "codename": "add_paymentmethod"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 64,
+  "fields": {
+    "name": "Can change payment method",
+    "content_type": 16,
+    "codename": "change_paymentmethod"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 65,
+  "fields": {
+    "name": "Can delete payment method",
+    "content_type": 16,
+    "codename": "delete_paymentmethod"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 66,
+  "fields": {
+    "name": "Can view payment method",
+    "content_type": 16,
+    "codename": "view_paymentmethod"
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "Store Managers",
+    "permissions": [
+      37,
+      45,
+      44,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      58,
+      59,
+      60,
+      62,
+      61
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 2,
+  "fields": {
+    "name": "Customers",
+    "permissions": []
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 1,
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 2,
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 3,
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 4,
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 5,
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 6,
+  "fields": {
+    "app_label": "users",
+    "model": "customuser"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 7,
+  "fields": {
+    "app_label": "users",
+    "model": "address"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 8,
+  "fields": {
+    "app_label": "products",
+    "model": "category"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 9,
+  "fields": {
+    "app_label": "products",
+    "model": "product"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 10,
+  "fields": {
+    "app_label": "core",
+    "model": "cart"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 11,
+  "fields": {
+    "app_label": "core",
+    "model": "order"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 12,
+  "fields": {
+    "app_label": "core",
+    "model": "orderitem"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 13,
+  "fields": {
+    "app_label": "core",
+    "model": "cartitem"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 14,
+  "fields": {
+    "app_label": "core",
+    "model": "deliveryaddress"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 15,
+  "fields": {
+    "app_label": "review",
+    "model": "review"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 16,
+  "fields": {
+    "app_label": "users",
+    "model": "paymentmethod"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "7rpmxx631v8bnrio0g98q7r9k2wzql3y",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnZ9Q9T0ucMkb1r4wCypTipEHeHSCmgfTPzXmIK21qmradlmllcBIrT7xYDPVLdAd9DvTVJra7LHOWuyIN2OTZOz-vh_h2U0Mu3zg6jB9IuDsjGDjQkBKOcd5bJI6CJ1hImBQkYNLJilUGHmM8mkPXi_QHHTDdj:1uWv2w:5R51wB1pM8v24a9Z01IozSJk1Z-7X0iJStdEZ4ZFOY8",
+    "expire_date": "2025-07-16T10:50:34.679Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "afg7lkjoebiyapz2h7itlvxnnxgqtf6r",
+  "fields": {
+    "session_data": ".eJx9kMtuAyEMRf-FdUUYHgNk2X2_ARnMBJoUooGpVEX59zJqFLWbLn3v8bHkG3Gw9eS2FleXkRzJRF5-Zx7COZa9wHcop0pDLX3Nnu4IfbSNvlWMl9cH-0eQoKWx7Rc1waylEVxOQRkhFuNVYLgwlEYZyzTTIOwUPPCoGJrZcuG9NjhLE8WQjgv5M65fDqHHoWTqwPSBM65GGVIM57r1vQRyvJG2-V47XAbIFWVsMC3l6zWXkwu19ZFLau2In5j9mf-983R8xJ7q_pfWoSCsSO73b8C4aZA:1uWCIK:asYdbthFS-mb_i1yIm70lDel4zYTL0tWZdrwYHbbXew",
+    "expire_date": "2025-07-14T11:03:28.302Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "gvbufj5p6jee9ktzci67t1gadtytcidg",
+  "fields": {
+    "session_data": ".eJyFkEtuAyEQRO_COsJ8B_DS-5wBNTRjJnbAGphIkeW7h5GcKFllW-91ldR34mHr2W8trX5BciScvPzOAsRLKjvANyjnSmMtfV0C3RX6pI2-VkzX09P9U5Ch5XEdZs1hMspKoXjUVsrZBh0ZzgyV1dYxwwxIx2MAkTRDOzkhQzAWJ2WTHKVjYflI66dH6GlUsunAzEEwoQeMOcVL3foOgRzvpG2h1w7XIRqq2VBaXm63pZx9rK2PWFHnRvxtcUGV-2_mp-M99Vz3t7QOBWFF8nh8AWMWaVo:1uWeiD:iURMEBJPKNk2l2A0LXxubH4UwYtoHmLu6nRhcjpajTE",
+    "expire_date": "2025-07-15T17:24:05.583Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "h7f1qqlwmajjsqzixeq2m3c6nzxfwyej",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnZ9Q9T0ucMkb1r4wCypTipEHeHSCmgfTPzXmIK21qmradlmllcBIrT7xYDPVLdAd9DvTVJra7LHOWuyIN2OTZOz-vh_h2U0Mu3zg6jB9IuDsjGDjQkBKOcd5bJI6CJ1hImBQkYNLJilUGHmM8mkPXi_QHHTDdj:1uWBrI:-F5HNF1ZnXkq39ZpUh6uJTCNrghFayZm23DsSTfbgRA",
+    "expire_date": "2025-07-14T10:35:32.298Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "jg3pqo8lse9ei42ripzd2w758zrcw88h",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnZ9Q9T0ucMkb1r4wCypTipEHeHSCmgfTPzXmIK21qmradlmllcBIrT7xYDPVLdAd9DvTVJra7LHOWuyIN2OTZOz-vh_h2U0Mu3zg6jB9IuDsjGDjQkBKOcd5bJI6CJ1hImBQkYNLJilUGHmM8mkPXi_QHHTDdj:1uWu4x:9kNPvTIeHhGPknH2aQEDU_A6yogNLGjDTl7-GDt-I68",
+    "expire_date": "2025-07-16T09:48:35.175Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "nqazk4tbyln685dpc0routqszn2ng6t4",
+  "fields": {
+    "session_data": ".eJx9kMtuwyAQRf-FdUXGBgxkmX2_AQ0PB5oUIoMrRVH-PViyonbT5dx75ow0D2JwbdGsNSwmeXIkA_n4nVl0l5C3wn9hPhfqSm5LsnRD6N5W-ll8uJ529o8gYo19285iwElyxUY-OKEYm5UVDvwMniuhNEiQyPTgLI5BgFeTHpm1UvmJq8C6tF9IP2G5G48tdCVMB5CHEUbRSxeDu5S1bSWS44PU1bbS8NpBBhSgMzWm2y3ls3Gltp5zqnWP39g-_3vn7fgOLZbtL7Vh9rh48ny-AL7QaYo:1uWYTO:ftvc1rWF4g07ELXm_SUdyJq9lE9DxDTnRre1IV95k3U",
+    "expire_date": "2025-07-15T10:44:22.071Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "of9mtszu8v4lv2jp0dkkvrpi8qqbvx20",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGll2_FtT0nMGa9drkwBypDipEHeHSCmgfTPzXiLhto5p62VJE4uz0OL0uxHmR2k74Du22yzz3NZlIrkr8qBdXmcuz8vh_h2M2MdvTdVp9MGCGazODoypQC4rrootOIgqqIAm6kw4FKcYfBwMUQD2FooR7w_GNTcc:1uWWV6:Pkbl1uz1hNdyAAPmMLVYQYvz292XMAiIBPkNKE7mrh4",
+    "expire_date": "2025-07-15T08:38:00.726Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xi0wb97j7qor96ek3ijjg1g0vjxw4b1l",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnZ9Q9T0ucMkb1r4wCypTipEHeHSCmgfTPzXmIK21qmradlmllcBIrT7xYDPVLdAd9DvTVJra7LHOWuyIN2OTZOz-vh_h2U0Mu3zg6jB9IuDsjGDjQkBKOcd5bJI6CJ1hImBQkYNLJilUGHmM8mkPXi_QHHTDdj:1uWv8b:7bYEDRklL_uUCp_sVlBCsyDpD2LTWbUPfJ217WXtL9c",
+    "expire_date": "2025-07-16T10:56:25.480Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xmq3tcqn938xo16do9u10up8vaenrwe7",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGll2_FtT0nMGa9drkwBypDipEHeHSCmgfTPzXiLhto5p62VJE4uz0OL0uxHmR2k74Du22yzz3NZlIrkr8qBdXmcuz8vh_h2M2MdvTdVp9MGCGazODoypQC4rrootOIgqqIAm6kw4FKcYfBwMUQD2FooR7w_GNTcc:1uWZ07:1iqYSl5WmXNC4xb7JtqgdLRYoK_soY6BOpFL8MF7ixM",
+    "expire_date": "2025-07-15T11:18:11.277Z"
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$2PtYInCGMcGLZTKtj5UIQE$xnvqRy79aby40Oc36CFIt2NO56LmLoszMuyke6nxX54=",
+    "last_login": "2025-07-02T09:46:07.006Z",
+    "is_superuser": false,
+    "username": "user",
+    "first_name": "",
+    "last_name": "",
+    "email": "usermail@gmail.it",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-06-29T14:09:08.391Z",
+    "phone_number": null,
+    "groups": [],
+    "user_permissions": [],
+    "favorite_list": [
+      15,
+      14,
+      13,
+      1
+    ]
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$PLaILqzT5EqnL482j6RAQN$fv0z4/43q7665sv8WlcD2S6iFFKEdTmM8thG0inmrjs=",
+    "last_login": "2025-07-02T10:56:25.477Z",
+    "is_superuser": false,
+    "username": "store_menager",
+    "first_name": "",
+    "last_name": "",
+    "email": "storemanager@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-06-29T14:16:11Z",
+    "phone_number": null,
+    "groups": [
+      1
+    ],
+    "user_permissions": [],
+    "favorite_list": []
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$pC4s21qCV3hFzIrfR5RJPG$JO0IMigx80/QeyKCda2WFhRmIZIsILsdh3NZ/XSioXU=",
+    "last_login": "2025-07-02T10:53:27.335Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@admin.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-06-29T14:18:24.993Z",
+    "phone_number": null,
+    "groups": [],
+    "user_permissions": [],
+    "favorite_list": []
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$sJGyttOCp8x97K1wQPUxVU$tGZOxlVQsKSRbsFuzKgzM/QwrbmIETcEGCQoDWMOQLI=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "customer2",
+    "first_name": "",
+    "last_name": "",
+    "email": "customer2@custom.gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-06-29T15:30:23.831Z",
+    "phone_number": null,
+    "groups": [],
+    "user_permissions": [],
+    "favorite_list": []
+  }
+},
+{
+  "model": "users.customuser",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$23dqbovt87G2WvebHKZO3Q$gor105IQeqnTwaNE0+lAmGt+CMFW0OihWqqb5W/33aA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "store_menager2",
+    "first_name": "",
+    "last_name": "",
+    "email": "manager2@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-06-29T15:39:25.824Z",
+    "phone_number": null,
+    "groups": [],
+    "user_permissions": [],
+    "favorite_list": []
+  }
+},
+{
+  "model": "users.address",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "city": "Roma",
+    "street": "Via Nuova 1",
+    "postal_code": "00100",
+    "nickname": "Casa",
+    "country": "Italia"
+  }
+},
+{
+  "model": "users.address",
+  "pk": 2,
+  "fields": {
+    "user": 4,
+    "city": "Milano",
+    "street": "Via Vecchia 2",
+    "postal_code": "20100",
+    "nickname": "Ufficio",
+    "country": "Italia"
+  }
+},
+{
+  "model": "users.address",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "city": "prova",
+    "street": "prova",
+    "postal_code": "000",
+    "nickname": "prova",
+    "country": "Italia"
+  }
+},
+{
+  "model": "users.address",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "city": "o",
+    "street": "o",
+    "postal_code": "o",
+    "nickname": "Indirizzo principale",
+    "country": "Italia"
+  }
+},
+{
+  "model": "users.paymentmethod",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "card_number": "1111111111111111",
+    "card_expiry": "11/12",
+    "card_cvv": "111"
+  }
+},
+{
+  "model": "users.paymentmethod",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "card_number": "0000000000000000",
+    "card_expiry": "01/01",
+    "card_cvv": "111"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 1,
+  "fields": {
+    "name": "Alimenti"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 2,
+  "fields": {
+    "name": "Attrezzature"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 3,
+  "fields": {
+    "name": "Integratori"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "name": "proteine",
+    "description": "",
+    "price": "2.50",
+    "stock": 88,
+    "available": true,
+    "created": "2025-06-29T15:07:49.453Z",
+    "updated": "2025-07-02T09:48:52.838Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": 2,
+    "category": [
+      1,
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "name": "Barretta Energetica",
+    "description": "Barretta proteica gusto cioccolato",
+    "price": "1.20",
+    "stock": 50,
+    "available": true,
+    "created": "2024-06-10T09:00:00Z",
+    "updated": "2024-06-10T09:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": null,
+    "category": [
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "name": "Bevanda Isotonica",
+    "description": "Bevanda per sportivi",
+    "price": "1.80",
+    "stock": 80,
+    "available": true,
+    "created": "2024-06-10T09:10:00Z",
+    "updated": "2024-06-10T09:10:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": null,
+    "category": [
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 4,
+  "fields": {
+    "name": "Creatina",
+    "description": "Integratore di creatina monoidrato",
+    "price": "9.90",
+    "stock": 30,
+    "available": true,
+    "created": "2024-06-10T09:20:00Z",
+    "updated": "2024-06-10T09:20:00Z",
+    "image": "",
+    "added_by": 6,
+    "modified_by": null,
+    "category": [
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 5,
+  "fields": {
+    "name": "Omega 3",
+    "description": "Integratore di olio di pesce",
+    "price": "7.50",
+    "stock": 40,
+    "available": true,
+    "created": "2024-06-10T09:30:00Z",
+    "updated": "2024-06-10T09:30:00Z",
+    "image": "",
+    "added_by": 6,
+    "modified_by": null,
+    "category": [
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 6,
+  "fields": {
+    "name": "Multivitaminico",
+    "description": "Integratore multivitaminico completo per il benessere quotidiano.",
+    "price": "12.00",
+    "stock": 60,
+    "available": true,
+    "created": "2024-06-10T09:40:00Z",
+    "updated": "2024-06-10T09:40:00Z",
+    "image": "",
+    "added_by": 6,
+    "modified_by": 6,
+    "category": [
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 7,
+  "fields": {
+    "name": "BCAA",
+    "description": "Aminoacidi ramificati per il recupero muscolare.",
+    "price": "15.00",
+    "stock": 25,
+    "available": true,
+    "created": "2024-06-11T10:00:00Z",
+    "updated": "2024-06-11T10:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": 2,
+    "category": [
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 8,
+  "fields": {
+    "name": "Barretta Frutta",
+    "description": "Barretta energetica alla frutta",
+    "price": "1.50",
+    "stock": 35,
+    "available": true,
+    "created": "2024-06-12T09:00:00Z",
+    "updated": "2024-06-12T09:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": null,
+    "category": [
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 9,
+  "fields": {
+    "name": "Vitamina C",
+    "description": "Integratore di vitamina C",
+    "price": "5.00",
+    "stock": 20,
+    "available": true,
+    "created": "2024-06-13T09:00:00Z",
+    "updated": "2024-06-13T09:00:00Z",
+    "image": "",
+    "added_by": 6,
+    "modified_by": null,
+    "category": [
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 10,
+  "fields": {
+    "name": "Barretta Mandorle",
+    "description": "Barretta energetica alle mandorle",
+    "price": "1.60",
+    "stock": 40,
+    "available": true,
+    "created": "2024-06-14T09:00:00Z",
+    "updated": "2024-06-14T09:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": null,
+    "category": [
+      1
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 11,
+  "fields": {
+    "name": "Magnesio",
+    "description": "Integratore di magnesio puro",
+    "price": "6.00",
+    "stock": 30,
+    "available": true,
+    "created": "2024-06-15T09:00:00Z",
+    "updated": "2024-06-15T09:00:00Z",
+    "image": "",
+    "added_by": 6,
+    "modified_by": null,
+    "category": [
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 12,
+  "fields": {
+    "name": "Fasce Polsi",
+    "description": "Fasce elastiche per il supporto dei polsi durante l'allenamento.",
+    "price": "9.90",
+    "stock": 50,
+    "available": true,
+    "created": "2024-06-15T11:00:00Z",
+    "updated": "2024-06-15T11:00:00Z",
+    "image": "",
+    "added_by": 4,
+    "modified_by": 4,
+    "category": [
+      2
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 13,
+  "fields": {
+    "name": "Tappetino Fitness",
+    "description": "Tappetino antiscivolo per esercizi a corpo libero e stretching.",
+    "price": "19.90",
+    "stock": 30,
+    "available": true,
+    "created": "2024-06-15T12:00:00Z",
+    "updated": "2024-06-15T12:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": 2,
+    "category": [
+      2
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 14,
+  "fields": {
+    "name": "Shaker Proteine",
+    "description": "Shaker da 700ml per preparare e trasportare frullati proteici.",
+    "price": "6.50",
+    "stock": 100,
+    "available": true,
+    "created": "2024-06-15T13:00:00Z",
+    "updated": "2024-06-15T13:00:00Z",
+    "image": "",
+    "added_by": 4,
+    "modified_by": 4,
+    "category": [
+      2
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 15,
+  "fields": {
+    "name": "Corda per Saltare",
+    "description": "Corda regolabile per allenamento cardio e riscaldamento.",
+    "price": "7.90",
+    "stock": 60,
+    "available": true,
+    "created": "2024-06-15T14:00:00Z",
+    "updated": "2024-06-15T14:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": 2,
+    "category": [
+      2
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 16,
+  "fields": {
+    "name": "Manubri Regolabili",
+    "description": "Coppia di manubri regolabili da 2 a 20 kg per allenamento domestico.",
+    "price": "79.90",
+    "stock": 10,
+    "available": true,
+    "created": "2024-06-16T10:00:00Z",
+    "updated": "2024-06-16T10:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": 2,
+    "category": [
+      2
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 17,
+  "fields": {
+    "name": "Proteine Whey",
+    "description": "Proteine del siero del latte ad alto valore biologico.",
+    "price": "24.90",
+    "stock": 40,
+    "available": true,
+    "created": "2024-06-16T11:00:00Z",
+    "updated": "2024-06-16T11:00:00Z",
+    "image": "",
+    "added_by": 6,
+    "modified_by": 6,
+    "category": [
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 18,
+  "fields": {
+    "name": "Elastici Fitness",
+    "description": "Set di elastici di resistenza per allenamento funzionale.",
+    "price": "14.90",
+    "stock": 35,
+    "available": true,
+    "created": "2024-06-16T12:00:00Z",
+    "updated": "2024-06-16T12:00:00Z",
+    "image": "",
+    "added_by": 4,
+    "modified_by": 4,
+    "category": [
+      2
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 19,
+  "fields": {
+    "name": "Pre-Workout",
+    "description": "Integratore pre-allenamento per energia e concentrazione.",
+    "price": "21.00",
+    "stock": 22,
+    "available": true,
+    "created": "2024-06-16T13:00:00Z",
+    "updated": "2024-06-16T13:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": 2,
+    "category": [
+      3
+    ]
+  }
+},
+{
+  "model": "products.product",
+  "pk": 20,
+  "fields": {
+    "name": "Foam Roller",
+    "description": "Rullo in schiuma per automassaggio e recupero muscolare.",
+    "price": "16.90",
+    "stock": 28,
+    "available": true,
+    "created": "2024-06-16T14:00:00Z",
+    "updated": "2024-06-16T14:00:00Z",
+    "image": "",
+    "added_by": 2,
+    "modified_by": 2,
+    "category": [
+      2
+    ]
+  }
+},
+{
+  "model": "core.cart",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "address": null
+  }
+},
+{
+  "model": "core.cart",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "address": null
+  }
+},
+{
+  "model": "core.cartitem",
+  "pk": 2,
+  "fields": {
+    "cart": 1,
+    "product": 1,
+    "quantity": 3
+  }
+},
+{
+  "model": "core.cartitem",
+  "pk": 3,
+  "fields": {
+    "cart": 1,
+    "product": 20,
+    "quantity": 2
+  }
+},
+{
+  "model": "core.deliveryaddress",
+  "pk": 1,
+  "fields": {
+    "street": "prova",
+    "city": "prova",
+    "province": null,
+    "postal_code": "000",
+    "country": "Italia",
+    "created_at": "2025-07-01T16:11:04.859Z",
+    "nickname": "prova"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "created_at": "2024-06-10T08:00:00Z",
+    "address": null,
+    "delivery_date": "2024-06-20",
+    "status": "pending",
+    "shipping_cost": "3.00",
+    "shipping_method": "standard"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "created_at": "2024-06-10T08:10:00Z",
+    "address": null,
+    "delivery_date": "2024-06-21",
+    "status": "shipped",
+    "shipping_cost": "3.00",
+    "shipping_method": "express"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "created_at": "2024-06-10T08:20:00Z",
+    "address": null,
+    "delivery_date": "2024-06-22",
+    "status": "delivered",
+    "shipping_cost": "0.00",
+    "shipping_method": "express"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 4,
+  "fields": {
+    "user": 3,
+    "created_at": "2024-06-10T08:30:00Z",
+    "address": null,
+    "delivery_date": "2024-06-23",
+    "status": "pending",
+    "shipping_cost": "3.00",
+    "shipping_method": "standard"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 5,
+  "fields": {
+    "user": 3,
+    "created_at": "2024-06-10T08:40:00Z",
+    "address": null,
+    "delivery_date": "2024-06-24",
+    "status": "shipped",
+    "shipping_cost": "3.00",
+    "shipping_method": "express"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 6,
+  "fields": {
+    "user": 3,
+    "created_at": "2024-06-10T08:50:00Z",
+    "address": null,
+    "delivery_date": "2024-06-25",
+    "status": "delivered",
+    "shipping_cost": "0.00",
+    "shipping_method": "pickup"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "created_at": "2024-06-17T08:00:00Z",
+    "address": null,
+    "delivery_date": "2024-06-19",
+    "status": "delivered",
+    "shipping_cost": "3.00",
+    "shipping_method": "standard"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 9,
+  "fields": {
+    "user": 1,
+    "created_at": "2024-06-18T08:00:00Z",
+    "address": null,
+    "delivery_date": "2024-06-21",
+    "status": "delivered",
+    "shipping_cost": "3.00",
+    "shipping_method": "standard"
+  }
+},
+{
+  "model": "core.order",
+  "pk": 10,
+  "fields": {
+    "user": 4,
+    "created_at": "2024-06-18T09:00:00Z",
+    "address": null,
+    "delivery_date": "2024-06-22",
+    "status": "delivered",
+    "shipping_cost": "3.00",
+    "shipping_method": "express"
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "product": 1,
+    "price": "2.50",
+    "quantity": 2
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 2,
+  "fields": {
+    "order": 1,
+    "product": 2,
+    "price": "1.20",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 3,
+  "fields": {
+    "order": 2,
+    "product": 3,
+    "price": "1.80",
+    "quantity": 3
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 4,
+  "fields": {
+    "order": 2,
+    "product": 4,
+    "price": "9.90",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 5,
+  "fields": {
+    "order": 3,
+    "product": 5,
+    "price": "7.50",
+    "quantity": 2
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 6,
+  "fields": {
+    "order": 4,
+    "product": 2,
+    "price": "1.20",
+    "quantity": 2
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 7,
+  "fields": {
+    "order": 4,
+    "product": 3,
+    "price": "1.80",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 8,
+  "fields": {
+    "order": 5,
+    "product": 4,
+    "price": "9.90",
+    "quantity": 2
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 9,
+  "fields": {
+    "order": 5,
+    "product": 5,
+    "price": "7.50",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 10,
+  "fields": {
+    "order": 6,
+    "product": 1,
+    "price": "2.50",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 11,
+  "fields": {
+    "order": 6,
+    "product": 3,
+    "price": "1.80",
+    "quantity": 2
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 12,
+  "fields": {
+    "order": 7,
+    "product": 17,
+    "price": "24.90",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 14,
+  "fields": {
+    "order": 9,
+    "product": 4,
+    "price": "9.90",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 15,
+  "fields": {
+    "order": 9,
+    "product": 5,
+    "price": "7.50",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 16,
+  "fields": {
+    "order": 10,
+    "product": 2,
+    "price": "1.20",
+    "quantity": 1
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 17,
+  "fields": {
+    "order": 10,
+    "product": 3,
+    "price": "1.80",
+    "quantity": 1
+  }
+},
+{
+  "model": "review.review",
+  "pk": 2,
+  "fields": {
+    "product": 2,
+    "user": 4,
+    "rating": 4,
+    "comment": "Buono ma migliorabile",
+    "created_at": "2024-06-16T11:00:00Z"
+  }
+},
+{
+  "model": "review.review",
+  "pk": 4,
+  "fields": {
+    "product": 17,
+    "user": 1,
+    "rating": 4,
+    "comment": "Ottime proteine, si sciolgono bene.",
+    "created_at": "2024-06-17T10:00:00Z"
+  }
+},
+{
+  "model": "review.review",
+  "pk": 6,
+  "fields": {
+    "product": 3,
+    "user": 1,
+    "rating": 5,
+    "comment": "Bevanda isotonica molto rinfrescante.",
+    "created_at": "2024-06-18T12:00:00Z"
+  }
+},
+{
+  "model": "review.review",
+  "pk": 7,
+  "fields": {
+    "product": 4,
+    "user": 1,
+    "rating": 4,
+    "comment": "Creatina efficace, si scioglie bene.",
+    "created_at": "2024-06-18T13:00:00Z"
+  }
+},
+{
+  "model": "review.review",
+  "pk": 8,
+  "fields": {
+    "product": 5,
+    "user": 1,
+    "rating": 5,
+    "comment": "Omega 3 di qualità, nessun retrogusto.",
+    "created_at": "2024-06-18T14:00:00Z"
+  }
+},
+{
+  "model": "review.review",
+  "pk": 9,
+  "fields": {
+    "product": 2,
+    "user": 1,
+    "rating": 4,
+    "comment": "Barretta gustosa e saziante.",
+    "created_at": "2024-06-18T15:00:00Z"
+  }
+},
+{
+  "model": "review.review",
+  "pk": 10,
+  "fields": {
+    "product": 3,
+    "user": 4,
+    "rating": 5,
+    "comment": "Ottima per il recupero dopo l'allenamento.",
+    "created_at": "2024-06-18T16:00:00Z"
+  }
+},
+{
+  "model": "review.review",
+  "pk": 11,
+  "fields": {
+    "product": 4,
+    "user": 4,
+    "rating": 4,
+    "comment": "Buon integratore, spedizione veloce.",
+    "created_at": "2024-06-18T17:00:00Z"
+  }
+},
+{
+  "model": "review.review",
+  "pk": 12,
+  "fields": {
+    "product": 5,
+    "user": 4,
+    "rating": 5,
+    "comment": "Ottimo rapporto qualità/prezzo.",
+    "created_at": "2024-06-18T18:00:00Z"
+  }
+}
 ]
