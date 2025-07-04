@@ -61,11 +61,13 @@ INSTALLED_APPS = [
     'review.apps.ReviewConfig',  # Review app
     'crispy_forms',
     'crispy_bootstrap5',
+    'whitenoise.runserver_nostatic'
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.runserver_nostatic'
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
