@@ -174,7 +174,6 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView, Per
     def form_valid(self, form):
 
         form.instance.modified_by = self.request.user
-        messages.success(self.request, "Prodotto aggiornato con successo!")
         return super().form_valid(form)
 
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.template.context_processors import request
 from django.views.generic import TemplateView
@@ -112,6 +112,12 @@ class UserSignUpView(CreateView):
     template_name = 'users/sign_up.html'
     success_url = reverse_lazy('users:login')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        customer_group, _ = Group.objects.get_or_create(name='Customers')
+        self.object.groups.add(customer_group)
+        return response
+
 class UserLogoutView(LogoutView):
     template_name = 'users/logout_custom.html'
     next_page = reverse_lazy('core:home')
@@ -131,6 +137,7 @@ class UserLogoutView(LogoutView):
 
 class UserAccountView(LoginRequiredMixin, TemplateView):
     template_name = 'users/account.html'
+    permmission_required = 'users.view_user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -179,6 +186,7 @@ def update_profile(request):
 
 @login_required
 @require_POST
+@permission_required('users.add_paymentmethod', raise_exception=True)
 def add_payment_method(request):
     form = PaymentMethodForm(request.POST)
     if form.is_valid():
@@ -205,6 +213,7 @@ def add_payment_method(request):
 
 @login_required
 @require_POST
+@permission_required('users.delete_paymentmethod', raise_exception=True)
 def delete_payment_method(request, card_id):
     card = get_object_or_404(PaymentMethod, id=card_id, user=request.user)
     card.delete()
@@ -213,6 +222,7 @@ def delete_payment_method(request, card_id):
 
 
 @login_required
+@permission_required('users.change_paymentmethod', raise_exception=True)
 def change_password(request):
     if request.method == 'POST':
         user = request.user
@@ -240,6 +250,7 @@ def change_password(request):
 
 
 @login_required
+@permission_required('users.add_address', raise_exception=True)
 def add_address(request):
     if request.method == 'POST':
         form = AddressForm(request.POST)
@@ -268,6 +279,7 @@ def add_address(request):
 
 
 @login_required
+@permission_required('users.delete_address', raise_exception=True)
 def delete_address(request, address_id):
     if request.method == 'POST':
         address = get_object_or_404(Address, id=address_id, user=request.user)
@@ -276,6 +288,7 @@ def delete_address(request, address_id):
     return redirect(reverse('users:account'))
 
 @login_required
+@permission_required('users.change_address', raise_exception=True)
 def update_address(request, address_id):
     address = get_object_or_404(Address, id=address_id, user=request.user)
     if request.method == 'POST':

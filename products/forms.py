@@ -34,7 +34,7 @@ def get_product_images():
     return choices
 
 class ProductForm(forms.ModelForm):
-    queryset = Category.objects.all(),
+
     category = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         widget=forms.SelectMultiple(attrs={'class': 'form-select select2', 'multiple': 'multiple'}),

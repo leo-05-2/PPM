@@ -12,6 +12,7 @@ from core.models import *
 # Create your views here.
 
 @login_required
+@permission_required('review.add_review', raise_exception=True)
 def write_review(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     purchase_verified = False
@@ -22,6 +23,10 @@ def write_review(request, product_id):
         delivered_purchases = purchases.filter(order__status='delivered')
         if purchases.exists() and delivered_purchases.exists():
             purchase_verified = True
+
+    if not purchase_verified:
+        messages.error(request, 'Puoi scrivere una recensione solo se hai acquistato e ricevuto questo prodotto.')
+        return redirect('products:product_info', product_id=product.id)
 
 
 
@@ -45,6 +50,7 @@ def write_review(request, product_id):
     return render(request, 'reviews/write_review.html', context)
 
 @login_required
+@permission_required('review.change_review', raise_exception=True)
 def delete_review(request, review_id):
 
     review = get_object_or_404(Review, id = review_id)
@@ -72,6 +78,7 @@ def delete_review(request, review_id):
     }
     return render(request, 'reviews/delete_review.html', context)
 @login_required
+@permission_required('review.view_review', raise_exception=True)
 def see_reviews(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     reviews = product.reviews.all().order_by('-created_at')
