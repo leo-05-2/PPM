@@ -123,7 +123,7 @@ class UserLogoutView(LogoutView):
         response = super().get(request, *args, **kwargs)
 
 
-        messages.success(request, "Sei stato disconnesso con successo!")
+
 
 
         return response
@@ -262,6 +262,7 @@ def add_address(request):
                 'payment_form': PaymentMethodForm(),
                 'open_add_address_modal': True,
             }
+            messages.error(request, 'Errore nella creazione dell\'indirizzo. Assicurati di compilare tutti i campi richiesti.')
             return render(request, 'users/account.html', context)
     return redirect('users:account')
 

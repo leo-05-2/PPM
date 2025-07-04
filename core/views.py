@@ -114,7 +114,7 @@ def add_cart_item(request):
 
 
 @login_required
-def update_item(request, item_id):
+def update_item(request, item_id): # Aggiorna la quantità di un elemento nel carrello
 
     cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
 
@@ -228,7 +228,7 @@ def checkout(request):
                 city=address.city,
                 postal_code=address.postal_code,
                 country=address.country,
-                nickname=address.nickname if address.nickname else 'Indirizzo di spedizione',
+                # nickname=address.nickname if address.nickname else 'Indirizzo di spedizione',
                 created_at= datetime.now()
             )
             delivery_address.save()
@@ -241,7 +241,8 @@ def checkout(request):
                 delivery_date = delivery_date,
                 status = 'pending',
                 shipping_cost = shipping_cost_view,
-                shipping_method = shipping_method
+                shipping_method = shipping_method,
+                payment_method = payment.card_number
 
             )
 
@@ -314,7 +315,7 @@ def checkout(request):
         'shipping_method': shipping_method,
         'delivery_date': delivery_date.strftime('%d/%m/%Y'),
         'saved_payments': saved_payments,
-        'form': form,
+
     }
 
     return render(request, 'core/checkout_cart.html', context)
@@ -363,6 +364,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         context['address'] = self.object.address
         context['total'] = context['subtotal'] + context['shipping_cost']
         context['store_manager'] = is_store_manager(self.request.user)
+        context['payment_method'] = self.object.payment_method
 
 
 

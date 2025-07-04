@@ -107,6 +107,19 @@
                     <p class="mb-0">{{ order.address.country }}</p>
                 </div>
             </div>
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">Metodo di pagamento</h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">
+
+                            **** **** **** {{ payment_method|slice:"-4:" }}
+
+                    </p>
+                </div>
+            </div>
+
 
             <!-- Dettagli di consegna -->
             <div class="card mb-4">

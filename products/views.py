@@ -79,12 +79,7 @@ def product_info(request, product_id):
     return render(request, 'products/product_info.html', context)
 
 def product_list_category(request, category_id = None):
-    # Recupera la categoria in base all'ID
 
-
-
-
-    # Recupera i prodotti associati alla categoria
     if category_id:
         products = Product.objects.filter(category=category_id)
     else:
@@ -226,7 +221,7 @@ class ProductManageListView(LoginRequiredMixin, UserPassesTestMixin, ListView, P
     #todo: add a template to use q
 
 
-
+@permission_required('products.add_category')
 def category_create(request):
     categories = Category.objects.all()
 

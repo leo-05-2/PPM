@@ -21,8 +21,8 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(DeliveryAddress)
 class DeliveryAddressAdmin(admin.ModelAdmin):
-    list_display = ['street', 'city', 'province', 'postal_code', 'country', 'created_at']
-    search_fields = ['street', 'city', 'province', 'postal_code']
+    list_display = ['street', 'city', 'postal_code', 'country', 'created_at']
+    search_fields = ['street', 'city', 'postal_code']
     list_filter = ['country', 'created_at']
 
 

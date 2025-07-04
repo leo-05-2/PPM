@@ -1,5 +1,5 @@
 from django.contrib import admin
-from  users.models import CustomUser, Address
+from  users.models import *
 from django.contrib.auth.admin import UserAdmin
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
 
@@ -21,3 +21,8 @@ class AddressAdmin(admin.ModelAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Address)
+class PaymentMethodAdmin(admin.ModelAdmin):
+    list_display = ('user', 'card_number', 'card_expiry', 'card_cvv')
+    search_fields = ('user__username', 'card_number')
+    list_filter = ('card_expiry',)
+admin.site.register(PaymentMethod, PaymentMethodAdmin)

@@ -37,8 +37,8 @@ else:
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure--zmetloj=8c7$dj^xx0i(q@k1^l7_d0p4&%nu1aif&tmm_@l^1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+# DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 #ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['ppm-production-fc10.up.railway.app', '127.0.0.1', 'localhost']
