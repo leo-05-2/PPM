@@ -1,6 +1,6 @@
 # Marketplace PPM
 
-Marketplace PPM è una piattaforma e-commerce sviluppata con Django, pensata per la vendita di alimenti, integratori e attrezzature per la palestra.  
+Marketplace PPM è una piattaforma e-commerce sviluppata con Django, pensata per la vendita di alimenti, integratori, attrezzature o in generale articoli per la palestra.  
 L'applicazione offre funzionalità di registrazione, accesso, gestione del profilo utente,
 ricerca e filtraggio dei prodotti per categoria, prezzo e disponibilità, visualizzazione dettagliata dei prodotti, aggiunta e gestione del carrello,
 gestione degli indirizzi e dei metodi di pagamento, checkout con selezione del metodo di spedizione e pagamento, visualizzazione della cronologia ordini, recensioni sui prodotti,
@@ -13,12 +13,13 @@ gestione dei preferiti, Gli Store Manager dispongono di una dashboard dedicata p
 - Alcune funzionalità (come la gestione prodotti) sono riservate agli Store Manager.
 - Credenziali di test disponibili:
 
-| Ruolo           | Email                      | Password         |
-|-----------------|---------------------------|------------------|
-| Store Manager 1 | storemanager@test.com      | PasswordStore1   |
-| Store Manager 2 | storemanager2@test.com     | PasswordStore2   |
-| Customer 1      | customer@custom.it         | PasswordUser1    |
-| Customer 2      | customer2@custom.com       | PasswordUser2    |
+| Ruolo          | Email                    | Password       |
+|----------------|--------------------------|----------------|
+| store_manager  | storemanager@test.com    | PasswordStore1 |
+| store_manager2 | storemanager2@test.com   | PasswordStore2 |
+| customer1      | customer@custom.it       | PasswordUser1  |
+| customer2      | customer2@custom.com     | PasswordUser2  |
+| admin          | admin@admin.com          | admin          |
 
 ---
 
