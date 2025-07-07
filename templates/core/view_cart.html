@@ -41,10 +41,10 @@
                         {% for item in items %}
                         <tr>
                             <td>
-                                {% if product.image %}
-                                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ product.name }}">
                                 {% else %}
-                                    <img src='https:www.placehold.co/30x20' class="card-img-top" alt="{{ product.name }}">
+                                    <img src='https://www.placehold.co/30x20' class="card-img-top" alt="{{ product.name }}">
                                 {% endif %}
                             </td>
                             <td>

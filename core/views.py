@@ -24,6 +24,7 @@ def view_cart(request):
 
     shipping_method_changed = False
 
+
     # Crea o recupera il form di spedizione
     if request.method == 'POST':
         shipping_form = ShippingForm(request.POST)

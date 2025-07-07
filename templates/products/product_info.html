@@ -282,7 +282,11 @@
                       <div class="card h-100 shadow-sm">
                         <a href="{% url 'products:product_info' i.id %}" class="stretched-link text-decoration-none text-dark">
                           <div class="bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
-                            <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                            {% if i.image %}
+                              <img src="{{ i.image.url }}" alt="{{ i.name }}" class="img-fluid" style="max-height: 180px; max-width: 100%; object-fit: contain;">
+                            {% else %}
+                              <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                            {% endif %}
                           </div>
                           <div class="card-body">
                             {% for category in i.category.all %}
@@ -307,7 +311,11 @@
                       <div class="card h-100 shadow-sm">
                         <a href="{% url 'products:product_info' i.id %}" class="stretched-link text-decoration-none text-dark">
                           <div class="bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
-                            <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                              {% if i.image %}
+                                <img src="{{ i.image.url }}" alt="{{ i.name }}" class="img-fluid" style="max-height: 180px; max-width: 100%; object-fit: contain;">
+                              {% else %}
+                                <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                              {% endif %}
                           </div>
                           <div class="card-body">
                             {% for category in i.categories.all %}
