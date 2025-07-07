@@ -11,10 +11,11 @@ from review.models import Review
 from products.models import Product, Category
 from django.urls import reverse
 from .forms import *
-from django.views.generic import TemplateView, View # Importa View
+from django.views.generic import TemplateView
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import password_validators_help_texts
 from django.views.decorators.http import require_POST
+from django.contrib.auth.models import Group
 
 
 
