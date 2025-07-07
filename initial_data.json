@@ -741,13 +741,13 @@
   "model": "users.customuser",
   "pk": 1,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$2PtYInCGMcGLZTKtj5UIQE$xnvqRy79aby40Oc36CFIt2NO56LmLoszMuyke6nxX54=",
-    "last_login": "2025-07-02T09:46:07.006Z",
+    "password": "pbkdf2_sha256$1000000$p7BHqXIKaFJ0NwiMkMzZNX$cMrcn8eVpT9bjdWoGNm3x4DB5aLSITyN57GqDFJZZWk=",
+    "last_login": "2025-07-07T14:48:18.474Z",
     "is_superuser": false,
-    "username": "user",
+    "username": "customer1",
     "first_name": "",
     "last_name": "",
-    "email": "usermail@gmail.it",
+    "email": "customer@custom.it",
     "is_staff": false,
     "is_active": true,
     "date_joined": "2025-06-29T14:09:08.391Z",
@@ -756,9 +756,9 @@
     "user_permissions": [],
     "favorite_list": [
       15,
+      1,
       14,
-      13,
-      1
+      13
     ]
   }
 },
@@ -769,7 +769,7 @@
     "password": "pbkdf2_sha256$1000000$PLaILqzT5EqnL482j6RAQN$fv0z4/43q7665sv8WlcD2S6iFFKEdTmM8thG0inmrjs=",
     "last_login": "2025-07-02T10:56:25.477Z",
     "is_superuser": false,
-    "username": "store_menager",
+    "username": "store_manager",
     "first_name": "",
     "last_name": "",
     "email": "storemanager@test.com",
@@ -808,13 +808,13 @@
   "model": "users.customuser",
   "pk": 4,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$sJGyttOCp8x97K1wQPUxVU$tGZOxlVQsKSRbsFuzKgzM/QwrbmIETcEGCQoDWMOQLI=",
+    "password": "pbkdf2_sha256$1000000$oSErDWg51KHcF0FrES04yL$YP1615KIDklSURcaSEyJW+2Ai35Gyucx/WRQ8U7HZOk=",
     "last_login": null,
     "is_superuser": false,
     "username": "customer2",
     "first_name": "",
     "last_name": "",
-    "email": "customer2@custom.gmail.com",
+    "email": "customer2@custom.com",
     "is_staff": false,
     "is_active": true,
     "date_joined": "2025-06-29T15:30:23.831Z",
@@ -831,7 +831,7 @@
     "password": "pbkdf2_sha256$1000000$23dqbovt87G2WvebHKZO3Q$gor105IQeqnTwaNE0+lAmGt+CMFW0OihWqqb5W/33aA=",
     "last_login": null,
     "is_superuser": false,
-    "username": "store_menager2",
+    "username": "store_manager2",
     "first_name": "",
     "last_name": "",
     "email": "manager2@test.com",
