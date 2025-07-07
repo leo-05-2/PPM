@@ -3,7 +3,6 @@ from crispy_forms.layout import Layout, Field, Submit
 from django import forms
 from .models import *
 import os
-from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.core.files.storage import default_storage
 
@@ -80,7 +79,6 @@ class ProductForm(forms.ModelForm):
             if field_name not in ['available', 'category']:
                 field.widget.attrs['class'] = 'form-control'
 
-   # todo: in attesa di decidere più categorie possono appartenere ad un prodotto
 
     def save(self, commit=True):
         product = super().save(commit=False)

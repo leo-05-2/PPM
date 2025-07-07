@@ -5,13 +5,27 @@
 {% block title %}Registrati{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Registrati</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary mt-3">Registrati</button>
-    </form>
-    <p class="mt-3">Hai già un account? <a href="{% url 'users:login' %}">Accedi qui</a></p>
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-5">
+                <h2 class="mb-4 text-center">Crea un nuovo account</h2>
+                {% if form.errors %}
+                    <div class="alert alert-danger text-center">
+                        Si sono verificati degli errori. Controlla i campi e riprova.
+                    </div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Registrati</button>
+                </form>
+                <p class="mt-4 text-center">
+                    Hai già un account?
+                    <a href="{% url 'users:login' %}">Accedi qui</a>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

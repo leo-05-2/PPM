@@ -1,23 +1,17 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.views import LoginView, LogoutView
-from django.template.context_processors import request
-from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth import update_session_auth_hash, authenticate, login , password_validation
 from django.contrib import messages
 
 from review.models import Review
-from .models import *
 from products.models import Product, Category
 from django.urls import reverse
-from core.models import Order
 from .forms import *
 from django.views.generic import TemplateView, View # Importa View
-from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import password_validators_help_texts
 from django.views.decorators.http import require_POST

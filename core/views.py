@@ -1,7 +1,7 @@
-from django.http import HttpResponse
+
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from .models import *
-from .forms import CartForm , CheckoutForm , ShippingForm , CartItemQuantityForm
+from .forms import CheckoutForm , ShippingForm , CartItemQuantityForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -382,7 +382,7 @@ class OrderHistoryView(LoginRequiredMixin, ListView):
         user = self.request.user
 
         if user.has_perm('core.view_all_orders'):
-            return Order.objects.all().order_by('-created_at') #todo: add a perm to see all orders
+            return Order.objects.all().order_by('-created_at')
 
         return Order.objects.filter(user=self.request.user).order_by('-created_at')
     def get_context_data(self, **kwargs):

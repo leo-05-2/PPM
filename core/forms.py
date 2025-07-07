@@ -1,17 +1,16 @@
 from crispy_forms.helper import FormHelper
 from django import forms
 from .models import Cart
-from users.models import Address, PaymentMethod  # Modifica qui: importa da users.models
-from django.contrib.auth.forms import AuthenticationForm
+from users.models import Address, PaymentMethod
 from crispy_forms.layout import Submit
-from crispy_forms.layout import Layout, Field, ButtonHolder, Fieldset
+from crispy_forms.layout import Layout
 from django.core.validators import RegexValidator
 
 class CartForm(forms.ModelForm):
 
     class Meta:
         model = Cart
-        fields = ['address']  # Assuming you want to allow users to select an address for their core
+        fields = ['address']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user',None)

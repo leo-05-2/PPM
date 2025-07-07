@@ -6,29 +6,47 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Login</h2>
-    {% if form.errors %}
-        <div class="alert alert-danger">
-            Il tuo username e password non corrispondono. Riprova.
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-5">
+                <h2 class="mb-4 text-center">Accedi al tuo account</h2>
+                {% if form.errors %}
+                    <div class="alert alert-danger text-center">
+                        Email e/o password non validi. Riprova.
+                    </div>
+                {% endif %}
+                {% if next %}
+                    {% if user.is_authenticated %}
+                        <div class="alert alert-warning text-center">
+                            Il tuo account non ha accesso a questa pagina.<br>
+                            Effettua il login con un account che abbia i permessi.
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info text-center">
+                            Per favore, effettua il login per vedere questa pagina.
+                        </div>
+                    {% endif %}
+                {% endif %}
+                <form method="post" action="{% url 'users:login' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" id="id_email" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    </div>
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
+                </form>
+                <p class="mt-4 text-center">
+                    Non hai un account?
+                    <a href="{% url 'users:sign_up' %}">Registrati qui</a>
+                </p>
+            </div>
         </div>
-    {% endif %}
-
-    {% if next %}
-        {% if user.is_authenticated %}
-            <p>Il tuo account non ha accesso a questa pagina. Per procedere,
-            effettua il login con un account che abbia i permessi.</p>
-        {% else %}
-            <p>Per favore, effettua il login per vedere questa pagina.</p>
-        {% endif %}
-    {% endif %}
-
-    <form method="post" action="{% url 'users:login' %}">
-        {% csrf_token %}
-        {{ form|crispy }} {# O {{ form.as_p }} #}
-        <button type="submit" class="btn btn-primary mt-3">Login</button>
-        <input type="hidden" name="next" value="{{ next }}">
-    </form>
-    <p class="mt-3">Non hai un account? <a href="{% url 'users:sign_up' %}">Registrati qui</a></p>
+    </div>
 </div>
 {% endblock %}

@@ -217,7 +217,7 @@ class ProductManageListView(LoginRequiredMixin, UserPassesTestMixin, ListView, P
         context = super().get_context_data(**kwargs)
         context['search_query'] = self.request.GET.get('q', '')
         return context
-    #todo: add a template to use q
+
 
 
 @permission_required('products.add_category')

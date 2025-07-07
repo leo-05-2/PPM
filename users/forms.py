@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from .models import CustomUser, Address, PaymentMethod
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Fieldset, Field, ButtonHolder
-import re
+from crispy_forms.layout import Layout, Submit, Field
+
 from django.core.validators import RegexValidator
 
 class CustomUserCreationForm(UserCreationForm):

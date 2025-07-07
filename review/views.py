@@ -70,7 +70,7 @@ def delete_review(request, review_id):
             return redirect('users:store_manager_dashboard')
         else:
             review.delete()
-            return redirect('users:account', product_id=product.id) #todo: add a way to check in account template
+            return redirect('users:account', product_id=product.id)
 
     context = {
         'product': product,
@@ -96,10 +96,9 @@ def see_all_reviews(request):
 
     reviews = Review.objects.all().order_by('-created_at')
     products = Product.objects.all().order_by('-created')
-    #todo: se raggruppare per prodotto e chi lo ha aggiunto al sito e un insieme generale, e aggiungere il permesso da assegnadolo da admin agli store manager
-
     context = {
         'reviews': reviews,
+        'products': products,
 
     }
     return render(request, 'reviews/see_all_reviews.html', context)

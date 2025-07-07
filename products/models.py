@@ -22,14 +22,14 @@ CATEGORY_CHOICES = (
     )
 
 class Product(models.Model):
-    category = models.ManyToManyField(Category)  #todo: decide if meny-to-many or foreign key
+    category = models.ManyToManyField(Category)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField()
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)  #todo: add the user who created the product
+    updated = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='product_images/', blank=True, null=True)
     added_by = models.ForeignKey('users.CustomUser', on_delete=models.SET_NULL, related_name='products_added', null=True, blank=True)
     modified_by = models.ForeignKey('users.CustomUser', on_delete=models.SET_NULL, related_name='products_modified', null=True, blank=True)
