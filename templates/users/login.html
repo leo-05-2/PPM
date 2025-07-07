@@ -13,26 +13,24 @@
                 <h2 class="mb-4 text-center">Accedi al tuo account</h2>
                 {% if form.errors %}
                     <div class="alert alert-danger text-center">
-                        Email e/o password non validi. Riprova.
+                        Username e/o password non validi. Riprova.
                     </div>
                 {% endif %}
-                {% if next %}
-                    {% if user.is_authenticated %}
-                        <div class="alert alert-warning text-center">
-                            Il tuo account non ha accesso a questa pagina.<br>
-                            Effettua il login con un account che abbia i permessi.
-                        </div>
-                    {% else %}
-                        <div class="alert alert-info text-center">
-                            Per favore, effettua il login per vedere questa pagina.
-                        </div>
-                    {% endif %}
+                {% if user.is_authenticated %}
+                    <div class="alert alert-warning text-center">
+                        Il tuo account non ha accesso a questa pagina.<br>
+                        Effettua il login con un account che abbia i permessi.
+                    </div>
+                {% else %}
+                    <div class="alert alert-info text-center">
+                        Per favore, effettua il login per vedere questa pagina.
+                    </div>
                 {% endif %}
                 <form method="post" action="{% url 'users:login' %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="id_email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="id_email" required autofocus>
+                        <label for="id_username" class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" id="id_username" required autofocus>
                     </div>
                     <div class="mb-3">
                         <label for="id_password" class="form-label">Password</label>
