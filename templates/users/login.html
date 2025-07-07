@@ -16,16 +16,6 @@
                         Username e/o password non validi. Riprova.
                     </div>
                 {% endif %}
-                {% if user.is_authenticated %}
-                    <div class="alert alert-warning text-center">
-                        Il tuo account non ha accesso a questa pagina.<br>
-                        Effettua il login con un account che abbia i permessi.
-                    </div>
-                {% else %}
-                    <div class="alert alert-info text-center">
-                        Per favore, effettua il login per vedere questa pagina.
-                    </div>
-                {% endif %}
                 <form method="post" action="{% url 'users:login' %}">
                     {% csrf_token %}
                     <div class="mb-3">
