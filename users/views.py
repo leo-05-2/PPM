@@ -98,7 +98,6 @@ class CustomLoginView(LoginView):
                 messages.success(self.request, f"Benvenuto, {user.username}!")
                 return redirect('users:user_home_page')
         else:
-            messages.error(self.request, "Credenziali non valide. Riprova.")
             return self.form_invalid(form)
 
 
