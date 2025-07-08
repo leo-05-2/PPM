@@ -33,7 +33,7 @@
     "user": 3,
     "content_type": 6,
     "object_id": "2",
-    "object_repr": "store_menager",
+    "object_repr": "store_manager",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
   }
@@ -653,7 +653,8 @@
       59,
       60,
       62,
-      61
+      61,
+      42
     ]
   }
 },
