@@ -764,7 +764,7 @@
   "model": "users.customuser",
   "pk": 1,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$p7BHqXIKaFJ0NwiMkMzZNX$cMrcn8eVpT9bjdWoGNm3x4DB5aLSITyN57GqDFJZZWk=",
+    "password": "pbkdf2_sha256$1000000$9k9eyE0FCIkg1oRBl3H3LO$1MuNhQ4wyd83ZpWg7Ehex3zYCgL0jBu18GwZq9Nhk78=",
     "last_login": "2025-07-07T14:48:18.474Z",
     "is_superuser": false,
     "username": "customer1",
@@ -791,7 +791,7 @@
   "model": "users.customuser",
   "pk": 2,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$PLaILqzT5EqnL482j6RAQN$fv0z4/43q7665sv8WlcD2S6iFFKEdTmM8thG0inmrjs=",
+    "password": "pbkdf2_sha256$1000000$4vYQWTsLgMO3g9UwKWohCC$YmtzGfa89f0hpynXJlYvrSV82eX5c/PqyuUQtgNL73I=",
     "last_login": "2025-07-02T10:56:25.477Z",
     "is_superuser": false,
     "username": "store_manager",
@@ -833,7 +833,7 @@
   "model": "users.customuser",
   "pk": 4,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$oSErDWg51KHcF0FrES04yL$YP1615KIDklSURcaSEyJW+2Ai35Gyucx/WRQ8U7HZOk=",
+    "password": "pbkdf2_sha256$1000000$hDnLkYPdlTXbXhRdiQ45Fo$pVJ4EYBa9Cd2dhDH//OMI0ck+3nOJZvMN5l5mrmaaz0=",
     "last_login": null,
     "is_superuser": false,
     "username": "customer2",
@@ -855,7 +855,7 @@
   "model": "users.customuser",
   "pk": 6,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$23dqbovt87G2WvebHKZO3Q$gor105IQeqnTwaNE0+lAmGt+CMFW0OihWqqb5W/33aA=",
+    "password": "pbkdf2_sha256$1000000$DaOEESvPEJbkKxuk9zSDEL$LpmKnCLfMTuFBI7noX1wav+rNeNBBex5A3YwMHE1FGc=",
     "last_login": null,
     "is_superuser": false,
     "username": "store_manager2",
