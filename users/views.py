@@ -132,7 +132,7 @@ class UserLogoutView(LogoutView):
 
 class UserAccountView(LoginRequiredMixin, TemplateView):
     template_name = 'users/account.html'
-    permmission_required = 'users.view_user'
+    permission_required = 'users.view_user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
