@@ -12,6 +12,8 @@ from django.db.models import Q, Avg
 from review.models import Review
 from .models import *
 from django.shortcuts import redirect
+from django.core.paginator import Paginator
+
 
 
 
@@ -125,16 +127,32 @@ def product_list_category(request, category_id = None):
             products = products.filter(price__gte=min_price)
         if max_price is not None:
             products = products.filter(price__lte=max_price)
+    sort = request.GET.get('sort')
+    if sort == 'price_asc':
+        products = products.order_by('price')
+    elif sort == 'price_desc':
+        products = products.order_by('-price')
+    elif sort == 'name_asc':
+        products = products.order_by('name')
+    elif sort == 'name_desc':
+        products = products.order_by('-name')
+
+    paginator = Paginator(products, 12)  # 12 prodotti per pagina (modifica a piacere)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+
 
     context = {
         'category': category,
-        'products': products,
+        'products': page_obj,
         'source': source,
         'min_price': min_price,
         'max_price': max_price,
         'category_id': category_id,
         'selected_category': selected_category,
         'query': query,
+        'sort': sort,
 
     }
 

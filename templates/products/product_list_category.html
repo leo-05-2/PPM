@@ -121,14 +121,25 @@
                         </button>
                     </div>
 
+
                     <!-- Ordinamento -->
-                    <select class="form-select" id="sort-select">
-                        <option value="default" {% if request.GET.sort == 'default' or not request.GET.sort %}selected{% endif %}>Ordinamento predefinito</option>
-                        <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Prezzo: dal più basso</option>
-                        <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Prezzo: dal più alto</option>
-                        <option value="name_asc" {% if request.GET.sort == 'name_asc' %}selected{% endif %}>Nome: A-Z</option>
-                        <option value="name_desc" {% if request.GET.sort == 'name_desc' %}selected{% endif %}>Nome: Z-A</option>
-                    </select>
+                    <form method="get" id="sort-form" class="d-inline">
+                    {% for key, value in request.GET.items %}
+                        {% if key != 'sort' and key != 'page' %}
+                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    {% endfor %}
+
+                        <select class="form-select" id="sort-select" name="sort">
+                            <option value="default" {% if request.GET.sort == 'default' or not request.GET.sort %}selected{% endif %}>Ordinamento predefinito</option>
+                            <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Prezzo: dal più basso</option>
+                            <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Prezzo: dal più alto</option>
+                            <option value="name_asc" {% if request.GET.sort == 'name_asc' %}selected{% endif %}>Nome: A-Z</option>
+                            <option value="name_desc" {% if request.GET.sort == 'name_desc' %}selected{% endif %}>Nome: Z-A</option>
+                        </select>
+
+
+                    </form>
                 </div>
             </div>
 
@@ -313,16 +324,7 @@
 
         // Script per il form di ordinamento
         document.getElementById('sort-select').addEventListener('change', function () {
-            const currentUrl = new URL(window.location.href);
-            const sortValue = this.value;
-
-            if (sortValue === 'default') {
-                currentUrl.searchParams.delete('sort');
-            } else {
-                currentUrl.searchParams.set('sort', sortValue);
-            }
-
-            window.location.href = currentUrl.toString();
+            document.getElementById('sort-form').submit();
         });
 
 

@@ -52,10 +52,14 @@ gestione dei preferiti, Gli Store Manager dispongono di una dashboard dedicata p
 - **Riepilogo ordine**: verifica tutti i dettagli prima di confermare l’acquisto.
 - **Conferma ordine**: dopo il pagamento, riceverai una conferma e il carrello verrà svuotato.
 
-### Visualizzazione della cronologia ordini e dettaglio di un ordine
-
+### Visualizzazione account utente e gestione profilo:
+- **Area personale**: accedi per visualizzare e modificare le informazioni del tuo profilo (nome, email, password).
+- **Gestione indirizzi**: aggiungi, modifica o elimina indirizzi di spedizione.
+- **Gestione metodi di pagamento**: aggiungi, modifica o elimina metodi di pagamento.
 - **Storico ordini**: nella tua area personale puoi vedere tutti gli ordini effettuati.
 - **Dettaglio ordine**: clicca su un ordine per vedere i prodotti acquistati, lo stato della spedizione e i dettagli di pagamento.
+- **Recensioni**: lascia recensioni sui prodotti acquistati, visibili nella pagina del prodotto e nella tua area personale.
+- **Preferiti**: visualizza e gestisci i prodotti salvati tra i preferiti.
 
 ### Funzionalità per Store Manager
 
@@ -68,14 +72,6 @@ gestione dei preferiti, Gli Store Manager dispongono di una dashboard dedicata p
 
 ---
 
-## Esempi di interfaccia
-
-- **Lista prodotti**: griglia con immagine, nome, prezzo e pulsanti per aggiungere al carrello o ai preferiti.
-- **Pagina prodotto**: dettagli completi, recensioni, pulsanti per acquisto e preferiti.
-- **Carrello**: tabella con prodotti, quantità modificabili, totale e pulsante per procedere al checkout.
-- **Dashboard Store Manager**: elenco prodotti con azioni rapide (modifica, elimina), statistiche ordini e recensioni.
-
----
 
 ## Note aggiuntive
 

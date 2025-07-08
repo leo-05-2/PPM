@@ -276,7 +276,7 @@
               <div class="carousel-inner">
                 <!-- Primo gruppo -->
                 <div class="carousel-item active">
-                  <div class="row px-5">
+                  <div class="row px-5 mx-5">
                     {% for i in related_products_one %}
                     <div class="col-md-3 mb-4 col-6">
                       <div class="card h-100 shadow-sm">
@@ -305,7 +305,7 @@
                 <!-- Secondo gruppo, se esiste -->
                 {% if related_products_two %}
                 <div class="carousel-item">
-                  <div class="row">
+                  <div class="row px-5 mx-5">
                     {% for i in related_products_two %}
                     <div class="col-md-3 mb-4 col-6">
                       <div class="card h-100 shadow-sm">
@@ -415,6 +415,13 @@
     max-width: calc(100% - 300px);
   }
 }
+  .carousel-control-prev {
+  left: -50px;
+}
+.carousel-control-next {
+  right: -50px;
+}
+
 </style>
     {% endif %}
     
