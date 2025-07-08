@@ -71,6 +71,8 @@ gestione dei preferiti, Gli Store Manager dispongono di una dashboard dedicata p
 - **Moderazione recensioni**: visualizza e gestisci le recensioni lasciate dagli utenti sui prodotti.
 
 ---
+## Link
+- https://ppm-production-fc10.up.railway.app/
 
 
 ## Note aggiuntive
