@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 from django.contrib import messages
@@ -12,7 +12,6 @@ from core.models import *
 # Create your views here.
 
 @login_required
-@permission_required('review.add_review', raise_exception=True)
 def write_review(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     purchase_verified = False
@@ -50,7 +49,6 @@ def write_review(request, product_id):
     return render(request, 'reviews/write_review.html', context)
 
 @login_required
-@permission_required('review.change_review', raise_exception=True)
 def delete_review(request, review_id):
 
     review = get_object_or_404(Review, id = review_id)
@@ -77,10 +75,7 @@ def delete_review(request, review_id):
         'review': review,
     }
     return render(request, 'reviews/delete_review.html', context)
-
-
 @login_required
-@permission_required('review.view_review', raise_exception=True)
 def see_reviews(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     reviews = product.reviews.all().order_by('-created_at')
@@ -93,8 +88,7 @@ def see_reviews(request, product_id):
     }
     return render(request, 'reviews/see_reviews.html', context)
 
-@login_required
-@permission_required('review.view_review', raise_exception=True)
+
 def see_all_reviews(request):
 
     reviews = Review.objects.all().order_by('-created_at')
