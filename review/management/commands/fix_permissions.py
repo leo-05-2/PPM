@@ -20,22 +20,22 @@ class Command(BaseCommand):
 
             # Mappa per memorizzare i ContentType recuperati per app_label.model
             content_types_map = {}
-            models_to_check = {
-                'review': 'review',
-                'products': 'product',
-                'users': 'customuser',
-                'users': 'address',
-                'users': 'paymentmethod',
-                'core': 'cart',
-                'core': 'cartitem',
-                'core': 'order',
-                'core': 'orderitem',
-                'core': 'deliveryaddress',
-                'products': 'category',
-                'admin': 'logentry',  # Per i permessi di admin
-                'auth': 'group',  # Per i permessi sui gruppi
-                'auth': 'permission',  # Per i permessi sui permessi stessi
-            }
+            models_to_check = [
+                ('review', 'review'),
+                ('products', 'product'),
+                ('products', 'category'),  # Entrambi saranno processati correttamente ora
+                ('users', 'customuser'),
+                ('users', 'address'),
+                ('users', 'paymentmethod'),
+                ('core', 'cart'),
+                ('core', 'cartitem'),
+                ('core', 'order'),
+                ('core', 'orderitem'),
+                ('core', 'deliveryaddress'),
+                ('admin', 'logentry'),
+                ('auth', 'group'),
+                ('auth', 'permission'),
+            ]
 
             for app_label, model_name in models_to_check:
                 cts = ContentType.objects.filter(app_label=app_label, model=model_name)
