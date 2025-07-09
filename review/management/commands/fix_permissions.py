@@ -37,17 +37,32 @@ class Command(BaseCommand):
                 'auth': 'permission',  # Per i permessi sui permessi stessi
             }
 
-            for app_label, model_name in models_to_check.items():
-                try:
-                    ct = ContentType.objects.get(app_label=app_label, model=model_name)
-                    content_types_map[f"{app_label}.{model_name}"] = ct
-                    self.stdout.write(f"  Recuperato ContentType per {app_label}.{model_name}")
-                except ContentType.DoesNotExist:
+            for app_label, model_name in models_to_check:
+                cts = ContentType.objects.filter(app_label=app_label, model=model_name)
+                if cts.count() > 1:
+                    # Caso grave: ContentType duplicati. Tenta di risolvere prendendo il primo come corretto.
+                    self.stdout.write(self.style.ERROR(
+                        f"  ATTENZIONE GRAVE: Trovati ContentType duplicati per {app_label}.{model_name}! Tentativo di risoluzione..."))
+                    correct_ct = cts.order_by('pk').first()  # Prendi il primo PK come "corretto"
+                    for ct_dup in cts.exclude(pk=correct_ct.pk):
+                        # Reindirizza eventuali permessi che puntano al duplicato
+                        Permission.objects.filter(content_type=ct_dup).update(content_type=correct_ct)
+                        self.stdout.write(
+                            f"    Spostati permessi da ContentType duplicato (PK: {ct_dup.pk}) a corretto (PK: {correct_ct.pk}).")
+                        ct_dup.delete()  # Elimina il duplicato
+                        self.stdout.write(
+                            f"    ContentType duplicato {app_label}.{model_name} (PK: {ct_dup.pk}) eliminato.")
+                    content_types_map[f"{app_label}.{model_name}"] = correct_ct
+                    self.stdout.write(self.style.SUCCESS(
+                        f"  Duplicati per {app_label}.{model_name} risolti. PK principale: {correct_ct.pk}"))
+                elif cts.count() == 1:
+                    content_types_map[f"{app_label}.{model_name}"] = cts.first()
+                else:
                     self.stdout.write(self.style.ERROR(
                         f"  ERRORE CRITICO: ContentType per '{app_label}.{model_name}' non trovato. Assicurati che le app siano migrate."))
-                    return  # Esci se un ContentType cruciale manca
+                    return
 
-            # Assegna i ContentType recuperati a variabili per comodità
+                    # Assegna i ContentType recuperati a variabili per comodità
             review_content_type = content_types_map.get('review.review')
             product_content_type = content_types_map.get('products.product')
             user_content_type = content_types_map.get('users.customuser')
