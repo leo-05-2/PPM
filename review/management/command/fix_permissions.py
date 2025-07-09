@@ -99,11 +99,9 @@ class Command(BaseCommand):
                 'view_group': group_content_type,
                 'add_permission': permission_content_type, 'change_permission': permission_content_type,
                 'delete_permission': permission_content_type, 'view_permission': permission_content_type,
-                # Aggiungi qui altri prefissi e ContentType se hai permessi con codename custom non standard 'app_label.model'
             }
 
             incorrectly_linked_perms_count = 0
-            # Ottieni tutti i permessi, per controllare anche quelli non coperti da `expected_ct_by_codename_prefix`
             all_permissions = Permission.objects.all()
 
 
@@ -142,8 +140,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS("Nessun permesso associato in modo errato trovato."))
 
             # --- 3. RECUPERO/CREAZIONE DEI PERMESSI CORRETTI ---
-            # Usiamo get_or_create per garantire che i permessi esistano e siano legati al ContentType corretto.
-            # Questo li ricreerà se sono stati eliminati al passo precedente.
+
 
             # Permessi per Review
             add_review_perm, _ = Permission.objects.get_or_create(codename='add_review',
